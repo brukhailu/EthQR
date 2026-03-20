@@ -1,0 +1,2548 @@
+[
+  {
+    "id": 1,
+    "name": "1 Standard QR (mandatory only)",
+    "desc": "Contains only mandatory fields as per the specification.",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 2,
+    "name": "2 Standard QR with Amount",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 3,
+    "name": "3 Standard QR with Amount, and Tip Amount Prompted",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 4,
+    "name": "4 Standard QR with Amount, and Fixed Tip Amount",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 5,
+    "name": "5 Standard QR with Amount, and %age Tip",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 6,
+    "name": "6 Standard QR without Amount",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 7,
+    "name": "7 Standard QR without Amount, and Tip Amount Prompted",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 8,
+    "name": "8 Standard QR without Amount, and Fixed Tip Amount",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 9,
+    "name": "9 Standard QR without Amount, and %age Tip",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 10,
+    "name": "10 Standard QR with Bill Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "01": "BILL123", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 11,
+    "name": "11 Standard QR with Mobile Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 12,
+    "name": "12 Standard QR with Merchants Store Label",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "03": "STORE01", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 13,
+    "name": "13 Standard QR with Loyalty Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "04": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 14,
+    "name": "14 Standard QR with Counter Id/ Till Id",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "07": "TERM001", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 15,
+    "name": "15 Standard QR with Transaction Purpose",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "08": "Payment" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 16,
+    "name": "16 Standard QR with amount - with request for Customer Address, Email and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "AEM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 17,
+    "name": "17 Standard QR with amount - with request for Customer Address",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "A", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 18,
+    "name": "18 Standard QR with amount - with request for Customer Email",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "E", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 19,
+    "name": "19 Standard QR with amount - with request for Customer Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "M", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 20,
+    "name": "20 Standard QR with amount - with request for Customer Address and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "AM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 21,
+    "name": "21 Standard QR with amount - with request for Customer Email and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "EM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 22,
+    "name": "22 Standard QR with amount - with request for Customer Address and Email",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "09": "AE", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 23,
+    "name": "23 Standard QR with Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 24,
+    "name": "24 Standard QR with Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 25,
+    "name": "25 Standard QR with Context of Transaction",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "contextOfTransaction": "School Fee for August 2026",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 26,
+    "name": "26 Dynamic QR with UETR",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "12",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "uetr": "581b314e257f41bfbbdc6384daa31d16",
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 27,
+    "name": "27 Dynamic QR with TTC",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "12",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "transactionTypeCode": {
+        "00": "581b314e257f41bfbbdc6384daa31d16",
+        "01": "P2M001"
+      },
+      "additionalDataField": { "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 28,
+    "name": "28 Standard QR without amount, with request for Customer Address, Email and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "AEM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 29,
+    "name": "29 Standard QR without amount - with request for Customer Address",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "A", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 30,
+    "name": "30 Standard QR without amount - with request for Customer Email",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "E", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 31,
+    "name": "31 Standard QR without amount - with request for Customer Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "M", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 32,
+    "name": "32 Standard QR without amount - with request for Customer Address and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "AM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 33,
+    "name": "33 Standard QR without amount - with request for Customer Email and Mobile",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "EM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 34,
+    "name": "34 Standard QR without amount - with request for Customer Address and Email",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "09": "AE", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 35,
+    "name": "35 Standard QR with Amount and Bill Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "500.00",
+      "additionalDataField": { "01": "INV-2024-001", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 36,
+    "name": "36 Standard QR with Amount and Mobile Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 37,
+    "name": "37 Standard QR with Amount and Merchants Store Label",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "03": "STORE01", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 38,
+    "name": "38 Standard QR with Amount and Loyalty Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "04": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 39,
+    "name": "39 Standard QR with Amount and Counter Id/ Till Id",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "07": "TERM001", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 40,
+    "name": "40 Standard QR with Amount and Transaction Purpose",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "08": "Payment" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 41,
+    "name": "41 Standard QR with Amount and Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 42,
+    "name": "42 Standard QR with Amount and Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "100.00",
+      "additionalDataField": { "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 43,
+    "name": "43 Standard QR with Tip Prompted to Customer, Bill Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-002", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 44,
+    "name": "44 Standard QR with Tip Prompted to Customer, Mobile Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 45,
+    "name": "45 Standard QR with Tip Prompted to Customer, Store Label",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "03": "STORE01", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 46,
+    "name": "46 Standard QR with Tip Prompted to Customer, Loyalty Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "04": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 47,
+    "name": "47 Standard QR with Tip Prompted to Customer, Terminal ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "07": "TERM001", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 48,
+    "name": "48 Standard QR with Tip Prompted to Customer, Transaction Purpose",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "08": "Payment" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 49,
+    "name": "49 Standard QR with Tip Prompted to Customer, Additional Consumer Data Request",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "09": "AEM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 50,
+    "name": "50 Standard QR with Tip Prompted to Customer, Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 51,
+    "name": "51 Standard QR with Tip Prompted to Customer, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 52,
+    "name": "52 Standard QR with Fixed Tip Amount, Bill Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "01": "BILL-003", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 53,
+    "name": "53 Standard QR with Fixed Tip Amount, Mobile Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "02": "922334455", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 54,
+    "name": "54 Standard QR with Fixed Tip Amount, Store Label",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "03": "STORE02", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 55,
+    "name": "55 Standard QR with Fixed Tip Amount, Loyalty Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "04": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 56,
+    "name": "56 Standard QR with Fixed Tip Amount, Terminal ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "07": "TERM002", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 57,
+    "name": "57 Standard QR with Fixed Tip Amount, Transaction Purpose",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "08": "Service" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 58,
+    "name": "58 Standard QR with Fixed Tip Amount, Additional Consumer Data Request",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "09": "AEM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 59,
+    "name": "59 Standard QR with Fixed Tip Amount, Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 60,
+    "name": "60 Standard QR with Fixed Tip Amount, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "10.00",
+      "additionalDataField": { "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 61,
+    "name": "61 Standard QR with %age Tip, Bill Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "01": "BILL-004", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 62,
+    "name": "62 Standard QR with %age Tip, Mobile Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "02": "933445566", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 63,
+    "name": "63 Standard QR with %age Tip, Store Label",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "03": "S-009", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 64,
+    "name": "64 Standard QR with %age Tip, Loyalty Number",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "04": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 65,
+    "name": "65 Standard QR with %age Tip, Terminal ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "07": "TERM003", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 66,
+    "name": "66 Standard QR with %age Tip, Transaction Purpose",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "08": "Consulting" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 67,
+    "name": "67 Standard QR with %age Tip, Additional Consumer Data Request",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "09": "AEM", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 68,
+    "name": "68 Standard QR with %age Tip, Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 69,
+    "name": "69 Standard QR with %age Tip, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "5.00",
+      "additionalDataField": { "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 70,
+    "name": "70 Complex Scenario 1 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "150.50",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 71,
+    "name": "71 Complex Scenario 2 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "150.50",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 72,
+    "name": "72 Standard QR with Amount, %age Tip, Mobile Number, Store Label, Transaction Purpose, Merchant Tax ID, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "150.50",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 73,
+    "name": "73 Standard QR with Amount, %age Tip, Mobile Number, Store Label, Additional Consumer Data Request, Merchant Tax ID, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "150.50",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 74,
+    "name": "74 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-005", "02": "911111111", "03": "STORE-005", "04": "123456789", "07": "TERM-005", "08": "Payment", "09": "AEM" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 75,
+    "name": "75 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-006", "02": "922222222", "03": "STORE-006", "04": "123456789", "07": "TERM-006", "08": "Payment", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 76,
+    "name": "76 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-007", "02": "933333333", "03": "STORE-007", "04": "123456789", "07": "TERM-007", "08": "Payment", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 77,
+    "name": "77 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-008", "02": "944444444", "03": "STORE-008", "04": "123456789", "07": "TERM-008", "09": "AEM", "10": "123456789", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 78,
+    "name": "78 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-009", "02": "955555555", "03": "STORE-009", "04": "123456789", "07": "TERM-009", "09": "AEM", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 79,
+    "name": "79 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Merchant Tax ID, Merchant Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-010", "02": "966666666", "03": "STORE-010", "04": "123456789", "07": "TERM-010", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 80,
+    "name": "80 Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "200.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "02": "977777777", "03": "STORE-011", "04": "123456789", "07": "TERM-011", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 81,
+    "name": "81 Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "200.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "02": "977777777", "03": "STORE-011", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 82,
+    "name": "82 Standard QR with Amount, Fixed Tip, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "200.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "02": "977777777", "03": "STORE-011", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 83,
+    "name": "83 Standard QR with Amount, Fixed Tip, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "200.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "02": "977777777", "04": "123456789", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 84,
+    "name": "84 Standard QR with Amount, Fixed Tip, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "200.00",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "03": "STORE-011", "04": "123456789", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 85,
+    "name": "85 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "01": "BILL-012", "02": "988888888", "03": "STORE-012", "04": "123456789", "07": "TERM-012", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 86,
+    "name": "86 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "01": "BILL-013", "02": "999999999", "03": "STORE-013", "04": "123456789", "07": "TERM-013", "08": "Payment", "09": "AEM", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 87,
+    "name": "87 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "01": "BILL-014", "02": "900000000", "03": "STORE-014", "04": "123456789", "07": "TERM-014", "08": "Payment", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 88,
+    "name": "88 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "01": "BILL-015", "02": "911111111", "03": "STORE-015", "04": "123456789", "07": "TERM-015", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 89,
+    "name": "89 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "02",
+      "valueOfConvenienceFeeFixed": "20.00",
+      "additionalDataField": { "01": "BILL-016", "02": "922222222", "03": "STORE-016", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 90,
+    "name": "90 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "01": "BILL-017", "02": "933333333", "03": "STORE-017", "04": "123456789", "07": "TERM-017", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 91,
+    "name": "91 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "01": "BILL-018", "02": "944444444", "03": "STORE-018", "04": "123456789", "07": "TERM-018", "08": "Payment", "09": "AEM", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 92,
+    "name": "92 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "01": "BILL-019", "02": "955555555", "03": "STORE-019", "04": "123456789", "07": "TERM-019", "08": "Payment", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 93,
+    "name": "93 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "01": "BILL-020", "02": "966666666", "03": "STORE-020", "04": "123456789", "07": "TERM-020", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 94,
+    "name": "94 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-021", "02": "977777777", "03": "STORE-021", "04": "123456789", "07": "TERM-021", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 95,
+    "name": "95 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-022", "02": "988888888", "03": "STORE-022", "04": "123456789", "07": "TERM-022", "08": "Payment", "09": "AEM", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 96,
+    "name": "96 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-023", "02": "999999999", "03": "STORE-023", "04": "123456789", "07": "TERM-023", "08": "Payment", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 97,
+    "name": "97 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-024", "02": "900000000", "03": "STORE-024", "04": "123456789", "07": "TERM-024", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 98,
+    "name": "98 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-025", "02": "911111111", "03": "STORE-025", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 99,
+    "name": "99 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-026", "02": "922222222", "03": "STORE-026", "07": "TERM-026", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 100,
+    "name": "100 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-027", "02": "933333333", "04": "123456789", "07": "TERM-027", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 101,
+    "name": "101 Standard QR with Amount, Tip Prompted, Bill Number, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "01": "BILL-028", "03": "STORE-028", "04": "123456789", "07": "TERM-028", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 102,
+    "name": "102 Standard QR with Amount, Tip Prompted, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "01",
+      "additionalDataField": { "02": "944444444", "03": "STORE-029", "04": "123456789", "07": "TERM-029", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 103,
+    "name": "103 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "250.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "15.00",
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "COMPLEX-TERM", "08": "Complex-Purpose", "09": "AEM", "10": "123456789" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 104,
+    "name": "104 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "250.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "15.00",
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "09": "AEM", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 105,
+    "name": "105 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "250.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "15.00",
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 106,
+    "name": "106 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "250.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "15.00",
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 107,
+    "name": "107 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "250.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "15.00",
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "08": "Complex-Purpose", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  },
+  {
+    "id": 108,
+    "name": "108 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "data": {
+      "payloadFormatIndicator": "01",
+      "pointOfInitiationMethod": "11",
+      "merchantAccountInformation": {
+        "28": {
+          "00": "581b314e257f41bfbbdc6384daa31d16",
+          "01": "12345678",
+          "02": "100012345678"
+        }
+      },
+      "merchantCategoryCode": "5411",
+      "transactionCurrency": "230",
+      "countryCode": "ET",
+      "merchantName": "Test Merchant",
+      "merchantCity": "Addis Ababa",
+      "transactionAmount": "300.00",
+      "tipOrConvenienceIndicator": "03",
+      "valueOfConvenienceFeePercentage": "10.00",
+      "additionalDataField": { "01": "BILL-108", "02": "922222222", "03": "STORE-108", "07": "TERM-108", "08": "Purpose-108", "09": "AEM", "10": "123456789", "11": "400" },
+      "crc": "5376"
+    }
+  }
+]

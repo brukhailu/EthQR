@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethswitch QR - Deep Parser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; }
+        .navbar { background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
+        .navbar-brand { font-weight: 600; color: #0d6efd; }
+        .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); border-radius: 0.5rem; margin-bottom: 1.5rem; }
+        .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; padding: 1rem 1.5rem; }
+        .table-parsed { font-size: 0.9em; }
+        .table-parsed th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
+        .tag-id { font-family: 'Courier New', monospace; font-weight: bold; color: #0d6efd; }
+        .status-valid { color: #198754; font-weight: 600; }
+        .status-invalid { color: #dc3545; font-weight: 600; }
+        .sub-row { background-color: #fcfcfc; }
+        .nested-table { margin-bottom: 0; background-color: transparent; }
+        .nested-table td { border-bottom: none; padding: 0.25rem 0.5rem; }
+        .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
+        .badge-optional { background-color: #6c757d; font-size: 0.7em; }
+        #uploadedImagePreview { max-width: 100%; max-height: 300px; border-radius: 0.25rem; display: none; margin: 1rem auto; border: 1px solid #dee2e6; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1060; }
+        .nav-link.active { color: #0d6efd !important; font-weight: 600; }
+        .missing-tag-row { background-color: #fff5f5; border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-qrcode me-2"></i>Ethswitch QR Simulator</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Generator</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/parser">Deep Parser</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-search me-2 text-warning"></i>Deep Parser & Validator</div>
+                <div class="card-body">
+
+                    <ul class="nav nav-tabs mb-3" id="parserTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-pane" type="button">Text Input</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-pane" type="button">Image Upload</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="parserTabsContent">
+                        <!-- Text Input Pane -->
+                        <div class="tab-pane fade show active" id="text-pane" role="tabpanel">
+                            <div class="mb-3">
+                                <label class="form-label">TLV String</label>
+                                <textarea class="form-control font-monospace" id="tlvInput" rows="4" placeholder="Paste TLV data here..."></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" onclick="parseQR()">Parse Text</button>
+                            </div>
+                        </div>
+
+                        <!-- Image Input Pane -->
+                        <div class="tab-pane fade" id="image-pane" role="tabpanel">
+                            <div class="text-center mb-3">
+                                <img id="uploadedImagePreview" src="" alt="Preview">
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="file" class="form-control" id="qrFileInput" accept="image/*" onchange="previewImage(this)">
+                                <button class="btn btn-outline-secondary" type="button" onclick="parseQRImage()">
+                                    <i class="fas fa-upload me-2"></i>Upload & Parse
+                                </button>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-outline-primary" type="button" onclick="pasteImage()">
+                                    <i class="fas fa-paste me-2"></i>Paste from Clipboard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <h5 class="mb-3">Parsed Results</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-parsed" id="parsedTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 60px;">Tag</th>
+                                        <th>Name</th>
+                                        <th style="width: 50px;">M/O</th>
+                                        <th style="width: 60px;">Len</th>
+                                        <th>Value</th>
+                                        <th style="width: 120px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="6" class="text-center text-muted py-4">No data parsed yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="missingTagsContainer" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container p-3" id="toastContainer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let tagConfig = {};
+
+    window.onload = async () => {
+        try {
+            const resp = await fetch('/api/qr/tags');
+            tagConfig = await resp.json();
+        } catch (e) {
+            showToast('Error loading configuration', 'danger');
+        }
+    };
+
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const id = 'toast-' + Date.now();
+        const html = `
+            <div id="${id}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        const toast = new bootstrap.Toast(document.getElementById(id), { delay: 5000 });
+        toast.show();
+    }
+
+    function validateTagValue(tag, value, config) {
+        if (!config) return { valid: true, msg: "Unknown tag" };
+        if (config.dataType) {
+            if (config.dataType === 'N' && !/^\d+$/.test(value)) return { valid: false, msg: "Must be Numeric" };
+            if (config.dataType === 'A' && !/^[a-zA-Z\s]+$/.test(value)) return { valid: false, msg: "Must be Alphabetic" };
+            if (config.dataType === 'ANS' && !/^[\x20-\x7E]+$/.test(value)) return { valid: false, msg: "Invalid chars" };
+        }
+        if (config.minLength && value.length < config.minLength) return { valid: false, msg: `Too short (min ${config.minLength})` };
+        if (config.maxLength && value.length > config.maxLength) return { valid: false, msg: `Too long (max ${config.maxLength})` };
+        if (config.pattern) {
+            try {
+                const regex = new RegExp(config.pattern);
+                if (!regex.test(value)) return { valid: false, msg: "Format mismatch" };
+            } catch(e) { console.error("Invalid regex", config.pattern); }
+        }
+        return { valid: true, msg: "Correct" };
+    }
+
+    async function parseQR() {
+        const tlv = document.getElementById('tlvInput').value.trim();
+        if(!tlv) return showToast('Please enter a TLV string', 'warning');
+        try {
+            const resp = await fetch('/api/qr/parse', {
+                method: 'POST', headers: {'Content-Type': 'text/plain'}, body: tlv
+            });
+            if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
+            renderParsedTable(await resp.json());
+            showToast('Parsed successfully', 'success');
+        } catch (e) { showToast(e.message, 'danger'); }
+    }
+
+    async function parseQRImage() {
+        const file = document.getElementById('qrFileInput').files[0];
+        if(!file) return showToast('Select an image', 'warning');
+        await parseImageBlob(file);
+    }
+
+    async function pasteImage() {
+        try {
+            const items = await navigator.clipboard.read();
+            for (const item of items) {
+                for (const type of item.types) {
+                    if (type.startsWith('image/')) {
+                        const blob = await item.getType(type);
+                        displayImagePreview(blob);
+                        await parseImageBlob(blob);
+                        return;
+                    }
+                }
+            }
+            showToast('No image in clipboard', 'warning');
+        } catch (e) { showToast('Clipboard access failed', 'warning'); }
+    }
+
+    async function parseImageBlob(blob) {
+        const formData = new FormData();
+        formData.append('file', blob);
+        try {
+            const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
+            if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
+            const data = await resp.json();
+            document.getElementById('tlvInput').value = data.raw;
+            renderParsedTable(data.parsed);
+            showToast('Image parsed', 'success');
+        } catch (e) { showToast(e.message, 'danger'); }
+    }
+
+    function previewImage(input) {
+        if(input.files && input.files[0]) displayImagePreview(input.files[0]);
+    }
+
+    function displayImagePreview(blob) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.getElementById('uploadedImagePreview');
+            img.src = e.target.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(blob);
+    }
+
+    document.addEventListener('paste', async (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].kind === 'file') {
+                const blob = items[i].getAsFile();
+                displayImagePreview(blob);
+                await parseImageBlob(blob);
+                e.preventDefault();
+                break;
+            }
+        }
+    });
+
+    function renderParsedTable(data) {
+        const tbody = document.querySelector('#parsedTable tbody');
+        tbody.innerHTML = '';
+        document.getElementById('missingTagsContainer').innerHTML = '';
+
+        if (Object.keys(data).length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">No data found.</td></tr>';
+            return;
+        }
+        const sortedKeys = Object.keys(data).sort((a, b) => parseInt(a) - parseInt(b));
+
+        // Track present tags
+        const presentTags = new Set(sortedKeys);
+
+        for (const tag of sortedKeys) {
+            const val = data[tag];
+            const config = tagConfig[tag];
+            const name = config ? config.name : 'Unknown';
+            const mo = (config && config.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+
+            if (typeof val === 'object' && val !== null) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class="tag-id">${tag}</td><td><strong>${name}</strong></td><td>${mo}</td><td>-</td><td class="text-muted">Sub-tags container</td><td><span class="badge bg-secondary">Container</span></td>`;
+                tbody.appendChild(row);
+
+                const subRow = document.createElement('tr');
+                subRow.className = 'sub-row';
+                const subTd = document.createElement('td');
+                subTd.colSpan = 6;
+                const subTable = document.createElement('table');
+                subTable.className = 'table table-sm nested-table';
+
+                const sortedSubKeys = Object.keys(val).sort();
+                const presentSubTags = new Set(sortedSubKeys);
+
+                sortedSubKeys.forEach(subTag => {
+                    const subVal = val[subTag];
+                    const subConfig = config && config.subTags ? config.subTags.find(s => s.tag === subTag) : null;
+                    const subName = subConfig ? subConfig.name : 'Unknown';
+                    const subMo = (subConfig && subConfig.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+                    const validation = validateTagValue(subTag, subVal, subConfig);
+                    const icon = validation.valid ? '<i class="fas fa-check-circle status-valid"></i>' : '<i class="fas fa-times-circle status-invalid"></i>';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="width: 40px;" class="tag-id ps-4">${subTag}</td>
+                        <td style="width: 180px;">${subName}</td>
+                        <td style="width: 40px;">${subMo}</td>
+                        <td style="width: 50px;">${subVal.length}</td>
+                        <td class="text-break font-monospace small">${subVal}</td>
+                        <td style="width: 140px;">${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
+                    `;
+                    subTable.appendChild(tr);
+                });
+
+                // Check for missing mandatory sub-tags
+                if(config && config.subTags) {
+                    config.subTags.forEach(st => {
+                        if(st.mandatory && !presentSubTags.has(st.tag)) {
+                            const tr = document.createElement('tr');
+                            tr.className = 'missing-tag-row';
+                            tr.innerHTML = `
+                                <td style="width: 40px;" class="tag-id ps-4 text-danger">${st.tag}</td>
+                                <td style="width: 180px;">${st.name}</td>
+                                <td style="width: 40px;"><span class="badge badge-mandatory">M</span></td>
+                                <td colspan="3" class="text-danger small"><i class="fas fa-exclamation-triangle me-1"></i> Missing Mandatory Sub-Tag</td>
+                            `;
+                            subTable.appendChild(tr);
+                        }
+                    });
+                }
+
+                subTd.appendChild(subTable);
+                subRow.appendChild(subTd);
+                tbody.appendChild(subRow);
+            } else {
+                const validation = validateTagValue(tag, val, config);
+                const icon = validation.valid ? '<i class="fas fa-check-circle status-valid"></i>' : '<i class="fas fa-times-circle status-invalid"></i>';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="tag-id">${tag}</td>
+                    <td>${name}</td>
+                    <td>${mo}</td>
+                    <td>${val.length}</td>
+                    <td class="text-break font-monospace small">${val}</td>
+                    <td>${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        // Check for Missing Mandatory Root Tags
+        const missingContainer = document.getElementById('missingTagsContainer');
+        const missingTags = [];
+        for(const [t, conf] of Object.entries(tagConfig)) {
+            if(conf.mandatory && !presentTags.has(t)) {
+                missingTags.push(`${t} - ${conf.name}`);
+            }
+        }
+
+        if(missingTags.length > 0) {
+            missingContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Missing Mandatory Tags</h6>
+                    <ul class="mb-0 small">
+                        ${missingTags.map(mt => `<li>${mt}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+</script>
+</body>
+</html>
