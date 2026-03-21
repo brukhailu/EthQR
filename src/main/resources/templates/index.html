@@ -1,150 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethswitch QR Simulator</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; }
-        .navbar { background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
-        .navbar-brand { font-weight: 600; color: #0d6efd; }
-        .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); border-radius: 0.5rem; margin-bottom: 1.5rem; }
-        .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; padding: 1rem 1.5rem; }
-
-        /* Unified Table Styles */
-        .table-qr th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; vertical-align: middle; color: #6c757d; }
-        .table-qr td { vertical-align: middle; font-size: 0.9em; }
-        .tag-id { font-family: 'Courier New', monospace; font-weight: bold; color: #0d6efd; }
-        .status-valid { color: #198754; font-weight: 600; }
-        .status-invalid { color: #dc3545; font-weight: 600; }
-        .sub-row { background-color: #fcfcfc; }
-        .nested-table { margin-bottom: 0; background-color: transparent; }
-        .nested-table td { border-bottom: none; padding: 0.25rem 0.5rem; }
-        .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
-        .badge-optional { background-color: #6c757d; font-size: 0.7em; }
-        .form-control-sm { font-size: 0.9em; }
-        .input-error { border-color: #dc3545; background-image: none; }
-        .len-badge { font-family: monospace; font-size: 0.85em; color: #6c757d; }
-        .meta-cell { color: #6c757d; font-size: 0.85em; }
-
-        #qrImage { max-width: 250px; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.5rem; }
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1060; }
-        .nav-link.active { color: #0d6efd !important; font-weight: 600; }
-    </style>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(title='Ethswitch QR - Generator')}">
 </head>
+<style>
+    /* Page Specific Styles */
+    .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); border-radius: 0.5rem; margin-bottom: 1.5rem; }
+    .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; padding: 1rem 1.5rem; }
+
+    .table-qr th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; vertical-align: middle; color: #6c757d; }
+    .table-qr td { vertical-align: middle; font-size: 0.9em; }
+    .tag-id { font-family: 'Courier New', monospace; font-weight: bold; color: #0d6efd; }
+    .meta-cell { color: #6c757d; font-size: 0.85em; }
+
+    #qrImage { max-width: 250px; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.5rem; }
+    .len-badge { font-family: monospace; font-size: 0.85em; color: #6c757d; }
+    .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
+    .badge-optional { background-color: #6c757d; font-size: 0.7em; }
+
+    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 1060; }
+</style>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="/"><i class="fas fa-qrcode me-2"></i>Ethswitch QR Simulator</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link active" href="/">Generator</a></li>
-                <li class="nav-item"><a class="nav-link" href="/parser">Deep Parser</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<nav th:replace="~{fragments/layout :: header(activeTab='generator')}"></nav>
 
-<!-- Main Content -->
-<div class="container-fluid py-4 px-4">
-    <div class="row g-4">
-        <!-- Left Column: Generator (Expanded) -->
-        <div class="col-lg-8">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span><i class="fas fa-edit me-2 text-primary"></i>Generate QR Data</span>
-                    <div class="input-group input-group-sm" style="width: auto;">
-                        <select class="form-select" id="testScenario" onchange="loadScenario()">
-                            <option value="">Select Test Scenario...</option>
-                        </select>
-                        <a href="/api/qr/scenarios" download="standard-scenarios.json" class="btn btn-outline-secondary" title="Download Scenarios">
-                            <i class="fas fa-download"></i>
-                        </a>
+<main>
+    <div class="container-fluid py-4 px-4">
+        <div class="row g-4">
+            <!-- Left Column: Generator -->
+            <div class="col-lg-8">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-edit me-2 text-primary"></i>Generate QR Data</span>
+                        <div class="input-group input-group-sm" style="width: auto;">
+                            <select class="form-select" id="testScenario" onchange="loadScenario()">
+                                <option value="">Select Test Scenario...</option>
+                            </select>
+                            <a href="/api/qr/scenarios" download="standard-scenarios.json" class="btn btn-outline-secondary" title="Download Scenarios">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <!-- Scenario Description -->
-                    <div id="scenarioGuideline" class="alert alert-info d-none m-3" role="alert">
-                        <i class="fas fa-info-circle me-2"></i><span id="scenarioDesc"></span>
+                    <div class="card-body p-0">
+                        <div id="scenarioGuideline" class="alert alert-info d-none m-3" role="alert">
+                            <i class="fas fa-info-circle me-2"></i><span id="scenarioDesc"></span>
+                        </div>
+                        <div class="table-responsive" style="max-height: 800px; overflow-y: auto;">
+                            <table class="table table-hover table-qr mb-0" id="generationTable">
+                                <thead class="table-light sticky-top" style="z-index: 10;">
+                                    <tr>
+                                        <th style="width: 50px;">Tag</th>
+                                        <th style="width: 180px;">Name</th>
+                                        <th style="width: 40px;">M/O</th>
+                                        <th style="width: 50px;">Type</th>
+                                        <th style="width: 60px;">Max Len</th>
+                                        <th style="width: 50px;">Len</th>
+                                        <th>Value</th>
+                                        <th style="width: 30px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="generationTableBody"></tbody>
+                            </table>
+                        </div>
                     </div>
-
-                    <!-- Editable Generation Table -->
-                    <div class="table-responsive" style="max-height: 800px; overflow-y: auto;">
-                        <table class="table table-hover table-qr mb-0" id="generationTable">
-                            <thead class="table-light sticky-top" style="z-index: 10;">
-                                <tr>
-                                    <th style="width: 50px;">Tag</th>
-                                    <th style="width: 180px;">Name</th>
-                                    <th style="width: 40px;">M/O</th>
-                                    <th style="width: 50px;">Type</th>
-                                    <th style="width: 60px;">Max Len</th>
-                                    <th style="width: 50px;">Len</th>
-                                    <th>Value</th>
-                                    <th style="width: 30px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="generationTableBody">
-                                <!-- Rows generated by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer bg-white">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary btn-lg" onclick="generateQR()">
-                            <i class="fas fa-qrcode me-2"></i>Generate QR Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Result (Compacted) -->
-        <div class="col-lg-4">
-            <div class="card sticky-top" style="top: 80px;">
-                <div class="card-header"><i class="fas fa-image me-2 text-success"></i>Generated Result</div>
-                <div class="card-body text-center">
-                    <div class="mb-3" style="min-height: 250px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 0.5rem;">
-                        <img id="qrImage" src="" alt="QR Code will appear here" style="display: none;">
-                        <p id="qrPlaceholder" class="text-muted">Generated QR code will appear here.</p>
-                    </div>
-
-                    <div class="text-start">
-                        <label class="form-label">TLV String</label>
-                        <div class="input-group">
-                            <textarea class="form-control font-monospace" id="tlvOutput" rows="5" readonly style="font-size: 0.85em;"></textarea>
-                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
-                                <i class="fas fa-copy"></i>
+                    <div class="card-footer bg-white">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" onclick="generateQR()">
+                                <i class="fas fa-qrcode me-2"></i>Generate QR Code
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="mt-3">
-                        <button onclick="goToParser()" class="btn btn-outline-primary w-100">
-                            <i class="fas fa-search me-2"></i>Analyze in Deep Parser
-                        </button>
+            <!-- Right Column: Result -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 100px;">
+                    <div class="card-header"><i class="fas fa-image me-2 text-success"></i>Generated Result</div>
+                    <div class="card-body text-center">
+                        <div class="mb-3" style="min-height: 250px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 0.5rem;">
+                            <img id="qrImage" src="" alt="QR Code will appear here" style="display: none;">
+                            <p id="qrPlaceholder" class="text-muted">Generated QR code will appear here.</p>
+                        </div>
+
+                        <div class="text-start">
+                            <label class="form-label">TLV String</label>
+                            <div class="input-group">
+                                <textarea class="form-control font-monospace" id="tlvOutput" rows="5" readonly style="font-size: 0.85em;"></textarea>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <button onclick="goToParser()" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-search me-2"></i>Analyze in Deep Parser
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 
 <div class="toast-container p-3" id="toastContainer"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div th:replace="~{fragments/layout :: scripts}"></div>
 
 <script>
+    // ... (Keep existing script logic exactly as is, it's specific to this page) ...
     let tagConfig = {};
     let scenarios = [];
 
@@ -242,7 +209,6 @@
             let valueHtml = '';
             let lenHtml = `<span id="${lenId}" class="len-badge">00</span>`;
 
-            // Special handling for CRC (Tag 63)
             if (tag === '63') {
                 valueHtml = `<input type="text" class="form-control form-control-sm gen-input text-muted" id="${inputId}" data-tag="${tag}" value="Auto-calculated" readonly disabled>`;
                 lenHtml = '<span class="len-badge">04</span>';
@@ -366,12 +332,10 @@
         };
 
         for (const [tag, config] of Object.entries(tagConfig)) {
-            // Skip CRC auto-population
             if(tag === '63') continue;
 
             const field = config.dataField;
 
-            // Direct field mapping
             if (field && d[field] !== undefined) {
                 if (typeof d[field] !== 'object') {
                     const el = document.getElementById(`gen-input-${tag}`);
@@ -404,14 +368,6 @@
                 }
             }
 
-            // Special handling for legacy merchantAccountInformation
-            // Sometimes scenarios put Tag 28 directly under root (not common but possible in old specs) or nested
-            if (tag === '28' && d.merchantAccountInformation && d.merchantAccountInformation['28']) {
-                 // It's handled by generic container logic above usually.
-                 // But check if it's string or object.
-            }
-
-            // Special handling for additionalDataField (Map)
             if (config.dataField === 'additionalDataField' && d.additionalDataField) {
                  if(config.subTags) {
                     config.subTags.forEach(st => {
@@ -423,7 +379,6 @@
                  }
             }
 
-            // Special handling for merchantInformationLanguageTemplate
             if (config.dataField === 'merchantInformationLanguageTemplate' && d.merchantInformationLanguageTemplate) {
                  if(config.subTags) {
                     config.subTags.forEach(st => {
@@ -435,7 +390,6 @@
                  }
             }
 
-            // Special handling for transactionTypeCode (Tag 85)
             if(tag === '85' && d.transactionTypeCode) {
                 if(typeof d.transactionTypeCode === 'object') {
                     config.subTags.forEach(st => {
@@ -447,7 +401,6 @@
                 }
             }
 
-            // Unreserved templates
              if (config.dataField === 'unreservedTemplates' && d.unreservedTemplates && d.unreservedTemplates[tag]) {
                 const tagData = d.unreservedTemplates[tag];
                 if (config.subTags) {
@@ -471,7 +424,6 @@
         };
 
         for (const [tag, config] of Object.entries(tagConfig)) {
-            // Skip CRC
             if(tag === '63') continue;
 
             const field = config.dataField;
@@ -490,7 +442,6 @@
                     if(values.some(v => v !== '')) {
                         anyFilled = true;
 
-                        // We construct the value string with delimiter
                         const valStr = values.join(delim);
 
                         if (config.container) {
@@ -500,7 +451,6 @@
                         else if (field === 'transactionTypeCode') {
                              payload.transactionTypeCode = valStr;
                         }
-                        // Tag 28 with delimiter is a container, so handled by config.container
                     }
                 }
                 else {
@@ -521,24 +471,9 @@
                              payload.unreservedTemplates[tag] = subMap;
                         }
                         else if (config.container) {
-                            // If it's a container with subTags but NO delimiter, we usually don't map it here for simple fields.
-                            // But for Tag 28 (EthSwitch) which HAS delimiter, we fell into the delimiter block.
-                            // If there are other container tags without delimiter (like pure nested TLV?), we'd need to handle them.
-                            // Currently standard scenario doesn't have such cases except Tag 62/64 which are explicitly handled.
-                            // If there were a generic container tag:
-                            // payload.merchantAccountInformation[tag] = subMap;
-                            // Wait, if we send subMap (Map<String, String>) to backend, but backend expects String in merchantAccountInformation map?
-                            // Yes, the backend map is Map<String, String>.
-                            // So we MUST construct the TLV string here if it's not handled by specific fields.
-
-                            // Let's assume for now only delimiter ones go into MAI map as string.
-                            // Pure TLV nested MAI tags (if any) would need string construction.
-                            // But 02-51 are usually primitive or delimiter based.
+                            payload.merchantAccountInformation[tag] = subMap;
                         }
                         else if (field === 'transactionTypeCode') {
-                             // If Tag 85 has sub-tags but NO delimiter, it means it's pure TLV.
-                             // But QRCodeData expects String for transactionTypeCode.
-                             // So we must construct TLV string manually.
                              let tlvStr = '';
                              for(const [st, val] of Object.entries(subMap)) {
                                  tlvStr += st + val.length.toString().padStart(2, '0') + val;

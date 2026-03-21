@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- 1. COMMON HEAD -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Ethswitch QR Simulator</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Modern Navbar */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 0.8rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #0d6efd;
+            letter-spacing: -0.02em;
+        }
+        .nav-link {
+            font-weight: 500;
+            color: #6c757d !important;
+            margin-left: 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 50rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            background-color: #f1f3f5;
+            color: #212529 !important;
+            transform: translateY(-1px);
+        }
+        .nav-link.active {
+            background-color: #e7f1ff;
+            color: #0d6efd !important;
+            font-weight: 600;
+        }
+
+        /* Main Content Wrapper to push footer down */
+        main { flex: 1; }
+
+        /* Footer */
+        .footer {
+            background-color: #fff;
+            border-top: 1px solid #f0f0f0;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print, .navbar, .footer { display: none !important; }
+            body { background-color: white; }
+            .card { border: 1px solid #ddd; box-shadow: none !important; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 2. COMMON NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light" th:fragment="header(activeTab)">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-qrcode me-2"></i>Ethswitch QR
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'generator'} ? 'active'" href="/">
+                        <i class="fas fa-magic me-1"></i> Generator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'parser'} ? 'active'" href="/parser">
+                        <i class="fas fa-search me-1"></i> Deep Parser
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'certification'} ? 'active'" href="/certification">
+                        <i class="fas fa-certificate me-1"></i> Certification
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'simulator'} ? 'active'" href="/mobile-simulator">
+                        <i class="fas fa-mobile-alt me-1"></i> Mobile Sim
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 3. COMMON FOOTER -->
+<footer class="footer" th:fragment="footer">
+    <div class="container text-center">
+        <p class="mb-0">&copy; 2024 Ethswitch. All rights reserved. | <a href="#" class="text-decoration-none">Documentation</a> | <a href="#" class="text-decoration-none">Support</a></p>
+    </div>
+</footer>
+
+<!-- 4. COMMON SCRIPTS -->
+<div th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+</body>
+</html>

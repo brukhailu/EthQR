@@ -15,4 +15,14 @@ public class WebController {
     public String parser() {
         return "parser";
     }
+
+    @GetMapping("/certification")
+    public String certification() {
+        return "certification";
+    }
+
+    @GetMapping("/mobile-simulator")
+    public String mobileSimulator() {
+        return "mobile-simulator";
+    }
 }
