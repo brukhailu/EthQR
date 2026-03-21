@@ -21,5 +21,13 @@ public class QRCodeData {
     private Map<String, String> additionalDataField; // ID 62
     private String crc; // ID 63
     private Map<String, String> merchantInformationLanguageTemplate; // ID 64
-    private Map<String, Map<String, String>> unreservedTemplates; // ID 80-99
+    
+    private String contextOfTransaction; // ID 80
+    private String discountsAndLoyalty; // ID 81
+    private String offlineToOnline; // ID 82
+    private String ecommerce; // ID 83
+    private String uetr; // ID 84
+    private String transactionTypeCode; // ID 85
+
+    private Map<String, Map<String, String>> unreservedTemplates; // ID 80-99 (Legacy/Other)
 }

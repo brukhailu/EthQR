@@ -131,9 +131,9 @@
                     </div>
 
                     <div class="mt-3">
-                        <a href="/parser" class="btn btn-outline-primary w-100">
+                        <button onclick="goToParser()" class="btn btn-outline-primary w-100">
                             <i class="fas fa-search me-2"></i>Analyze in Deep Parser
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -185,7 +185,8 @@
             </div>
         `;
         container.insertAdjacentHTML('beforeend', html);
-        const toast = new bootstrap.Toast(document.getElementById(id), { delay: 5000 });
+        const toastEl = document.getElementById(id);
+        const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
         toast.show();
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
@@ -196,6 +197,14 @@
             navigator.clipboard.writeText(text);
             showToast('TLV copied to clipboard', 'success');
         }
+    }
+
+    function goToParser() {
+        const tlv = document.getElementById('tlvOutput').value;
+        if (tlv) {
+            sessionStorage.setItem('autoParseTlv', tlv);
+        }
+        window.location.href = '/parser';
     }
 
     function validateTagValue(tag, value, config) {
@@ -312,11 +321,11 @@
 
         const res = validateTagValue(tag, val, targetConfig);
         if(res.valid) {
-            input.classList.remove('is-invalid');
+            input.classList.remove('is-invalid', 'is-valid');
             input.classList.add('is-valid');
             if(icon) { icon.classList.remove('d-none'); }
         } else {
-            input.classList.remove('is-valid');
+            input.classList.remove('is-valid', 'is-invalid');
             input.classList.add('is-invalid');
             if(icon) icon.classList.add('d-none');
         }
@@ -362,6 +371,7 @@
 
             const field = config.dataField;
 
+            // Direct field mapping
             if (field && d[field] !== undefined) {
                 if (typeof d[field] !== 'object') {
                     const el = document.getElementById(`gen-input-${tag}`);
@@ -394,50 +404,57 @@
                 }
             }
 
+            // Special handling for legacy merchantAccountInformation
+            // Sometimes scenarios put Tag 28 directly under root (not common but possible in old specs) or nested
+            if (tag === '28' && d.merchantAccountInformation && d.merchantAccountInformation['28']) {
+                 // It's handled by generic container logic above usually.
+                 // But check if it's string or object.
+            }
+
+            // Special handling for additionalDataField (Map)
             if (config.dataField === 'additionalDataField' && d.additionalDataField) {
-                if (config.subTags) {
+                 if(config.subTags) {
                     config.subTags.forEach(st => {
-                        if (d.additionalDataField[st.tag]) {
+                        if(d.additionalDataField[st.tag]) {
                             const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
                             setAndTrigger(el, d.additionalDataField[st.tag], tag, st.tag);
                         }
                     });
-                }
+                 }
             }
 
+            // Special handling for merchantInformationLanguageTemplate
             if (config.dataField === 'merchantInformationLanguageTemplate' && d.merchantInformationLanguageTemplate) {
-                if (config.subTags) {
+                 if(config.subTags) {
                     config.subTags.forEach(st => {
-                        if (d.merchantInformationLanguageTemplate[st.tag]) {
+                        if(d.merchantInformationLanguageTemplate[st.tag]) {
                             const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
                             setAndTrigger(el, d.merchantInformationLanguageTemplate[st.tag], tag, st.tag);
+                        }
+                    });
+                 }
+            }
+
+            // Special handling for transactionTypeCode (Tag 85)
+            if(tag === '85' && d.transactionTypeCode) {
+                if(typeof d.transactionTypeCode === 'object') {
+                    config.subTags.forEach(st => {
+                        if(d.transactionTypeCode[st.tag]) {
+                            const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
+                            setAndTrigger(el, d.transactionTypeCode[st.tag], tag, st.tag);
                         }
                     });
                 }
             }
 
-            if (config.dataField === 'unreservedTemplates' && d.unreservedTemplates) {
-                if (d.unreservedTemplates[tag]) {
-                    const tagData = d.unreservedTemplates[tag];
-                    if (config.subTags) {
-                        config.subTags.forEach(st => {
-                            if (tagData[st.tag]) {
-                                const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
-                                setAndTrigger(el, tagData[st.tag], tag, st.tag);
-                            }
-                        });
-                    }
-                }
-            }
-
-            if (tag === '28' && d.merchantId) {
-                 if (config.subTags && config.delimiter) {
-                    let delim = config.delimiter; if(delim === '\\|') delim = '|';
-                    const parts = d.merchantId.split(delim);
-                    config.subTags.forEach((st, idx) => {
-                        if (idx < parts.length) {
+            // Unreserved templates
+             if (config.dataField === 'unreservedTemplates' && d.unreservedTemplates && d.unreservedTemplates[tag]) {
+                const tagData = d.unreservedTemplates[tag];
+                if (config.subTags) {
+                    config.subTags.forEach(st => {
+                        if (tagData[st.tag]) {
                             const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
-                            setAndTrigger(el, parts[idx], tag, st.tag);
+                            setAndTrigger(el, tagData[st.tag], tag, st.tag);
                         }
                     });
                 }
@@ -464,19 +481,26 @@
 
                 if (config.delimiter) {
                     let delim = config.delimiter; if(delim === '\\|') delim = '|';
-                    const orderedValues = [];
-                    config.subTags.forEach(st => {
-                        const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
-                        const v = el ? el.value : '';
-                        orderedValues.push(v);
-                        if(v) anyFilled = true;
+
+                    const values = config.subTags.map(st => {
+                         const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
+                         return el ? el.value : '';
                     });
 
-                    if (anyFilled) {
-                        const valStr = orderedValues.join(delim);
+                    if(values.some(v => v !== '')) {
+                        anyFilled = true;
+
+                        // We construct the value string with delimiter
+                        const valStr = values.join(delim);
+
                         if (config.container) {
-                            payload.merchantAccountInformation[tag] = valStr;
+                             if(!payload.merchantAccountInformation) payload.merchantAccountInformation = {};
+                             payload.merchantAccountInformation[tag] = valStr;
                         }
+                        else if (field === 'transactionTypeCode') {
+                             payload.transactionTypeCode = valStr;
+                        }
+                        // Tag 28 with delimiter is a container, so handled by config.container
                     }
                 }
                 else {
@@ -492,8 +516,35 @@
                     if (anyFilled) {
                         if (field === 'additionalDataField') payload.additionalDataField = subMap;
                         else if (field === 'merchantInformationLanguageTemplate') payload.merchantInformationLanguageTemplate = subMap;
-                        else if (field === 'unreservedTemplates') payload.unreservedTemplates[tag] = subMap;
-                        else if (config.container) payload.merchantAccountInformation[tag] = subMap;
+                        else if (field === 'unreservedTemplates') {
+                             if(!payload.unreservedTemplates[tag]) payload.unreservedTemplates[tag] = {};
+                             payload.unreservedTemplates[tag] = subMap;
+                        }
+                        else if (config.container) {
+                            // If it's a container with subTags but NO delimiter, we usually don't map it here for simple fields.
+                            // But for Tag 28 (EthSwitch) which HAS delimiter, we fell into the delimiter block.
+                            // If there are other container tags without delimiter (like pure nested TLV?), we'd need to handle them.
+                            // Currently standard scenario doesn't have such cases except Tag 62/64 which are explicitly handled.
+                            // If there were a generic container tag:
+                            // payload.merchantAccountInformation[tag] = subMap;
+                            // Wait, if we send subMap (Map<String, String>) to backend, but backend expects String in merchantAccountInformation map?
+                            // Yes, the backend map is Map<String, String>.
+                            // So we MUST construct the TLV string here if it's not handled by specific fields.
+
+                            // Let's assume for now only delimiter ones go into MAI map as string.
+                            // Pure TLV nested MAI tags (if any) would need string construction.
+                            // But 02-51 are usually primitive or delimiter based.
+                        }
+                        else if (field === 'transactionTypeCode') {
+                             // If Tag 85 has sub-tags but NO delimiter, it means it's pure TLV.
+                             // But QRCodeData expects String for transactionTypeCode.
+                             // So we must construct TLV string manually.
+                             let tlvStr = '';
+                             for(const [st, val] of Object.entries(subMap)) {
+                                 tlvStr += st + val.length.toString().padStart(2, '0') + val;
+                             }
+                             payload.transactionTypeCode = tlvStr;
+                        }
                     }
                 }
             }

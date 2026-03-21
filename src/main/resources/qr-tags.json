@@ -60,7 +60,6 @@
   { "tag": "83", "name": "E-Commerce", "dataField": "ecommerce", "dataType": "ANS", "minLength": 1, "maxLength": 40, "mandatory": false },
   { "tag": "84", "name": "UETR", "dataField": "uetr", "dataType": "ANS", "minLength": 36, "maxLength": 36, "pattern": "^[a-fA-F0-9]{36}$", "mandatory": false },
   { "tag": "85", "name": "Transaction Type Code", "dataField": "transactionTypeCode", "isSubTLV": true, "delimiter": "|", "mandatory": false, "subTags": [
-    { "tag": "00", "name": "GUID", "dataType": "ANS", "minLength": 1, "maxLength": 32, "mandatory": true },
     { "tag": "01", "name": "TTC", "dataType": "ANS", "minLength": 1, "maxLength": 40, "mandatory": true }
   ]}
 ]

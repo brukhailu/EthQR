@@ -16,17 +16,20 @@
         .table-parsed { font-size: 0.9em; }
         .table-parsed th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
         .tag-id { font-family: 'Courier New', monospace; font-weight: bold; color: #0d6efd; }
-        .status-valid { color: #198754; font-weight: 600; }
-        .status-invalid { color: #dc3545; font-weight: 600; }
+        .status-valid { color: #198754; }
+        .status-invalid { color: #dc3545; }
         .sub-row { background-color: #fcfcfc; }
         .nested-table { margin-bottom: 0; background-color: transparent; }
         .nested-table td { border-bottom: none; padding: 0.25rem 0.5rem; }
         .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
         .badge-optional { background-color: #6c757d; font-size: 0.7em; }
-        #uploadedImagePreview { max-width: 100%; max-height: 300px; border-radius: 0.25rem; display: none; margin: 1rem auto; border: 1px solid #dee2e6; }
+        #uploadedImagePreview { max-width: 200px; max-height: 200px; border-radius: 0.25rem; border: 1px solid #dee2e6; }
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1060; }
         .nav-link.active { color: #0d6efd !important; font-weight: 600; }
-        .missing-tag-row { background-color: #fff5f5; border-left: 4px solid #dc3545; }
+        .comparison-missing-row { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+        .comparison-mismatch-row { background-color: #fff3cd; }
+        .expected-val { font-size: 0.85em; color: #666; font-style: italic; display: block; margin-top: 2px; }
+        .badge-dynamic { background-color: #0dcaf0; color: #000; }
     </style>
 </head>
 <body>
@@ -50,7 +53,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card">
-                <div class="card-header"><i class="fas fa-search me-2 text-warning"></i>Deep Parser & Validator</div>
+                <div class="card-header"><i class="fas fa-search me-2 text-primary"></i>Deep Parser & Validator</div>
                 <div class="card-body">
 
                     <ul class="nav nav-tabs mb-3" id="parserTabs" role="tablist">
@@ -70,45 +73,63 @@
                                 <textarea class="form-control font-monospace" id="tlvInput" rows="4" placeholder="Paste TLV data here..."></textarea>
                             </div>
                             <div class="d-grid">
-                                <button class="btn btn-primary" onclick="parseQR()">Parse Text</button>
+                                <button class="btn btn-primary" onclick="parseQR()"><i class="fas fa-play me-2"></i>Parse Text</button>
                             </div>
                         </div>
 
                         <!-- Image Input Pane -->
                         <div class="tab-pane fade" id="image-pane" role="tabpanel">
-                            <div class="text-center mb-3">
-                                <img id="uploadedImagePreview" src="" alt="Preview">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <img id="uploadedImagePreview" src="" alt="Preview" style="display:none;">
+                                    <p id="imagePlaceholder" class="text-muted small">QR Image Preview</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label class="form-label">Decoded TLV String</label>
+                                        <textarea class="form-control font-monospace" id="decodedTlvOutput" rows="4" readonly></textarea>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="input-group mb-3">
+                            <div class="input-group my-3">
                                 <input type="file" class="form-control" id="qrFileInput" accept="image/*" onchange="previewImage(this)">
-                                <button class="btn btn-outline-secondary" type="button" onclick="parseQRImage()">
-                                    <i class="fas fa-upload me-2"></i>Upload & Parse
-                                </button>
+                                <button class="btn btn-outline-secondary" type="button" onclick="parseQRImage()"><i class="fas fa-upload me-2"></i>Upload & Parse</button>
                             </div>
                             <div class="d-grid">
-                                <button class="btn btn-outline-primary" type="button" onclick="pasteImage()">
-                                    <i class="fas fa-paste me-2"></i>Paste from Clipboard
-                                </button>
+                                <button class="btn btn-outline-primary" type="button" onclick="pasteImage()"><i class="fas fa-paste me-2"></i>Paste from Clipboard</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-5">
-                        <h5 class="mb-3">Parsed Results</h5>
+                    <!-- Comparison Section -->
+                    <div id="comparisonSection" class="mt-4 p-3 bg-light rounded" style="display: none;">
+                        <h5 class="mb-3"><i class="fas fa-balance-scale me-2"></i>Compare with Scenario</h5>
+                        <div class="input-group">
+                            <select class="form-select" id="scenarioSelect">
+                                <option value="" selected>Choose a scenario to compare...</option>
+                            </select>
+                            <button class="btn btn-info" type="button" onclick="compareWithScenario()"><i class="fas fa-exchange-alt me-2"></i>Compare</button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="mt-4">
+                        <h5 class="mb-3"><i class="fas fa-list-ul me-2"></i>Parsed Results</h5>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-parsed" id="parsedTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 60px;">Tag</th>
-                                        <th>Name</th>
-                                        <th style="width: 50px;">M/O</th>
-                                        <th style="width: 60px;">Len</th>
-                                        <th>Value</th>
-                                        <th style="width: 120px;">Status</th>
+                                        <th style="width: 5%;">Tag</th>
+                                        <th style="width: 20%;">Name</th>
+                                        <th style="width: 5%;">M/O</th>
+                                        <th style="width: 5%;">Len</th>
+                                        <th style="width: 35%;">Value</th>
+                                        <th style="width: 15%;">Validation</th>
+                                        <th style="width: 15%;">Comparison</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td colspan="6" class="text-center text-muted py-4">No data parsed yet.</td></tr>
+                                    <tr><td colspan="7" class="text-center text-muted py-4">No data parsed yet.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -124,11 +145,40 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let tagConfig = {};
+    let scenarios = [];
+    let lastParsedData = null;
+    let lastRawTlv = "";
+
+    // Define tags that are strictly static and MUST match the scenario exactly.
+    // 00: Payload Format Indicator
+    // 53: Transaction Currency (ETB)
+    // 58: Country Code (ET)
+    const staticTags = ['00', '53', '58'];
 
     window.onload = async () => {
         try {
-            const resp = await fetch('/api/qr/tags');
-            tagConfig = await resp.json();
+            const [tagsResp, scenariosResp] = await Promise.all([
+                fetch('/api/qr/tags'),
+                fetch('/api/qr/scenarios')
+            ]);
+            tagConfig = await tagsResp.json();
+            scenarios = await scenariosResp.json();
+
+            const select = document.getElementById('scenarioSelect');
+            scenarios.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.text = `${s.id}. ${s.name}`;
+                select.appendChild(opt);
+            });
+
+            const autoParseTlv = sessionStorage.getItem('autoParseTlv');
+            if (autoParseTlv) {
+                sessionStorage.removeItem('autoParseTlv');
+                document.getElementById('tlvInput').value = autoParseTlv;
+                parseQR();
+            }
+
         } catch (e) {
             showToast('Error loading configuration', 'danger');
         }
@@ -146,11 +196,23 @@
             </div>
         `;
         container.insertAdjacentHTML('beforeend', html);
-        const toast = new bootstrap.Toast(document.getElementById(id), { delay: 5000 });
+        const toastEl = document.getElementById(id);
+        const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
         toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
 
     function validateTagValue(tag, value, config) {
+        if (tag === '63' && lastRawTlv) {
+            const dataToHash = lastRawTlv.substring(0, lastRawTlv.length - 4);
+            const calc = calculateCRC(dataToHash);
+            if (calc.toUpperCase() === value.toUpperCase()) {
+                return { valid: true, msg: "Integrity OK" };
+            } else {
+                return { valid: false, msg: `Invalid Checksum (Calc: ${calc})` };
+            }
+        }
+
         if (!config) return { valid: true, msg: "Unknown tag" };
         if (config.dataType) {
             if (config.dataType === 'N' && !/^\d+$/.test(value)) return { valid: false, msg: "Must be Numeric" };
@@ -176,7 +238,10 @@
                 method: 'POST', headers: {'Content-Type': 'text/plain'}, body: tlv
             });
             if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
-            renderParsedTable(await resp.json());
+            const data = await resp.json();
+            lastParsedData = data;
+            lastRawTlv = tlv;
+            renderParsedTable(lastParsedData);
             showToast('Parsed successfully', 'success');
         } catch (e) { showToast(e.message, 'danger'); }
     }
@@ -212,7 +277,10 @@
             if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
             const data = await resp.json();
             document.getElementById('tlvInput').value = data.raw;
-            renderParsedTable(data.parsed);
+            document.getElementById('decodedTlvOutput').value = data.raw;
+            lastParsedData = data.parsed;
+            lastRawTlv = data.raw;
+            renderParsedTable(lastParsedData);
             showToast('Image parsed', 'success');
         } catch (e) { showToast(e.message, 'danger'); }
     }
@@ -227,36 +295,131 @@
             const img = document.getElementById('uploadedImagePreview');
             img.src = e.target.result;
             img.style.display = 'block';
+            document.getElementById('imagePlaceholder').style.display = 'none';
         };
         reader.readAsDataURL(blob);
     }
 
-    document.addEventListener('paste', async (e) => {
-        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].kind === 'file') {
-                const blob = items[i].getAsFile();
-                displayImagePreview(blob);
-                await parseImageBlob(blob);
-                e.preventDefault();
-                break;
+    function compareWithScenario() {
+        const scenarioId = document.getElementById('scenarioSelect').value;
+        if (!scenarioId || !lastParsedData) {
+            showToast('Please parse a QR code first and select a scenario.', 'warning');
+            return;
+        }
+        const scenario = scenarios.find(s => s.id == scenarioId);
+        if (scenario) {
+            // We calculate CRC just to show what the scenario *would* be, but we don't strictly compare it anymore
+            const scenarioTlv = generateScenarioTLV(scenario.data);
+            const calculatedCrc = calculateCRC(scenarioTlv.substring(0, scenarioTlv.length - 4));
+
+            const comparisonData = JSON.parse(JSON.stringify(scenario.data));
+            comparisonData.crc = calculatedCrc;
+
+            renderParsedTable(lastParsedData, comparisonData);
+            showToast(`Comparing with: ${scenario.name}`, 'info');
+        }
+    }
+
+    function generateScenarioTLV(scenarioData) {
+        let tlv = "";
+        const sortedKeys = Object.keys(tagConfig).sort((a, b) => parseInt(a) - parseInt(b));
+
+        for (const tag of sortedKeys) {
+            if (tag === '63') continue;
+
+            const config = tagConfig[tag];
+            const val = getExpectedValue(tag, config, scenarioData);
+
+            if (val === undefined || val === null || val === "") continue;
+
+            let stringVal = "";
+
+            if (typeof val === 'object') {
+                if (config.delimiter) {
+                    if (config.subTags) {
+                        const parts = config.subTags.map(st => val[st.tag] || "");
+                        let delim = config.delimiter;
+                        if(delim === '\\|') delim = '|';
+                        stringVal = parts.join(delim);
+                    }
+                } else {
+                    const subKeys = Object.keys(val).sort((a,b) => parseInt(a)-parseInt(b));
+                    for(const st of subKeys) {
+                        const sv = val[st];
+                        if(sv) {
+                            stringVal += st + sv.length.toString().padStart(2, '0') + sv;
+                        }
+                    }
+                }
+            } else {
+                stringVal = String(val);
+            }
+
+            if(stringVal) {
+                tlv += tag + stringVal.length.toString().padStart(2, '0') + stringVal;
             }
         }
-    });
 
-    function renderParsedTable(data) {
+        tlv += "6304";
+        return tlv;
+    }
+
+    function calculateCRC(str) {
+        let crc = 0xFFFF;
+        const polynomial = 0x1021;
+        const bytes = [];
+        for (let i = 0; i < str.length; i++) {
+            let code = str.charCodeAt(i);
+            if (code < 0x80) bytes.push(code);
+            else if (code < 0x800) bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
+            else if (code < 0xd800 || code >= 0xe000) bytes.push(0xe0 | (code >> 12), 0x80 | ((code >> 6) & 0x3f), 0x80 | (code & 0x3f));
+            else {
+                i++;
+                code = 0x10000 + (((code & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+                bytes.push(0xf0 | (code >> 18), 0x80 | ((code >> 12) & 0x3f), 0x80 | ((code >> 6) & 0x3f), 0x80 | (code & 0x3f));
+            }
+        }
+
+        for (let b of bytes) {
+            for (let j = 0; j < 8; j++) {
+                const bit = ((b >> (7 - j) & 1) === 1);
+                const c15 = ((crc >> 15 & 1) === 1);
+                crc <<= 1;
+                if (c15 ^ bit) crc ^= polynomial;
+            }
+        }
+        crc &= 0xFFFF;
+        return crc.toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    function getExpectedValue(tag, config, comparisonData) {
+        if (!config || !comparisonData) return undefined;
+        const field = config.dataField;
+        if (!field) return undefined;
+
+        if (tag === '63') return comparisonData.crc;
+
+        if (config.container) {
+            return comparisonData[field] ? comparisonData[field][tag] : undefined;
+        } else if (field === 'unreservedTemplates') {
+            return comparisonData[field] ? comparisonData[field][tag] : undefined;
+        } else {
+            return comparisonData[field];
+        }
+    }
+
+    function renderParsedTable(data, comparisonData = null) {
         const tbody = document.querySelector('#parsedTable tbody');
         tbody.innerHTML = '';
-        document.getElementById('missingTagsContainer').innerHTML = '';
+        const missingContainer = document.getElementById('missingTagsContainer');
+        missingContainer.innerHTML = '';
+        document.getElementById('comparisonSection').style.display = 'block';
 
         if (Object.keys(data).length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">No data found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No data found.</td></tr>';
             return;
         }
         const sortedKeys = Object.keys(data).sort((a, b) => parseInt(a) - parseInt(b));
-
-        // Track present tags
-        const presentTags = new Set(sortedKeys);
 
         for (const tag of sortedKeys) {
             const val = data[tag];
@@ -264,20 +427,30 @@
             const name = config ? config.name : 'Unknown';
             const mo = (config && config.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
 
+            let comparisonHtml = '';
+            let expectedVal = undefined;
+
+            if (comparisonData) {
+                expectedVal = getExpectedValue(tag, config, comparisonData);
+            }
+
             if (typeof val === 'object' && val !== null) {
+                if (comparisonData && expectedVal === undefined) {
+                     comparisonHtml = '<span class="badge bg-info text-dark">Extra Tag</span>';
+                }
+
                 const row = document.createElement('tr');
-                row.innerHTML = `<td class="tag-id">${tag}</td><td><strong>${name}</strong></td><td>${mo}</td><td>-</td><td class="text-muted">Sub-tags container</td><td><span class="badge bg-secondary">Container</span></td>`;
+                row.innerHTML = `<td class="tag-id">${tag}</td><td><strong>${name}</strong></td><td>${mo}</td><td>-</td><td class="text-muted">Sub-tags container</td><td><span class="badge bg-secondary">Container</span></td><td>${comparisonHtml}</td>`;
                 tbody.appendChild(row);
 
                 const subRow = document.createElement('tr');
                 subRow.className = 'sub-row';
                 const subTd = document.createElement('td');
-                subTd.colSpan = 6;
+                subTd.colSpan = 7;
                 const subTable = document.createElement('table');
                 subTable.className = 'table table-sm nested-table';
 
                 const sortedSubKeys = Object.keys(val).sort();
-                const presentSubTags = new Set(sortedSubKeys);
 
                 sortedSubKeys.forEach(subTag => {
                     const subVal = val[subTag];
@@ -287,6 +460,27 @@
                     const validation = validateTagValue(subTag, subVal, subConfig);
                     const icon = validation.valid ? '<i class="fas fa-check-circle status-valid"></i>' : '<i class="fas fa-times-circle status-invalid"></i>';
 
+                    let subComparisonHtml = '';
+                    if (comparisonData && expectedVal) {
+                        const expectedSub = expectedVal[subTag];
+
+                        // Check if strictly static
+                        const isStatic = staticTags.includes(tag); // Sub-tags inherit parent's static nature usually, or if specified.
+                        // Actually, for Tag 28, sub-tags are dynamic. For Tag 62, dynamic.
+                        // So usually container contents are dynamic.
+
+                        if (expectedSub === undefined) {
+                            subComparisonHtml = '<span class="badge bg-info text-dark">Extra Sub-Tag</span>';
+                        } else if (String(expectedSub) === String(subVal)) {
+                            subComparisonHtml = '<span class="badge bg-success">Match</span>';
+                        } else if (!isStatic) {
+                            // Default to dynamic for sub-tags unless parent is in staticTags list
+                            subComparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${expectedSub}</span>`;
+                        } else {
+                            subComparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${expectedSub}</span>`;
+                        }
+                    }
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="width: 40px;" class="tag-id ps-4">${subTag}</td>
@@ -295,25 +489,30 @@
                         <td style="width: 50px;">${subVal.length}</td>
                         <td class="text-break font-monospace small">${subVal}</td>
                         <td style="width: 140px;">${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
+                        <td>${subComparisonHtml}</td>
                     `;
                     subTable.appendChild(tr);
                 });
 
-                // Check for missing mandatory sub-tags
-                if(config && config.subTags) {
-                    config.subTags.forEach(st => {
-                        if(st.mandatory && !presentSubTags.has(st.tag)) {
-                            const tr = document.createElement('tr');
-                            tr.className = 'missing-tag-row';
-                            tr.innerHTML = `
-                                <td style="width: 40px;" class="tag-id ps-4 text-danger">${st.tag}</td>
-                                <td style="width: 180px;">${st.name}</td>
-                                <td style="width: 40px;"><span class="badge badge-mandatory">M</span></td>
-                                <td colspan="3" class="text-danger small"><i class="fas fa-exclamation-triangle me-1"></i> Missing Mandatory Sub-Tag</td>
-                            `;
-                            subTable.appendChild(tr);
+                if (comparisonData && expectedVal && typeof expectedVal === 'object') {
+                    for (const [expSubTag, expSubVal] of Object.entries(expectedVal)) {
+                        if (!val.hasOwnProperty(expSubTag)) {
+                             const subConfig = config && config.subTags ? config.subTags.find(s => s.tag === expSubTag) : null;
+                             const expSubName = subConfig ? subConfig.name : 'Unknown';
+                             const tr = document.createElement('tr');
+                             tr.className = 'comparison-missing-row';
+                             tr.innerHTML = `
+                                <td style="width: 40px;" class="tag-id ps-4">${expSubTag}</td>
+                                <td style="width: 180px;">${expSubName}</td>
+                                <td style="width: 40px;">-</td>
+                                <td>-</td>
+                                <td class="text-muted small">Missing (Exp: ${expSubVal})</td>
+                                <td></td>
+                                <td><span class="badge bg-danger">Missing</span></td>
+                             `;
+                             subTable.appendChild(tr);
                         }
-                    });
+                    }
                 }
 
                 subTd.appendChild(subTable);
@@ -322,7 +521,35 @@
             } else {
                 const validation = validateTagValue(tag, val, config);
                 const icon = validation.valid ? '<i class="fas fa-check-circle status-valid"></i>' : '<i class="fas fa-times-circle status-invalid"></i>';
+
+                if (comparisonData) {
+                    // CRC Special Case
+                    if (tag === '63') {
+                        // For CRC, if validation passed, we consider it a Match/Valid in comparison too
+                        if (validation.valid) {
+                            comparisonHtml = '<span class="badge bg-success">Valid</span>';
+                        } else {
+                            comparisonHtml = `<span class="badge bg-danger">Invalid</span>`;
+                        }
+                    } else {
+                        if (expectedVal === undefined) {
+                            comparisonHtml = '<span class="badge bg-info text-dark">Extra Tag</span>';
+                        } else if (String(expectedVal) === String(val)) {
+                            comparisonHtml = '<span class="badge bg-success">Match</span>';
+                        } else if (!staticTags.includes(tag)) {
+                            // If NOT strictly static, assume dynamic
+                            comparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${expectedVal}</span>`;
+                        } else {
+                            comparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${expectedVal}</span>`;
+                        }
+                    }
+                }
+
                 const row = document.createElement('tr');
+                if (comparisonData && expectedVal !== undefined && String(expectedVal) !== String(val) && staticTags.includes(tag) && tag !== '63') {
+                    row.className = 'comparison-mismatch-row';
+                }
+
                 row.innerHTML = `
                     <td class="tag-id">${tag}</td>
                     <td>${name}</td>
@@ -330,29 +557,39 @@
                     <td>${val.length}</td>
                     <td class="text-break font-monospace small">${val}</td>
                     <td>${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
+                    <td>${comparisonHtml}</td>
                 `;
                 tbody.appendChild(row);
             }
         }
 
-        // Check for Missing Mandatory Root Tags
-        const missingContainer = document.getElementById('missingTagsContainer');
-        const missingTags = [];
-        for(const [t, conf] of Object.entries(tagConfig)) {
-            if(conf.mandatory && !presentTags.has(t)) {
-                missingTags.push(`${t} - ${conf.name}`);
+        if (comparisonData) {
+            const missingList = [];
+            for (const [tag, config] of Object.entries(tagConfig)) {
+                const expVal = getExpectedValue(tag, config, comparisonData);
+                // Don't flag CRC as missing if it's there (handled in loop) or if we just want to ignore strict checks
+                if (expVal !== undefined && !data.hasOwnProperty(tag)) {
+                    missingList.push({ tag, name: config.name, exp: expVal });
+                }
             }
-        }
 
-        if(missingTags.length > 0) {
-            missingContainer.innerHTML = `
-                <div class="alert alert-danger">
-                    <h6 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Missing Mandatory Tags</h6>
-                    <ul class="mb-0 small">
-                        ${missingTags.map(mt => `<li>${mt}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
+            if (missingList.length > 0) {
+                const missingHtml = missingList.map(item => {
+                    const expStr = (typeof item.exp === 'object') ? 'Container' : item.exp;
+                    return `
+                        <tr class="comparison-missing-row">
+                            <td class="tag-id">${item.tag}</td>
+                            <td>${item.name}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td class="text-muted small">Missing from QR (Expected: ${expStr})</td>
+                            <td></td>
+                            <td><span class="badge bg-danger">Missing</span></td>
+                        </tr>
+                    `;
+                }).join('');
+                tbody.insertAdjacentHTML('beforeend', missingHtml);
+            }
         }
     }
 </script>

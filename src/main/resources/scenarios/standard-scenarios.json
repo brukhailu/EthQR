@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "1 Standard QR (mandatory only)",
+    "name": "Standard QR (mandatory only)",
     "desc": "Contains only mandatory fields as per the specification.",
     "data": {
       "payloadFormatIndicator": "01",
@@ -24,7 +24,7 @@
   },
   {
     "id": 2,
-    "name": "2 Standard QR with Amount",
+    "name": "Standard QR with Amount",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -47,7 +47,7 @@
   },
   {
     "id": 3,
-    "name": "3 Standard QR with Amount, and Tip Amount Prompted",
+    "name": "Standard QR with Amount, and Tip Amount Prompted",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -71,7 +71,7 @@
   },
   {
     "id": 4,
-    "name": "4 Standard QR with Amount, and Fixed Tip Amount",
+    "name": "Standard QR with Amount, and Fixed Tip Amount",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -96,7 +96,7 @@
   },
   {
     "id": 5,
-    "name": "5 Standard QR with Amount, and %age Tip",
+    "name": "Standard QR with Amount, and %age Tip",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -121,7 +121,7 @@
   },
   {
     "id": 6,
-    "name": "6 Standard QR without Amount",
+    "name": "Standard QR without Amount",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -143,7 +143,7 @@
   },
   {
     "id": 7,
-    "name": "7 Standard QR without Amount, and Tip Amount Prompted",
+    "name": "Standard QR without Amount, and Tip Amount Prompted",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -166,7 +166,7 @@
   },
   {
     "id": 8,
-    "name": "8 Standard QR without Amount, and Fixed Tip Amount",
+    "name": "Standard QR without Amount, and Fixed Tip Amount",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -190,7 +190,7 @@
   },
   {
     "id": 9,
-    "name": "9 Standard QR without Amount, and %age Tip",
+    "name": "Standard QR without Amount, and %age Tip",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -214,7 +214,7 @@
   },
   {
     "id": 10,
-    "name": "10 Standard QR with Bill Number",
+    "name": "Standard QR with Bill Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -236,7 +236,7 @@
   },
   {
     "id": 11,
-    "name": "11 Standard QR with Mobile Number",
+    "name": "Standard QR with Mobile Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -258,7 +258,7 @@
   },
   {
     "id": 12,
-    "name": "12 Standard QR with Merchants Store Label",
+    "name": "Standard QR with Merchants Store Label",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -280,7 +280,7 @@
   },
   {
     "id": 13,
-    "name": "13 Standard QR with Loyalty Number",
+    "name": "Standard QR with Loyalty Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -302,7 +302,7 @@
   },
   {
     "id": 14,
-    "name": "14 Standard QR with Counter Id/ Till Id",
+    "name": "Standard QR with Counter Id/ Till Id",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -324,7 +324,7 @@
   },
   {
     "id": 15,
-    "name": "15 Standard QR with Transaction Purpose",
+    "name": "Standard QR with Transaction Purpose",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -346,7 +346,7 @@
   },
   {
     "id": 16,
-    "name": "16 Standard QR with amount - with request for Customer Address, Email and Mobile",
+    "name": "Standard QR with amount - with request for Customer Address, Email and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -369,7 +369,7 @@
   },
   {
     "id": 17,
-    "name": "17 Standard QR with amount - with request for Customer Address",
+    "name": "Standard QR with amount - with request for Customer Address",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -392,7 +392,7 @@
   },
   {
     "id": 18,
-    "name": "18 Standard QR with amount - with request for Customer Email",
+    "name": "Standard QR with amount - with request for Customer Email",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -415,7 +415,7 @@
   },
   {
     "id": 19,
-    "name": "19 Standard QR with amount - with request for Customer Mobile",
+    "name": "Standard QR with amount - with request for Customer Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -438,7 +438,7 @@
   },
   {
     "id": 20,
-    "name": "20 Standard QR with amount - with request for Customer Address and Mobile",
+    "name": "Standard QR with amount - with request for Customer Address and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -461,7 +461,7 @@
   },
   {
     "id": 21,
-    "name": "21 Standard QR with amount - with request for Customer Email and Mobile",
+    "name": "Standard QR with amount - with request for Customer Email and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -484,7 +484,7 @@
   },
   {
     "id": 22,
-    "name": "22 Standard QR with amount - with request for Customer Address and Email",
+    "name": "Standard QR with amount - with request for Customer Address and Email",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -507,7 +507,7 @@
   },
   {
     "id": 23,
-    "name": "23 Standard QR with Merchant Tax ID",
+    "name": "Standard QR with Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -529,7 +529,7 @@
   },
   {
     "id": 24,
-    "name": "24 Standard QR with Merchant Channel",
+    "name": "Standard QR with Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -551,7 +551,7 @@
   },
   {
     "id": 25,
-    "name": "25 Standard QR with Context of Transaction",
+    "name": "Standard QR with Context of Transaction",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -574,7 +574,7 @@
   },
   {
     "id": 26,
-    "name": "26 Dynamic QR with UETR",
+    "name": "Dynamic QR with UETR",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "12",
@@ -598,7 +598,7 @@
   },
   {
     "id": 27,
-    "name": "27 Dynamic QR with TTC",
+    "name": "Dynamic QR with TTC",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "12",
@@ -625,7 +625,7 @@
   },
   {
     "id": 28,
-    "name": "28 Standard QR without amount, with request for Customer Address, Email and Mobile",
+    "name": "Standard QR without amount, with request for Customer Address, Email and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -647,7 +647,7 @@
   },
   {
     "id": 29,
-    "name": "29 Standard QR without amount - with request for Customer Address",
+    "name": "Standard QR without amount - with request for Customer Address",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -669,7 +669,7 @@
   },
   {
     "id": 30,
-    "name": "30 Standard QR without amount - with request for Customer Email",
+    "name": "Standard QR without amount - with request for Customer Email",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -691,7 +691,7 @@
   },
   {
     "id": 31,
-    "name": "31 Standard QR without amount - with request for Customer Mobile",
+    "name": "Standard QR without amount - with request for Customer Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -713,7 +713,7 @@
   },
   {
     "id": 32,
-    "name": "32 Standard QR without amount - with request for Customer Address and Mobile",
+    "name": "Standard QR without amount - with request for Customer Address and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -735,7 +735,7 @@
   },
   {
     "id": 33,
-    "name": "33 Standard QR without amount - with request for Customer Email and Mobile",
+    "name": "Standard QR without amount - with request for Customer Email and Mobile",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -757,7 +757,7 @@
   },
   {
     "id": 34,
-    "name": "34 Standard QR without amount - with request for Customer Address and Email",
+    "name": "Standard QR without amount - with request for Customer Address and Email",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -779,7 +779,7 @@
   },
   {
     "id": 35,
-    "name": "35 Standard QR with Amount and Bill Number",
+    "name": "Standard QR with Amount and Bill Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -802,7 +802,7 @@
   },
   {
     "id": 36,
-    "name": "36 Standard QR with Amount and Mobile Number",
+    "name": "Standard QR with Amount and Mobile Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -825,7 +825,7 @@
   },
   {
     "id": 37,
-    "name": "37 Standard QR with Amount and Merchants Store Label",
+    "name": "Standard QR with Amount and Merchants Store Label",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -848,7 +848,7 @@
   },
   {
     "id": 38,
-    "name": "38 Standard QR with Amount and Loyalty Number",
+    "name": "Standard QR with Amount and Loyalty Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -871,7 +871,7 @@
   },
   {
     "id": 39,
-    "name": "39 Standard QR with Amount and Counter Id/ Till Id",
+    "name": "Standard QR with Amount and Counter Id/ Till Id",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -894,7 +894,7 @@
   },
   {
     "id": 40,
-    "name": "40 Standard QR with Amount and Transaction Purpose",
+    "name": "Standard QR with Amount and Transaction Purpose",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -917,7 +917,7 @@
   },
   {
     "id": 41,
-    "name": "41 Standard QR with Amount and Merchant Tax ID",
+    "name": "Standard QR with Amount and Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -940,7 +940,7 @@
   },
   {
     "id": 42,
-    "name": "42 Standard QR with Amount and Merchant Channel",
+    "name": "Standard QR with Amount and Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -963,7 +963,7 @@
   },
   {
     "id": 43,
-    "name": "43 Standard QR with Tip Prompted to Customer, Bill Number",
+    "name": "Standard QR with Tip Prompted to Customer, Bill Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -986,7 +986,7 @@
   },
   {
     "id": 44,
-    "name": "44 Standard QR with Tip Prompted to Customer, Mobile Number",
+    "name": "Standard QR with Tip Prompted to Customer, Mobile Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1009,7 +1009,7 @@
   },
   {
     "id": 45,
-    "name": "45 Standard QR with Tip Prompted to Customer, Store Label",
+    "name": "Standard QR with Tip Prompted to Customer, Store Label",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1032,7 +1032,7 @@
   },
   {
     "id": 46,
-    "name": "46 Standard QR with Tip Prompted to Customer, Loyalty Number",
+    "name": "Standard QR with Tip Prompted to Customer, Loyalty Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1055,7 +1055,7 @@
   },
   {
     "id": 47,
-    "name": "47 Standard QR with Tip Prompted to Customer, Terminal ID",
+    "name": "Standard QR with Tip Prompted to Customer, Terminal ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1078,7 +1078,7 @@
   },
   {
     "id": 48,
-    "name": "48 Standard QR with Tip Prompted to Customer, Transaction Purpose",
+    "name": "Standard QR with Tip Prompted to Customer, Transaction Purpose",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1101,7 +1101,7 @@
   },
   {
     "id": 49,
-    "name": "49 Standard QR with Tip Prompted to Customer, Additional Consumer Data Request",
+    "name": "Standard QR with Tip Prompted to Customer, Additional Consumer Data Request",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1124,7 +1124,7 @@
   },
   {
     "id": 50,
-    "name": "50 Standard QR with Tip Prompted to Customer, Merchant Tax ID",
+    "name": "Standard QR with Tip Prompted to Customer, Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1147,7 +1147,7 @@
   },
   {
     "id": 51,
-    "name": "51 Standard QR with Tip Prompted to Customer, Merchant Channel",
+    "name": "Standard QR with Tip Prompted to Customer, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1170,7 +1170,7 @@
   },
   {
     "id": 52,
-    "name": "52 Standard QR with Fixed Tip Amount, Bill Number",
+    "name": "Standard QR with Fixed Tip Amount, Bill Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1194,7 +1194,7 @@
   },
   {
     "id": 53,
-    "name": "53 Standard QR with Fixed Tip Amount, Mobile Number",
+    "name": "Standard QR with Fixed Tip Amount, Mobile Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1218,7 +1218,7 @@
   },
   {
     "id": 54,
-    "name": "54 Standard QR with Fixed Tip Amount, Store Label",
+    "name": "Standard QR with Fixed Tip Amount, Store Label",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1242,7 +1242,7 @@
   },
   {
     "id": 55,
-    "name": "55 Standard QR with Fixed Tip Amount, Loyalty Number",
+    "name": "Standard QR with Fixed Tip Amount, Loyalty Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1266,7 +1266,7 @@
   },
   {
     "id": 56,
-    "name": "56 Standard QR with Fixed Tip Amount, Terminal ID",
+    "name": "Standard QR with Fixed Tip Amount, Terminal ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1290,7 +1290,7 @@
   },
   {
     "id": 57,
-    "name": "57 Standard QR with Fixed Tip Amount, Transaction Purpose",
+    "name": "Standard QR with Fixed Tip Amount, Transaction Purpose",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1314,7 +1314,7 @@
   },
   {
     "id": 58,
-    "name": "58 Standard QR with Fixed Tip Amount, Additional Consumer Data Request",
+    "name": "Standard QR with Fixed Tip Amount, Additional Consumer Data Request",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1338,7 +1338,7 @@
   },
   {
     "id": 59,
-    "name": "59 Standard QR with Fixed Tip Amount, Merchant Tax ID",
+    "name": "Standard QR with Fixed Tip Amount, Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1362,7 +1362,7 @@
   },
   {
     "id": 60,
-    "name": "60 Standard QR with Fixed Tip Amount, Merchant Channel",
+    "name": "Standard QR with Fixed Tip Amount, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1386,7 +1386,7 @@
   },
   {
     "id": 61,
-    "name": "61 Standard QR with %age Tip, Bill Number",
+    "name": "Standard QR with %age Tip, Bill Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1410,7 +1410,7 @@
   },
   {
     "id": 62,
-    "name": "62 Standard QR with %age Tip, Mobile Number",
+    "name": "Standard QR with %age Tip, Mobile Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1434,7 +1434,7 @@
   },
   {
     "id": 63,
-    "name": "63 Standard QR with %age Tip, Store Label",
+    "name": "Standard QR with %age Tip, Store Label",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1458,7 +1458,7 @@
   },
   {
     "id": 64,
-    "name": "64 Standard QR with %age Tip, Loyalty Number",
+    "name": "Standard QR with %age Tip, Loyalty Number",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1482,7 +1482,7 @@
   },
   {
     "id": 65,
-    "name": "65 Standard QR with %age Tip, Terminal ID",
+    "name": "Standard QR with %age Tip, Terminal ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1506,7 +1506,7 @@
   },
   {
     "id": 66,
-    "name": "66 Standard QR with %age Tip, Transaction Purpose",
+    "name": "Standard QR with %age Tip, Transaction Purpose",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1530,7 +1530,7 @@
   },
   {
     "id": 67,
-    "name": "67 Standard QR with %age Tip, Additional Consumer Data Request",
+    "name": "Standard QR with %age Tip, Additional Consumer Data Request",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1554,7 +1554,7 @@
   },
   {
     "id": 68,
-    "name": "68 Standard QR with %age Tip, Merchant Tax ID",
+    "name": "Standard QR with %age Tip, Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1578,7 +1578,7 @@
   },
   {
     "id": 69,
-    "name": "69 Standard QR with %age Tip, Merchant Channel",
+    "name": "Standard QR with %age Tip, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1602,7 +1602,7 @@
   },
   {
     "id": 70,
-    "name": "70 Complex Scenario 1 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Tax ID",
+    "name": "Complex Scenario 1 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1627,7 +1627,7 @@
   },
   {
     "id": 71,
-    "name": "71 Complex Scenario 2 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Channel",
+    "name": "Complex Scenario 2 - Amount, %age Tip, Mobile, Store, Purpose, Mobile Request, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1652,7 +1652,7 @@
   },
   {
     "id": 72,
-    "name": "72 Standard QR with Amount, %age Tip, Mobile Number, Store Label, Transaction Purpose, Merchant Tax ID, Merchant Channel",
+    "name": "Standard QR with Amount, %age Tip, Mobile Number, Store Label, Transaction Purpose, Merchant Tax ID, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1677,7 +1677,7 @@
   },
   {
     "id": 73,
-    "name": "73 Standard QR with Amount, %age Tip, Mobile Number, Store Label, Additional Consumer Data Request, Merchant Tax ID, Merchant Channel",
+    "name": "Standard QR with Amount, %age Tip, Mobile Number, Store Label, Additional Consumer Data Request, Merchant Tax ID, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1702,7 +1702,7 @@
   },
   {
     "id": 74,
-    "name": "74 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1725,7 +1725,7 @@
   },
   {
     "id": 75,
-    "name": "75 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1748,7 +1748,7 @@
   },
   {
     "id": 76,
-    "name": "76 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Channel",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1771,7 +1771,7 @@
   },
   {
     "id": 77,
-    "name": "77 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1794,7 +1794,7 @@
   },
   {
     "id": 78,
-    "name": "78 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Channel",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1817,7 +1817,7 @@
   },
   {
     "id": 79,
-    "name": "79 Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Merchant Tax ID, Merchant Channel",
+    "name": "Standard QR with Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Merchant Tax ID, Merchant Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1840,7 +1840,7 @@
   },
   {
     "id": 80,
-    "name": "80 Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1865,7 +1865,7 @@
   },
   {
     "id": 81,
-    "name": "81 Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Fixed Tip, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1890,7 +1890,7 @@
   },
   {
     "id": 82,
-    "name": "82 Standard QR with Amount, Fixed Tip, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Fixed Tip, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1915,7 +1915,7 @@
   },
   {
     "id": 83,
-    "name": "83 Standard QR with Amount, Fixed Tip, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Fixed Tip, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1940,7 +1940,7 @@
   },
   {
     "id": 84,
-    "name": "84 Standard QR with Amount, Fixed Tip, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Fixed Tip, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1965,7 +1965,7 @@
   },
   {
     "id": 85,
-    "name": "85 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "name": "Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -1989,7 +1989,7 @@
   },
   {
     "id": 86,
-    "name": "86 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "name": "Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2013,7 +2013,7 @@
   },
   {
     "id": 87,
-    "name": "87 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "name": "Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2037,7 +2037,7 @@
   },
   {
     "id": 88,
-    "name": "88 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2061,7 +2061,7 @@
   },
   {
     "id": 89,
-    "name": "89 Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Fixed Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2085,7 +2085,7 @@
   },
   {
     "id": 90,
-    "name": "90 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "name": "Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2109,7 +2109,7 @@
   },
   {
     "id": 91,
-    "name": "91 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "name": "Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2133,7 +2133,7 @@
   },
   {
     "id": 92,
-    "name": "92 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "name": "Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2157,7 +2157,7 @@
   },
   {
     "id": 93,
-    "name": "93 Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2181,7 +2181,7 @@
   },
   {
     "id": 94,
-    "name": "94 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2205,7 +2205,7 @@
   },
   {
     "id": 95,
-    "name": "95 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2229,7 +2229,7 @@
   },
   {
     "id": 96,
-    "name": "96 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2253,7 +2253,7 @@
   },
   {
     "id": 97,
-    "name": "97 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2277,7 +2277,7 @@
   },
   {
     "id": 98,
-    "name": "98 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2301,7 +2301,7 @@
   },
   {
     "id": 99,
-    "name": "99 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2325,7 +2325,7 @@
   },
   {
     "id": 100,
-    "name": "100 Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Mobile, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2349,7 +2349,7 @@
   },
   {
     "id": 101,
-    "name": "101 Standard QR with Amount, Tip Prompted, Bill Number, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Bill Number, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2373,7 +2373,7 @@
   },
   {
     "id": 102,
-    "name": "102 Standard QR with Amount, Tip Prompted, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, Tip Prompted, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2397,7 +2397,7 @@
   },
   {
     "id": 103,
-    "name": "103 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Tax ID",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2422,7 +2422,7 @@
   },
   {
     "id": 104,
-    "name": "104 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Consumer Data Request, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2447,7 +2447,7 @@
   },
   {
     "id": 105,
-    "name": "105 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Purpose, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2472,7 +2472,7 @@
   },
   {
     "id": 106,
-    "name": "106 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Terminal, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2497,7 +2497,7 @@
   },
   {
     "id": 107,
-    "name": "107 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Loyalty, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",
@@ -2522,7 +2522,7 @@
   },
   {
     "id": 108,
-    "name": "108 Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
+    "name": "Standard QR with Amount, %age Tip, Bill Number, Mobile, Store, Terminal, Purpose, Consumer Data Request, Merchant Tax ID, Channel",
     "data": {
       "payloadFormatIndicator": "01",
       "pointOfInitiationMethod": "11",

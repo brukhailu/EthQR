@@ -44,8 +44,6 @@ public class QRService {
     }
 
     public String generateTLV(QRCodeData data) {
-        // validate(data); // Removed old hardcoded validation in favor of config-driven validation
-
         Map<String, String> tlvMap = new TreeMap<>();
         
         // Tag 00: Payload Format Indicator
@@ -67,9 +65,7 @@ public class QRService {
             });
         }
         
-        // Check for missing mandatory Merchant Account Information if specified in config (e.g. Tag 28)
-        // Note: Since MAI is dynamic, we can't easily check "all" mandatory MAI tags unless we iterate config.
-        // But for Tag 28 specifically:
+        // Tag 28 Mandatory Check
         TLVTag tag28Config = tlvTags.get("28");
         if(tag28Config != null && tag28Config.isMandatory()) {
              if(data.getMerchantAccountInformation() == null || !data.getMerchantAccountInformation().containsKey("28")) {
@@ -121,13 +117,9 @@ public class QRService {
 
         // Tag 62: Additional Data Field Template
         if (data.getAdditionalDataField() != null && !data.getAdditionalDataField().isEmpty()) {
-            // We need to validate the container logic if needed, but sub-tags are validated in buildSubTLV if we pass config?
-            // Actually buildSubTLV takes a map. We should validate entries first.
             TLVTag tag62Config = tlvTags.get("62");
             validateSubTags(data.getAdditionalDataField(), tag62Config);
             addTLV(tlvMap, "62", buildSubTLV(data.getAdditionalDataField()));
-        } else if (tlvTags.get("62") != null && tlvTags.get("62").isMandatory()) {
-             throw new IllegalArgumentException("Mandatory Tag 62 is missing.");
         }
 
         // Tag 64: Merchant Information - Language Template
@@ -137,10 +129,35 @@ public class QRService {
             addTLV(tlvMap, "64", buildSubTLV(data.getMerchantInformationLanguageTemplate()));
         }
 
-        // Tags 80-99: Unreserved Templates
+        // Tag 80: Context of Transaction
+        TLVTag tag80Config = tlvTags.get("80");
+        addIfPresent(tlvMap, "80", processAndValidate(data.getContextOfTransaction(), tag80Config));
+
+        // Tag 81: Discounts & Loyalty Programs
+        TLVTag tag81Config = tlvTags.get("81");
+        addIfPresent(tlvMap, "81", processAndValidate(data.getDiscountsAndLoyalty(), tag81Config));
+
+        // Tag 82: Offline to Online
+        TLVTag tag82Config = tlvTags.get("82");
+        addIfPresent(tlvMap, "82", processAndValidate(data.getOfflineToOnline(), tag82Config));
+
+        // Tag 83: E-Commerce
+        TLVTag tag83Config = tlvTags.get("83");
+        addIfPresent(tlvMap, "83", processAndValidate(data.getEcommerce(), tag83Config));
+
+        // Tag 84: UETR
+        TLVTag tag84Config = tlvTags.get("84");
+        addIfPresent(tlvMap, "84", processAndValidate(data.getUetr(), tag84Config));
+
+        // Tag 85: Transaction Type Code
+        TLVTag tag85Config = tlvTags.get("85");
+        addIfPresent(tlvMap, "85", processAndValidate(data.getTransactionTypeCode(), tag85Config));
+
+        // Unreserved Templates (Any other tag in range 80-99 handled generically if not specific)
         if (data.getUnreservedTemplates() != null) {
             data.getUnreservedTemplates().forEach((tag, subTags) -> {
-                if (tlvTags.containsKey(tag)) {
+                // Skip if we already handled it explicitly above (e.g. 80-85)
+                if(!tlvMap.containsKey(tag) && tlvTags.containsKey(tag)) {
                     TLVTag config = tlvTags.get(tag);
                     validateSubTags(subTags, config);
                     addTLV(tlvMap, tag, buildSubTLV(subTags));
@@ -163,30 +180,33 @@ public class QRService {
     private String processAndValidate(String value, TLVTag config) {
         if (config == null) return value;
 
-        // Mandatory check
         if ((value == null || value.isEmpty())) {
             if (config.isMandatory()) {
                 throw new IllegalArgumentException(String.format("Mandatory field '%s' (Tag %s) is missing.", config.getName(), config.getTag()));
             }
-            return null; // Skip if optional and empty
+            return null;
+        }
+        
+        if (!config.isSubTLV()) {
+             validateField(value, config);
         }
 
-        validateField(value, config);
-
-        // Sub-TLV processing (splitting by delimiter if applicable)
-        if (config.isSubTLV() && config.getDelimiter() != null && value.contains(config.getDelimiter())) {
-            String[] parts = value.split(config.getDelimiter());
+        if (config.isSubTLV() && config.getDelimiter() != null) {
+            // Correctly split using quoted delimiter to handle special characters like pipe
+            String[] parts = value.split(Pattern.quote(config.getDelimiter()), -1);
             Map<String, String> subTags = new TreeMap<>();
+            
             if (config.getSubTags() != null) {
-                for (int i = 0; i < parts.length && i < config.getSubTags().size(); i++) {
-                    String subValue = parts[i];
+                for (int i = 0; i < config.getSubTags().size(); i++) {
                     TLVTag subConfig = config.getSubTags().get(i);
+                    // Use empty string if part is missing
+                    String subValue = (i < parts.length) ? parts[i] : "";
                     
-                    // Validate individual sub-tag value
-                    if(subValue.isEmpty() && subConfig.isMandatory()) {
-                         throw new IllegalArgumentException(String.format("Mandatory sub-tag '%s' (Tag %s) in '%s' is missing.", subConfig.getName(), subConfig.getTag(), config.getName()));
-                    }
-                    if(!subValue.isEmpty()) {
+                    if(subValue.isEmpty()) {
+                         if(subConfig.isMandatory()) {
+                             throw new IllegalArgumentException(String.format("Mandatory sub-tag '%s' (Tag %s) in '%s' is missing or empty.", subConfig.getName(), subConfig.getTag(), config.getName()));
+                         }
+                    } else {
                         validateField(subValue, subConfig);
                         subTags.put(subConfig.getTag(), subValue);
                     }
@@ -216,22 +236,18 @@ public class QRService {
     private void validateField(String value, TLVTag config) {
         if (value == null) return;
 
-        // Data Type Validation
         if (config.getDataType() != null) {
             switch (config.getDataType()) {
-                case "N": // Numeric
+                case "N": 
                     if (!value.matches("^\\d+$")) {
                         throw new IllegalArgumentException(String.format("Field '%s' (Tag %s) must be numeric. Found: '%s'", config.getName(), config.getTag(), value));
                     }
                     break;
-                case "A": // Alphabetic
+                case "A": 
                     if (!value.matches("^[a-zA-Z\\s]+$")) {
                         throw new IllegalArgumentException(String.format("Field '%s' (Tag %s) must be alphabetic. Found: '%s'", config.getName(), config.getTag(), value));
                     }
                     break;
-                case "ANS": // Alphanumeric Special
-                    // Basic check, can be refined based on specific ANS char set if needed
-                    break; 
             }
         }
 
@@ -250,7 +266,6 @@ public class QRService {
         if (value != null && !value.isEmpty()) {
             addTLV(map, tag, value);
         } else {
-            // Check mandatory here as well for fields that might have returned null from processAndValidate
             TLVTag config = tlvTags.get(tag);
             if(config != null && config.isMandatory()) {
                  throw new IllegalArgumentException(String.format("Mandatory field '%s' (Tag %s) is missing.", config.getName(), tag));
@@ -290,7 +305,6 @@ public class QRService {
         
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(image)));
         
-        // Explicitly only look for QR Codes, try harder, and disable PURE_BARCODE mode
         Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
         hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
         hints.put(DecodeHintType.POSSIBLE_FORMATS, Collections.singletonList(BarcodeFormat.QR_CODE));
@@ -336,15 +350,6 @@ public class QRService {
             if (!providedCRC.equalsIgnoreCase(calculatedCRC)) {
                 throw new IllegalArgumentException("CRC mismatch: expected " + calculatedCRC + ", but got " + providedCRC);
             }
-            int crcTagIndex = dataWithoutCRC.lastIndexOf("6304");
-            if(crcTagIndex == -1) {
-                 // In strict parsing we expect 63 at end? 
-                 // Actually spec says 63 is last.
-                 // But dataWithoutCRC is "everything before last 4 chars".
-                 // "6304" should be at the very end of dataWithoutCRC.
-                 // The CRC value itself is the last 4 chars. The TAG+LEN "6304" precedes it.
-                 // So rawData ends with "...6304XXXX".
-            }
             dataForParsing = dataWithoutCRC;
         } else {
             dataForParsing = rawData;
@@ -352,7 +357,7 @@ public class QRService {
 
         int i = 0;
         while (i < dataForParsing.length()) {
-            if (i + 4 > dataForParsing.length()) break; // Safety check
+            if (i + 4 > dataForParsing.length()) break;
             String tag = dataForParsing.substring(i, i + 2);
             i += 2;
             try {
