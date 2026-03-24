@@ -3,34 +3,61 @@ package com.example.EthQR.service;
 import com.example.EthQR.model.QRCodeData;
 import com.example.EthQR.model.TLVTag;
 import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
 public class QRService {
 
-    @Value("${qr.payloadFormatIndicator:01}")
-    private String defaultPayloadFormatIndicator;
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
-    @Value("${qr.transactionCurrency:230}")
-    private String defaultTransactionCurrency;
+    @Autowired
+    private TransactionLogger transactionLogger;
 
-    @Value("${qr.countryCode:ET}")
-    private String defaultCountryCode;
+    @Value("${payment.token.url}")
+    private String tokenUrl;
+
+    @Value("${payment.jwt.assertion}")
+    private String jwtAssertion;
+
+    @Value("${payment.username}")
+    private String username;
+
+    @Value("${payment.password}")
+    private String password;
+
+    @Value("${payment.digest.url}")
+    private String digestUrl;
+
+    @Value("${payment.incoming.url}")
+    private String incomingUrl;
 
     private final Map<String, TLVTag> tlvTags;
 
@@ -44,11 +71,11 @@ public class QRService {
     }
 
     public String generateTLV(QRCodeData data) {
-        Map<String, String> tlvMap = new TreeMap<>();
+        Map<String, String> tlvMap = new java.util.TreeMap<>();
         
         // Tag 00: Payload Format Indicator
         TLVTag tag00Config = tlvTags.get("00");
-        String payloadFormatIndicatorValue = data.getPayloadFormatIndicator() != null ? data.getPayloadFormatIndicator() : defaultPayloadFormatIndicator;
+        String payloadFormatIndicatorValue = data.getPayloadFormatIndicator() != null ? data.getPayloadFormatIndicator() : "01";
         addTLV(tlvMap, "00", processAndValidate(payloadFormatIndicatorValue, tag00Config));
 
         // Tag 01: Point of Initiation Method
@@ -79,7 +106,7 @@ public class QRService {
 
         // Tag 53: Transaction Currency
         TLVTag tag53Config = tlvTags.get("53");
-        String transactionCurrencyValue = data.getTransactionCurrency() != null ? data.getTransactionCurrency() : defaultTransactionCurrency;
+        String transactionCurrencyValue = data.getTransactionCurrency() != null ? data.getTransactionCurrency() : "230";
         addTLV(tlvMap, "53", processAndValidate(transactionCurrencyValue, tag53Config));
 
         // Tag 54: Transaction Amount
@@ -100,7 +127,7 @@ public class QRService {
 
         // Tag 58: Country Code
         TLVTag tag58Config = tlvTags.get("58");
-        String countryCodeValue = data.getCountryCode() != null ? data.getCountryCode() : defaultCountryCode;
+        String countryCodeValue = data.getCountryCode() != null ? data.getCountryCode() : "ET";
         addTLV(tlvMap, "58", processAndValidate(countryCodeValue, tag58Config));
 
         // Tag 59: Merchant Name
@@ -194,7 +221,7 @@ public class QRService {
         if (config.isSubTLV() && config.getDelimiter() != null) {
             // Correctly split using quoted delimiter to handle special characters like pipe
             String[] parts = value.split(Pattern.quote(config.getDelimiter()), -1);
-            Map<String, String> subTags = new TreeMap<>();
+            Map<String, String> subTags = new java.util.TreeMap<>();
             
             if (config.getSubTags() != null) {
                 for (int i = 0; i < config.getSubTags().size(); i++) {
@@ -275,7 +302,7 @@ public class QRService {
 
     private String buildSubTLV(Map<String, String> subTags) {
         StringBuilder subTlv = new StringBuilder();
-        new TreeMap<>(subTags).forEach((k, v) -> {
+        new java.util.TreeMap<>(subTags).forEach((k, v) -> {
             subTlv.append(k)
                     .append(String.format("%02d", v.length()))
                     .append(v);
@@ -300,21 +327,14 @@ public class QRService {
     }
 
     public String decodeQRCodeImage(InputStream stream) throws Exception {
-        BufferedImage image = ImageIO.read(stream);
-        if (image == null) throw new IOException("Invalid image");
-        
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(image)));
-        
-        Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
-        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-        hints.put(DecodeHintType.POSSIBLE_FORMATS, Collections.singletonList(BarcodeFormat.QR_CODE));
-        hints.put(DecodeHintType.PURE_BARCODE, Boolean.FALSE);
-        
-        try {
-            return new MultiFormatReader().decode(bitmap, hints).getText();
-        } catch (NotFoundException e) {
+        QRDetector detector = new QRDetector();
+        String decodedText = detector.detectAndDecode(stream);
+
+        if (decodedText == null || decodedText.isEmpty()) {
             throw new Exception("No QR code found in the image. Please ensure the image contains a clear QR code.");
         }
+
+        return decodedText;
     }
 
     public String calculateCRC(String data) {
@@ -337,7 +357,7 @@ public class QRService {
     }
 
     public Map<String, Object> parseTLV(String rawData, boolean strict) {
-        Map<String, Object> parsed = new LinkedHashMap<>();
+        Map<String, Object> parsed = new java.util.LinkedHashMap<>();
         if (rawData == null || rawData.length() < 4) {
             throw new IllegalArgumentException("Invalid TLV data");
         }
@@ -386,7 +406,7 @@ public class QRService {
     }
 
     private Map<String, String> parseSubTLV(String raw) {
-        Map<String, String> map = new LinkedHashMap<>();
+        Map<String, String> map = new java.util.LinkedHashMap<>();
         int i = 0;
         while (i < raw.length()) {
             if (i + 4 > raw.length()) break;

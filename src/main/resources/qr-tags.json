@@ -20,7 +20,7 @@
   { "tag": "27", "name": "Domestic Scheme Reserved", "dataField": "merchantAccountInformation", "container": true, "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": false },
   { "tag": "28", "name": "EthSwitch", "dataField": "merchantAccountInformation", "container": true, "isSubTLV": true, "delimiter": "|", "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": true, "subTags": [
     { "tag": "00", "name": "Globally Unique Identifier", "dataType": "ANS", "minLength": 1, "maxLength": 32, "mandatory": true },
-    { "tag": "01", "name": "MSP BIC or Participant ID", "dataType": "ANS", "minLength": 8, "maxLength": 11, "mandatory": true },
+    { "tag": "01", "name": "MSP BIC or Participant ID", "dataType": "ANS", "minLength": 3, "maxLength": 8, "mandatory": true },
     { "tag": "02", "name": "Account Number", "dataType": "ANS", "minLength": 1, "maxLength": 32, "mandatory": true }
   ]},
   { "tag": "29", "name": "EthSwitch Reserved", "dataField": "merchantAccountInformation", "container": true, "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": false },
@@ -32,7 +32,7 @@
   { "tag": "56", "name": "Value of Convenience Fee Fixed", "dataField": "valueOfConvenienceFeeFixed", "dataType": "ANS", "minLength": 1, "maxLength": 13, "pattern": "^\\d{1,10}(\\.\\d{1,2})?$", "mandatory": false },
   { "tag": "57", "name": "Value of Convenience Fee Percentage", "dataField": "valueOfConvenienceFeePercentage", "dataType": "ANS", "minLength": 1, "maxLength": 5, "pattern": "^\\d{1,2}(\\.\\d{1,2})?$", "mandatory": false },
   { "tag": "58", "name": "Country Code", "dataField": "countryCode", "dataType": "ANS", "minLength": 2, "maxLength": 2, "pattern": "^[A-Z]{2}$", "mandatory": true },
-  { "tag": "59", "name": "Merchant Name", "dataField": "merchantName", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": true },
+  { "tag": "59", "name": "Merchant Name (Extended Length 25 -> 50)", "dataField": "merchantName", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": true },
   { "tag": "60", "name": "Merchant City", "dataField": "merchantCity", "dataType": "ANS", "minLength": 1, "maxLength": 15, "mandatory": true },
   { "tag": "61", "name": "Postal Code", "dataField": "postalCode", "dataType": "ANS", "minLength": 1, "maxLength": 10, "mandatory": false },
   { "tag": "62", "name": "Additional Data Field Template", "dataField": "additionalDataField", "isSubTLV": true, "mandatory": false, "subTags": [

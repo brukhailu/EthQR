@@ -14,14 +14,47 @@
         overflow: hidden; /* Prevent page scroll, scroll inside frame if needed */
     }
 
-    /* Container for the mobile frame to center it */
-    .sim-container {
+    .main-container {
         flex: 1;
+        display: flex;
+        padding: 20px;
+        gap: 30px;
+        overflow: hidden;
+    }
+
+    /* Left Side: Mobile Simulator */
+    .sim-container {
+        flex: 0 0 400px; /* Fixed width for the phone */
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+    }
+
+    /* Right Side: Log Viewer */
+    .log-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         overflow: hidden;
+    }
+    .log-header {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    #log-console {
+        background-color: #212529;
+        color: #f8f9fa;
+        font-family: monospace;
+        font-size: 0.8rem;
+        flex: 1;
+        overflow-y: scroll;
+        padding: 15px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
 
     /* Mobile Device Frame */
@@ -175,199 +208,173 @@
     .amount-input:focus { outline: none; }
 
     .toast-container { position: absolute; top: 40px; left: 20px; right: 20px; z-index: 1060; }
+
+    /* Drag and Drop Zone - Mobile Style */
+    .drop-zone {
+        border: 2px dashed rgba(255,255,255,0.5);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        color: white;
+        background: rgba(255,255,255,0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        margin-bottom: 10px;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+        border-color: #ffc107;
+        background: rgba(255,255,255,0.2);
+    }
+    .drop-zone i { font-size: 2rem; margin-bottom: 10px; }
+    .drop-zone p { margin: 0; font-size: 0.9rem; }
+    .drop-zone input[type="file"] {
+        position: absolute;
+        width: 100%; height: 100%;
+        top: 0; left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
 </style>
 <body>
 
 <nav th:replace="~{fragments/layout :: header(activeTab='simulator')}"></nav>
 
-<div class="sim-container">
-    <div class="mobile-frame">
-        <!-- Fake Status Bar -->
-        <div class="status-bar">
-            <span>9:41</span>
-            <span><i class="fas fa-wifi me-1"></i> <i class="fas fa-battery-full"></i></span>
-        </div>
-
-        <!-- Home Screen -->
-        <div id="screen-home" class="screen active">
-            <div class="app-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small style="opacity: 0.8;">Welcome back,</small>
-                        <h5 class="mb-0">Abebe Kebede</h5>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
+<div class="main-container">
+    <!-- Left Side: Mobile Simulator -->
+    <div class="sim-container">
+        <div class="mobile-frame">
+            <!-- Fake Status Bar -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <span><i class="fas fa-wifi me-1"></i> <i class="fas fa-battery-full"></i></span>
             </div>
-            <div class="app-content">
-                <!-- Wallet Balance -->
-                <div class="wallet-card">
-                    <small>Available Balance</small>
-                    <h2 class="mb-0">ETB 14,250.00</h2>
-                    <div class="mt-3 d-flex gap-2">
-                        <span class="badge bg-white text-primary"><i class="fas fa-plus me-1"></i> Topup</span>
-                        <span class="badge bg-white text-primary"><i class="fas fa-history me-1"></i> History</span>
-                    </div>
-                </div>
 
-                <h6 class="mb-3">Recent Activity</h6>
-                <div class="list-group list-group-flush border-0 rounded-3">
-                    <div class="list-group-item border-0 d-flex justify-content-between align-items-center py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-light rounded-circle p-2 me-3"><i class="fas fa-shopping-bag text-primary"></i></div>
-                            <div>
-                                <div class="fw-bold">Supermarket</div>
-                                <small class="text-muted">Today, 10:30 AM</small>
-                            </div>
+            <!-- Home Screen -->
+            <div id="screen-home" class="screen active">
+                <div class="app-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small style="opacity: 0.8;">Welcome back,</small>
+                            <h5 class="mb-0">Abebe Kebede</h5>
                         </div>
-                        <span class="text-danger fw-bold">- 450.00</span>
-                    </div>
-                    <div class="list-group-item border-0 d-flex justify-content-between align-items-center py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-light rounded-circle p-2 me-3"><i class="fas fa-coffee text-warning"></i></div>
-                            <div>
-                                <div class="fw-bold">Tomoca Coffee</div>
-                                <small class="text-muted">Yesterday</small>
-                            </div>
+                        <div style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user"></i>
                         </div>
-                        <span class="text-danger fw-bold">- 45.00</span>
+                    </div>
+                </div>
+                <div class="app-content">
+                    <div class="wallet-card">
+                        <small>Available Balance</small>
+                        <h2 class="mb-0">ETB 14,250.00</h2>
+                        <div class="mt-3 d-flex gap-2">
+                            <span class="badge bg-white text-primary"><i class="fas fa-plus me-1"></i> Topup</span>
+                            <span class="badge bg-white text-primary"><i class="fas fa-history me-1"></i> History</span>
+                        </div>
+                    </div>
+                    <h6 class="mb-3">Recent Activity</h6>
+                    <div class="list-group list-group-flush border-0 rounded-3">
+                        <div class="list-group-item border-0 d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-3"><i class="fas fa-shopping-bag text-primary"></i></div>
+                                <div><div class="fw-bold">Supermarket</div><small class="text-muted">Today, 10:30 AM</small></div>
+                            </div>
+                            <span class="text-danger fw-bold">- 450.00</span>
+                        </div>
+                        <div class="list-group-item border-0 d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-3"><i class="fas fa-coffee text-warning"></i></div>
+                                <div><div class="fw-bold">Tomoca Coffee</div><small class="text-muted">Yesterday</small></div>
+                            </div>
+                            <span class="text-danger fw-bold">- 45.00</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Scanner Overlay -->
+            <div id="screen-scan" class="scanner-overlay">
+                <div class="text-white mb-4 text-center"><h5>Scan QR Code</h5><small>Align QR code within the frame</small></div>
+                <div class="scanner-box"><div class="scanner-line"></div></div>
+
+                <div class="mt-5 w-75">
+                    <!-- Drop Zone -->
+                    <div class="drop-zone" id="dropZone">
+                        <i class="fas fa-image"></i>
+                        <p>Drag & Drop QR Here<br>or Click to Upload</p>
+                        <input type="file" id="simFileInput" accept="image/*" onchange="handleSimFileUpload(this)">
+                    </div>
+
+                    <button class="btn btn-outline-light w-100 mb-2" onclick="handleSimPaste()"><i class="fas fa-font me-2"></i>Paste TLV String</button>
+                    <button class="btn btn-link text-white w-100" onclick="navTo('home')">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Payment Confirmation Screen -->
+            <div id="screen-confirm" class="screen">
+                <div class="app-header bg-white text-dark shadow-sm" style="background: white; color: #333;">
+                    <div class="d-flex align-items-center"><i class="fas fa-arrow-left me-3" onclick="navTo('home')" style="cursor: pointer;"></i><h5 class="mb-0">Payment</h5></div>
+                </div>
+                <div class="app-content d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <div class="bg-light rounded-circle mx-auto mb-2" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-store fa-2x text-primary"></i></div>
+                        <h5 id="merchantNameDisplay">Merchant Name</h5>
+                        <small class="text-muted" id="merchantCityDisplay">Addis Ababa, ET</small>
+                    </div>
+                    <div class="card p-3 mb-3 border-0 shadow-sm text-center">
+                        <small class="text-muted">Total Amount</small>
+                        <div class="d-flex justify-content-center align-items-center"><span class="fs-4 text-muted me-1">ETB</span><input type="number" id="txAmountInput" class="amount-input" value="0.00" readonly></div>
+                    </div>
+                    <div id="tipSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold"><i class="fas fa-coins text-warning me-2"></i>Tip / Convenience Fee</span><span id="tipTypeBadge" class="badge bg-secondary">Fixed</span></div>
+                        <div id="tipInputContainer"></div>
+                    </div>
+                    <div id="consumerDataSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
+                        <h6 class="mb-3"><i class="fas fa-user-edit text-info me-2"></i>Additional Info Required</h6>
+                        <div id="consumerFields"></div>
+                    </div>
+                    <div class="card p-3 mb-3 border-0 shadow-sm">
+                        <div class="tx-detail-row"><span class="tx-detail-label">Purpose</span><span class="tx-detail-val" id="txPurpose">Payment</span></div>
+                        <div class="tx-detail-row"><span class="tx-detail-label">Reference</span><span class="tx-detail-val" id="txRef">N/A</span></div>
+                    </div>
+                    <div class="mt-auto"><button class="btn btn-primary btn-pay btn-lg shadow" onclick="processPayment()">Confirm Payment <i class="fas fa-lock ms-2"></i></button></div>
+                </div>
+            </div>
+
+            <!-- Success Screen -->
+            <div id="screen-success" class="screen bg-success text-white text-center d-flex flex-column justify-content-center p-4">
+                <div class="mb-4"><i class="fas fa-check-circle fa-5x mb-3"></i><h2>Payment Successful!</h2><p style="opacity: 0.9">Transaction ID: <span id="successTxId">TX123456</span></p></div>
+                <div class="card text-dark p-3 mb-4 mx-3 border-0 shadow-lg"><h1 class="mb-0 text-primary" id="successAmount">ETB 0.00</h1><small class="text-muted">Paid to <span id="successMerchant">Merchant</span></small></div>
+                <button class="btn btn-light w-100 rounded-pill py-3 fw-bold" style="color: #198754;" onclick="navTo('home')">Done</button>
+            </div>
+
+            <!-- Failure Screen -->
+            <div id="screen-fail" class="screen bg-danger text-white text-center d-flex flex-column justify-content-center p-4">
+                <div class="mb-4"><i class="fas fa-times-circle fa-5x mb-3"></i><h2>Payment Failed</h2><p style="opacity: 0.9" id="failReason">An unknown error occurred.</p></div>
+                <button class="btn btn-light w-100 rounded-pill py-3 fw-bold" style="color: #dc3545;" onclick="navTo('home')">Back to Home</button>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item-sim active" onclick="navTo('home')"><i class="fas fa-home"></i> Home</div>
+                <div class="nav-item-sim"><i class="fas fa-exchange-alt"></i> Transfer</div>
+                <div style="width: 56px;"></div>
+                <div class="nav-item-sim"><i class="fas fa-chart-pie"></i> Finance</div>
+                <div class="nav-item-sim"><i class="fas fa-cog"></i> Settings</div>
+                <div class="scan-fab" onclick="openScanner()"><i class="fas fa-qrcode"></i></div>
+            </div>
+
+            <div class="toast-container" id="toastContainer"></div>
         </div>
+    </div>
 
-        <!-- Scanner Overlay -->
-        <div id="screen-scan" class="scanner-overlay">
-            <div class="text-white mb-4 text-center">
-                <h5>Scan QR Code</h5>
-                <small>Align QR code within the frame</small>
-            </div>
-            <div class="scanner-box">
-                <div class="scanner-line"></div>
-            </div>
-            <div class="mt-5 w-75">
-                <button class="btn btn-light w-100 mb-2" onclick="triggerFileUpload()">
-                    <i class="fas fa-image me-2"></i>Upload Image
-                </button>
-                <input type="file" id="simFileInput" accept="image/*" style="display:none" onchange="handleSimFileUpload(this)">
-
-                <button class="btn btn-outline-light w-100 mb-2" onclick="pasteImageFromClipboard()">
-                    <i class="fas fa-paste me-2"></i>Paste Image
-                </button>
-
-                <button class="btn btn-outline-light w-100 mb-2" onclick="handleSimPaste()">
-                    <i class="fas fa-font me-2"></i>Paste TLV String
-                </button>
-
-                <button class="btn btn-link text-white w-100" onclick="navTo('home')">Cancel</button>
-            </div>
+    <!-- Right Side: Log Viewer -->
+    <div class="log-container">
+        <div class="log-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-terminal me-2"></i>Transaction Log</span>
+            <button class="btn btn-sm btn-outline-secondary" onclick="clearLog()">Clear</button>
         </div>
-
-        <!-- Payment Confirmation Screen -->
-        <div id="screen-confirm" class="screen">
-            <div class="app-header bg-white text-dark shadow-sm" style="background: white; color: #333;">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-arrow-left me-3" onclick="navTo('home')" style="cursor: pointer;"></i>
-                    <h5 class="mb-0">Payment</h5>
-                </div>
-            </div>
-            <div class="app-content d-flex flex-column">
-
-                <div class="text-center mb-4">
-                    <div class="bg-light rounded-circle mx-auto mb-2" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-store fa-2x text-primary"></i>
-                    </div>
-                    <h5 id="merchantNameDisplay">Merchant Name</h5>
-                    <small class="text-muted" id="merchantCityDisplay">Addis Ababa, ET</small>
-                </div>
-
-                <!-- Amount Input (if dynamic) or Display -->
-                <div class="card p-3 mb-3 border-0 shadow-sm text-center">
-                    <small class="text-muted">Total Amount</small>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <span class="fs-4 text-muted me-1">ETB</span>
-                        <input type="number" id="txAmountInput" class="amount-input" value="0.00" readonly>
-                    </div>
-                </div>
-
-                <!-- Tip Section (Conditional) -->
-                <div id="tipSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-bold"><i class="fas fa-coins text-warning me-2"></i>Tip / Convenience Fee</span>
-                        <span id="tipTypeBadge" class="badge bg-secondary">Fixed</span>
-                    </div>
-                    <div id="tipInputContainer">
-                        <!-- Injected by JS -->
-                    </div>
-                </div>
-
-                <!-- Consumer Data (Conditional) -->
-                <div id="consumerDataSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
-                    <h6 class="mb-3"><i class="fas fa-user-edit text-info me-2"></i>Additional Info Required</h6>
-                    <div id="consumerFields">
-                        <!-- Injected by JS -->
-                    </div>
-                </div>
-
-                <!-- Details -->
-                <div class="card p-3 mb-3 border-0 shadow-sm">
-                    <div class="tx-detail-row">
-                        <span class="tx-detail-label">Purpose</span>
-                        <span class="tx-detail-val" id="txPurpose">Payment</span>
-                    </div>
-                    <div class="tx-detail-row">
-                        <span class="tx-detail-label">Reference</span>
-                        <span class="tx-detail-val" id="txRef">N/A</span>
-                    </div>
-                </div>
-
-                <div class="mt-auto">
-                    <button class="btn btn-primary btn-pay btn-lg shadow" onclick="processPayment()">
-                        Confirm Payment <i class="fas fa-lock ms-2"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Success Screen -->
-        <div id="screen-success" class="screen bg-success text-white text-center d-flex flex-column justify-content-center p-4">
-            <div class="mb-4">
-                <i class="fas fa-check-circle fa-5x mb-3"></i>
-                <h2>Payment Successful!</h2>
-                <p style="opacity: 0.9">Transaction ID: <span id="successTxId">TX123456</span></p>
-            </div>
-            <div class="card text-dark p-3 mb-4 mx-3 border-0 shadow-lg">
-                <h1 class="mb-0 text-primary" id="successAmount">ETB 0.00</h1>
-                <small class="text-muted">Paid to <span id="successMerchant">Merchant</span></small>
-            </div>
-            <button class="btn btn-light w-100 rounded-pill py-3 fw-bold" style="color: #198754;" onclick="navTo('home')">Done</button>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="nav-item-sim active" onclick="navTo('home')">
-                <i class="fas fa-home"></i> Home
-            </div>
-            <div class="nav-item-sim">
-                <i class="fas fa-exchange-alt"></i> Transfer
-            </div>
-            <div style="width: 56px;"></div> <!-- Spacer for FAB -->
-            <div class="nav-item-sim">
-                <i class="fas fa-chart-pie"></i> Finance
-            </div>
-            <div class="nav-item-sim">
-                <i class="fas fa-cog"></i> Settings
-            </div>
-
-            <!-- Scan FAB -->
-            <div class="scan-fab" onclick="openScanner()">
-                <i class="fas fa-qrcode"></i>
-            </div>
-        </div>
-
-        <div class="toast-container" id="toastContainer"></div>
+        <pre id="log-console">Logs will appear here when a transaction is initiated...</pre>
     </div>
 </div>
 
@@ -377,19 +384,22 @@
     // ... (Keep existing script logic) ...
     let currentQRData = null;
     let currentRawTlv = "";
+    let logPollInterval = null;
+
+    const tagMap = {
+        '00': 'payloadFormatIndicator', '01': 'pointOfInitiationMethod', '52': 'merchantCategoryCode',
+        '53': 'transactionCurrency', '54': 'transactionAmount', '55': 'tipOrConvenienceIndicator',
+        '56': 'valueOfConvenienceFeeFixed', '57': 'valueOfConvenienceFeePercentage', '58': 'countryCode',
+        '59': 'merchantName', '60': 'merchantCity', '61': 'postalCode', '63': 'crc',
+        '80': 'contextOfTransaction', '81': 'discountsAndLoyalty', '82': 'offlineToOnline',
+        '83': 'ecommerce', '84': 'uetr', '85': 'transactionTypeCode'
+    };
 
     function showToast(msg, type='info') {
-        const container = document.getElementById('toastContainer');
+        const container = document.querySelector('.mobile-frame .toast-container');
         const id = 'toast-' + Date.now();
-        container.innerHTML = `
-            <div id="${id}" class="toast align-items-center text-white bg-${type} border-0 show shadow" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">${msg}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `;
-        setTimeout(() => document.getElementById(id).remove(), 3000);
+        container.innerHTML = `<div id="${id}" class="toast align-items-center text-white bg-${type} border-0 show shadow" role="alert"><div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+        setTimeout(() => document.getElementById(id)?.remove(), 3000);
     }
 
     function navTo(screenId) {
@@ -402,34 +412,42 @@
         }
     }
 
-    function openScanner() {
-        navTo('scan');
+    function openScanner() { navTo('scan'); setupDragAndDrop(); }
+    function triggerFileUpload() { document.getElementById('simFileInput').click(); }
+
+    function setupDragAndDrop() {
+        const dropZone = document.getElementById('dropZone');
+        if(!dropZone) return;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
     }
 
-    function triggerFileUpload() {
-        document.getElementById('simFileInput').click();
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if(files.length > 0) handleSimFileUpload({files: files});
     }
 
     async function handleSimFileUpload(input) {
         if(input.files && input.files[0]) {
             await handleImageBlob(input.files[0]);
-        }
-    }
-
-    async function pasteImageFromClipboard() {
-        try {
-            const items = await navigator.clipboard.read();
-            for (const item of items) {
-                const imageType = item.types.find(type => type.startsWith('image/'));
-                if (imageType) {
-                    const blob = await item.getType(imageType);
-                    await handleImageBlob(blob);
-                    return;
-                }
-            }
-            showToast('No image found in clipboard', 'warning');
-        } catch (e) {
-            showToast('Clipboard permission denied or not supported', 'danger');
         }
     }
 
@@ -536,9 +554,59 @@
         navTo('confirm');
     }
 
-    function processPayment() {
-        const btn = document.querySelector('.btn-pay');
+    function mapDataToBackendModel(rawData) {
+        const mapped = {
+            merchantAccountInformation: {},
+            additionalDataField: {},
+            merchantInformationLanguageTemplate: {},
+            unreservedTemplates: {}
+        };
 
+        for (const [tag, val] of Object.entries(rawData)) {
+            if (tagMap[tag]) {
+                mapped[tagMap[tag]] = val;
+            }
+            else if (parseInt(tag) >= 2 && parseInt(tag) <= 51) {
+                if(typeof val === 'object') {
+                    if (tag === '28' && typeof val === 'object') {
+                        const parts = [];
+                        if(val['00']) parts.push(val['00']);
+                        if(val['01']) parts.push(val['01']);
+                        if(val['02']) parts.push(val['02']);
+                        mapped.merchantAccountInformation[tag] = parts.join('|');
+                    }
+                } else {
+                    mapped.merchantAccountInformation[tag] = val;
+                }
+            }
+            else if (tag === '62' && typeof val === 'object') {
+                mapped.additionalDataField = val;
+            }
+            else if (tag === '64' && typeof val === 'object') {
+                mapped.merchantInformationLanguageTemplate = val;
+            }
+            else if (parseInt(tag) >= 80 && parseInt(tag) <= 99) {
+                if (typeof val === 'object') {
+                    mapped.unreservedTemplates[tag] = val;
+                }
+            }
+        }
+        return mapped;
+    }
+
+    function generateUUID() {
+        // Fallback for non-secure contexts
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    async function processPayment() {
+        const btn = document.querySelector('.btn-pay');
         const amountEl = document.getElementById('txAmountInput');
         if(!amountEl.readOnly && (!amountEl.value || parseFloat(amountEl.value) <= 0)) {
             showToast("Please enter a valid amount", "warning");
@@ -546,20 +614,86 @@
         }
 
         let total = parseFloat(amountEl.value);
+        if (!currentQRData['54']) {
+            currentQRData['54'] = total.toFixed(2);
+        }
+
+        const backendPayload = mapDataToBackendModel(currentQRData);
+
+        // Use custom UUID generator
+        const transactionId = generateUUID();
+
+        const logConsole = document.getElementById('log-console');
+        clearLog();
+        logConsole.textContent = `Transaction ID: ${transactionId}\nInitiating transaction...\n`;
 
         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Processing...`;
         btn.disabled = true;
 
-        setTimeout(() => {
+        logPollInterval = setInterval(() => fetchLogs(transactionId), 1000);
+
+        try {
+            const resp = await fetch('/api/payment/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Transaction-Id': transactionId
+                },
+                body: JSON.stringify(backendPayload)
+            });
+
+            const result = await resp.json();
+
+            if (!resp.ok) {
+                throw new Error(result.error || "Payment processing failed");
+            }
+
+            setTimeout(() => {
+                clearInterval(logPollInterval);
+                fetchLogs(transactionId).then(() => {
+                    logConsole.innerHTML += "\n--- TRANSACTION SUCCEEDED ---";
+                    logConsole.scrollTop = logConsole.scrollHeight;
+                });
+
+                document.getElementById('successAmount').textContent = `ETB ${total.toFixed(2)}`;
+                document.getElementById('successMerchant').textContent = document.getElementById('merchantNameDisplay').textContent;
+                document.getElementById('successTxId').textContent = transactionId;
+                navTo('success');
+            }, 1500);
+
+        } catch (e) {
+            if (logPollInterval) clearInterval(logPollInterval);
+            fetchLogs(transactionId).then(() => {
+                logConsole.innerHTML += `\n--- TRANSACTION FAILED ---\n${e.message}`;
+                logConsole.scrollTop = logConsole.scrollHeight;
+            });
+
+            setTimeout(() => {
+                document.getElementById('failReason').textContent = e.message;
+                navTo('screen-fail');
+            }, 2000);
+
+        } finally {
             btn.innerHTML = `Confirm Payment <i class="fas fa-lock ms-2"></i>`;
             btn.disabled = false;
+        }
+    }
 
-            document.getElementById('successAmount').textContent = `ETB ${total.toFixed(2)}`;
-            document.getElementById('successMerchant').textContent = document.getElementById('merchantNameDisplay').textContent;
-            document.getElementById('successTxId').textContent = "TX" + Math.floor(Math.random() * 10000000);
+    async function fetchLogs(transactionId) {
+        if (!transactionId) return;
+        try {
+            const resp = await fetch(`/api/payment/logs/${transactionId}`);
+            const logs = await resp.json();
+            const logConsole = document.getElementById('log-console');
+            logConsole.textContent = logs.join('\n\n');
+            logConsole.scrollTop = logConsole.scrollHeight;
+        } catch (e) {
+            if(logPollInterval) clearInterval(logPollInterval);
+        }
+    }
 
-            navTo('success');
-        }, 1500);
+    function clearLog() {
+        document.getElementById('log-console').textContent = 'Logs cleared.';
     }
 </script>
 </body>

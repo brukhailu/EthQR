@@ -22,6 +22,41 @@
     .comparison-mismatch-row { background-color: #fff3cd; }
     .expected-val { font-size: 0.85em; color: #666; font-style: italic; display: block; margin-top: 2px; }
     .badge-dynamic { background-color: #0dcaf0; color: #000; }
+
+    /* Drag and Drop Zone */
+    .drop-zone {
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background-color: #fdfdfd;
+        position: relative;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+        border-color: #0d6efd;
+        background-color: #f1f8ff;
+    }
+    .drop-zone i {
+        font-size: 3rem;
+        color: #adb5bd;
+        margin-bottom: 15px;
+    }
+    .drop-zone p {
+        margin: 0;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    .drop-zone input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
 </style>
 <body>
 
@@ -56,64 +91,67 @@
                                 </div>
                             </div>
 
-                            <!-- Image Input Pane -->
+                            <!-- Image Input Pane with Drag & Drop -->
                             <div class="tab-pane fade" id="image-pane" role="tabpanel">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4 text-center">
-                                        <img id="uploadedImagePreview" src="" alt="Preview" style="display:none;">
-                                        <p id="imagePlaceholder" class="text-muted small">QR Image Preview</p>
+                                <div class="row">
+                                    <div class="col-md-5 mb-3 text-center d-flex align-items-center justify-content-center bg-light rounded" style="min-height: 250px;">
+                                        <div>
+                                            <img id="uploadedImagePreview" src="" alt="Preview" style="display:none;" class="img-fluid mb-2">
+                                            <p id="imagePlaceholder" class="text-muted small m-0">Image Preview</p>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="mb-3">
+                                    <div class="col-md-7">
+
+                                        <div class="drop-zone" id="dropZone">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Drag & Drop QR Image Here</p>
+                                            <small class="text-muted d-block mt-1">or click to browse</small>
+                                            <input type="file" id="qrFileInput" accept="image/*" onchange="handleFiles(this.files)">
+                                        </div>
+
+                                        <div class="mt-3">
                                             <label class="form-label">Decoded TLV String</label>
-                                            <textarea class="form-control font-monospace" id="decodedTlvOutput" rows="4" readonly></textarea>
+                                            <textarea class="form-control font-monospace" id="decodedTlvOutput" rows="3" readonly></textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="input-group my-3">
-                                    <input type="file" class="form-control" id="qrFileInput" accept="image/*" onchange="previewImage(this)">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="parseQRImage()"><i class="fas fa-upload me-2"></i>Upload & Parse</button>
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn btn-outline-primary" type="button" onclick="pasteImage()"><i class="fas fa-paste me-2"></i>Paste from Clipboard</button>
-                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Comparison Section -->
-                        <div id="comparisonSection" class="mt-4 p-3 bg-light rounded" style="display: none;">
-                            <h5 class="mb-3"><i class="fas fa-balance-scale me-2"></i>Compare with Scenario</h5>
-                            <div class="input-group">
-                                <select class="form-select" id="scenarioSelect">
-                                    <option value="" selected>Choose a scenario to compare...</option>
-                                </select>
-                                <button class="btn btn-info" type="button" onclick="compareWithScenario()"><i class="fas fa-exchange-alt me-2"></i>Compare</button>
-                            </div>
+                    <!-- Comparison Section -->
+                    <div id="comparisonSection" class="mt-4 p-3 bg-light rounded" style="display: none;">
+                        <h5 class="mb-3"><i class="fas fa-balance-scale me-2"></i>Compare with Scenario</h5>
+                        <div class="input-group">
+                            <select class="form-select" id="scenarioSelect">
+                                <option value="" selected>Choose a scenario to compare...</option>
+                            </select>
+                            <button class="btn btn-info" type="button" onclick="compareWithScenario()"><i class="fas fa-exchange-alt me-2"></i>Compare</button>
                         </div>
+                    </div>
 
-                        <!-- Results Section -->
-                        <div class="mt-4">
-                            <h5 class="mb-3"><i class="fas fa-list-ul me-2"></i>Parsed Results</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover table-parsed" id="parsedTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width: 5%;">Tag</th>
-                                            <th style="width: 20%;">Name</th>
-                                            <th style="width: 5%;">M/O</th>
-                                            <th style="width: 5%;">Len</th>
-                                            <th style="width: 35%;">Value</th>
-                                            <th style="width: 15%;">Validation</th>
-                                            <th style="width: 15%;">Comparison</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td colspan="7" class="text-center text-muted py-4">No data parsed yet.</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div id="missingTagsContainer" class="mt-3"></div>
+                    <!-- Results Section -->
+                    <div class="mt-4">
+                        <h5 class="mb-3"><i class="fas fa-list-ul me-2"></i>Parsed Results</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-parsed" id="parsedTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%;">Tag</th>
+                                        <th style="width: 20%;">Name</th>
+                                        <th style="width: 5%;">M/O</th>
+                                        <th style="width: 5%;">Len</th>
+                                        <th style="width: 35%;">Value</th>
+                                        <th style="width: 15%;">Validation</th>
+                                        <th style="width: 15%;">Comparison</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="7" class="text-center text-muted py-4">No data parsed yet.</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <div id="missingTagsContainer" class="mt-3"></div>
                     </div>
                 </div>
             </div>
@@ -160,10 +198,54 @@
                 parseQR();
             }
 
+            setupDragAndDrop();
+
         } catch (e) {
             showToast('Error loading configuration', 'danger');
         }
     };
+
+    function setupDragAndDrop() {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('qrFileInput');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+    }
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    function handleFiles(files) {
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                displayImagePreview(file);
+                parseImageBlob(file);
+            } else {
+                showToast("Please upload a valid image file", "warning");
+            }
+        }
+    }
 
     function showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
@@ -183,7 +265,8 @@
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
 
-    // ... (Keep the rest of the existing script) ...
+    // ... (rest of validateTagValue, parseQR, compareWithScenario, etc.) ...
+
     function validateTagValue(tag, value, config) {
         if (tag === '63' && lastRawTlv) {
             const dataToHash = lastRawTlv.substring(0, lastRawTlv.length - 4);
@@ -229,26 +312,7 @@
     }
 
     async function parseQRImage() {
-        const file = document.getElementById('qrFileInput').files[0];
-        if(!file) return showToast('Select an image', 'warning');
-        await parseImageBlob(file);
-    }
-
-    async function pasteImage() {
-        try {
-            const items = await navigator.clipboard.read();
-            for (const item of items) {
-                for (const type of item.types) {
-                    if (type.startsWith('image/')) {
-                        const blob = await item.getType(type);
-                        displayImagePreview(blob);
-                        await parseImageBlob(blob);
-                        return;
-                    }
-                }
-            }
-            showToast('No image in clipboard', 'warning');
-        } catch (e) { showToast('Clipboard access failed', 'warning'); }
+        // Triggered by manual button click if needed, but file input covers it
     }
 
     async function parseImageBlob(blob) {
@@ -265,10 +329,6 @@
             renderParsedTable(lastParsedData);
             showToast('Image parsed', 'success');
         } catch (e) { showToast(e.message, 'danger'); }
-    }
-
-    function previewImage(input) {
-        if(input.files && input.files[0]) displayImagePreview(input.files[0]);
     }
 
     function displayImagePreview(blob) {
@@ -297,7 +357,7 @@
             comparisonData.crc = calculatedCrc;
 
             renderParsedTable(lastParsedData, comparisonData);
-            showToast(`Comparing with: ${scenario.name} (CRC: ${calculatedCrc})`, 'info');
+            showToast(`Comparing with: ${scenario.name}`, 'info');
         }
     }
 
@@ -539,6 +599,7 @@
         if (comparisonData) {
             const missingList = [];
             for (const [tag, config] of Object.entries(tagConfig)) {
+                // Don't flag CRC as missing if it's there (handled in loop) or if we just want to ignore strict checks
                 const expVal = getExpectedValue(tag, config, comparisonData);
                 if (expVal !== undefined && !data.hasOwnProperty(tag)) {
                     missingList.push({ tag, name: config.name, exp: expVal });
