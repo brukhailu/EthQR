@@ -279,7 +279,7 @@
                                 <div class="bg-light rounded-circle p-2 me-3"><i class="fas fa-shopping-bag text-primary"></i></div>
                                 <div><div class="fw-bold">Supermarket</div><small class="text-muted">Today, 10:30 AM</small></div>
                             </div>
-                            <span class="text-danger fw-bold">- 450.00</span>
+                            <span class="text-danger fw-bold">- 45.00</span>
                         </div>
                         <div class="list-group-item border-0 d-flex justify-content-between align-items-center py-3">
                             <div class="d-flex align-items-center">
@@ -608,17 +608,55 @@
     async function processPayment() {
         const btn = document.querySelector('.btn-pay');
         const amountEl = document.getElementById('txAmountInput');
+
         if(!amountEl.readOnly && (!amountEl.value || parseFloat(amountEl.value) <= 0)) {
             showToast("Please enter a valid amount", "warning");
             return;
         }
 
         let total = parseFloat(amountEl.value);
-        if (!currentQRData['54']) {
-            currentQRData['54'] = total.toFixed(2);
+        let tipAmount = 0;
+
+        // 1. Tip Calculation Logic
+        const tipInput = document.getElementById('tipInput');
+        const tipPct = document.getElementById('tipPct');
+
+        if (tipInput && tipInput.value) {
+            tipAmount = parseFloat(tipInput.value);
+        } else if (tipPct && tipPct.value) {
+            const pct = parseFloat(tipPct.value);
+            tipAmount = (total * pct) / 100;
+        }
+
+        total += tipAmount;
+
+        // Update the QR data with the FINAL total amount
+        currentQRData['54'] = total.toFixed(2);
+
+        // 2. Capture Consumer Data if present
+        const mobInput = document.getElementById('consumerMobile');
+        if (mobInput && mobInput.value) {
+            if(!currentQRData['62']) currentQRData['62'] = {};
+            currentQRData['62']['02'] = mobInput.value;
+        }
+
+        // 3. Update Remittance Info with Tip Details
+        if (tipAmount > 0) {
+            if (!currentQRData['62']) currentQRData['62'] = {};
+            let currentPurpose = currentQRData['62']['08'] || "Payment";
+            // Append tip info to Purpose or Context (which maps to Ustrd)
+            // Or ideally, we should update the 'contextOfTransaction' if available
+            // Let's modify the mapDataToBackendModel output or just update 62-08/80 here
+            // Best approach: If we have a tip, append it to the Unstructured Remittance info
+            // which comes from Tag 80 or Tag 62-05/08 in our PaymentService logic.
+
+            // We'll append it to Tag 80 (Context) as a safe bet for Ustrd
+            let existingContext = currentQRData['80'] || currentQRData['62']['05'] || "QR Payment";
+            currentQRData['80'] = `${existingContext} / Tip: ${tipAmount.toFixed(2)}`;
         }
 
         const backendPayload = mapDataToBackendModel(currentQRData);
+
         const transactionId = generateUUID();
 
         const logConsole = document.getElementById('log-console');

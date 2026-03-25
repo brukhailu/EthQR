@@ -73,7 +73,7 @@ public class PaymentService {
             String body = "grant_type=password&username=" + URLEncoder.encode(username, StandardCharsets.UTF_8) +
                     "&password=" + URLEncoder.encode(password, StandardCharsets.UTF_8);
             httpPost.setEntity(new StringEntity(body));
-
+            
             transactionLogger.log(transactionId, "Token Request URL: " + tokenUrl);
             transactionLogger.log(transactionId, "Token Request Body: " + body);
 
@@ -81,7 +81,7 @@ public class PaymentService {
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity entity = response.getEntity();
                 String responseString = entity != null ? EntityUtils.toString(entity) : "";
-
+                
                 transactionLogger.log(transactionId, "Token Response Status: " + statusCode);
                 transactionLogger.log(transactionId, "Token Response Body: " + responseString);
 
@@ -102,30 +102,30 @@ public class PaymentService {
     }
 
     public Map<String, String> processPayment(QRCodeData qrData, String transactionId) throws Exception {
-        String txId = "BBANKETA" + System.currentTimeMillis();
-        String pacs008 = buildPacs008Message(qrData, transactionId, txId);
+        String endToEndId = "BBANKETA" + System.currentTimeMillis();
+        String pacs008 = buildPacs008Message(qrData, transactionId, endToEndId);
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
         String accessToken = getAccessToken(transactionId);
         String responseXml = sendPaymentRequest(signedPacs008, accessToken, transactionId);
-
-        return Map.of("endToEndId", txId, "response", responseXml);
+        
+        return Map.of("endToEndId", endToEndId, "response", responseXml);
     }
 
-    private String buildPacs008Message(QRCodeData qrData, String transactionId, String txId) {
+    private String buildPacs008Message(QRCodeData qrData, String transactionId, String endToEndId) {
         transactionLogger.log(transactionId, "--- 2. Building pacs.008 Message from QR Data ---");
 
-        String bizMsgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-        String msgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-
+        String bizMsgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        String msgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        
         DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(offsetFormatter);
         String createDt = createDtTm;
 
         String amount = qrData.getTransactionAmount() != null ? qrData.getTransactionAmount() : "0.00";
         String currency = "ETB";
-
+        
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "N/A";
-
+        
         String instructedAgentId = "ETSETAA";
         String creditorAcctId = "000000000000";
         Map<String, String> mai = qrData.getMerchantAccountInformation();
@@ -137,11 +137,12 @@ public class PaymentService {
             }
         }
 
-        String purposeCode = "C2BSQR";
+        String purposeCode = "C2BSQR"; // Use the standard code for QR payments
         String remittanceInfo = "QR Payment";
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null) {
-            if (additionalData.containsKey("08")) { purposeCode = additionalData.get("08"); }
+            // Use QR data for descriptive remittance info, not for the category purpose code
+            if (additionalData.containsKey("08")) { remittanceInfo = additionalData.get("08"); }
             if (additionalData.containsKey("05")) { remittanceInfo = additionalData.get("05"); }
         }
         if (qrData.getContextOfTransaction() != null && !qrData.getContextOfTransaction().isEmpty()) {
@@ -169,7 +170,7 @@ public class PaymentService {
                                 <document:CreDtTm>%s</document:CreDtTm>
                                 <document:NbOfTxs>1</document:NbOfTxs>
                                 <document:SttlmInf><document:SttlmMtd>CLRG</document:SttlmMtd><document:ClrSys><document:Prtry>FP</document:Prtry></document:ClrSys></document:SttlmInf>
-                                <document:PmtTpInf><document:LclInstrm><document:Prtry>CRTRM</document:Prtry></document:LclInstrm></document:PmtTpInf>
+                                <document:PmtTpInf><document:LclInstrm><document:Prtry>CRTRM</document:Prtry></document:LclInstrm><document:CtgyPurp><document:Prtry>%s</document:Prtry></document:CtgyPurp></document:PmtTpInf>
                                 <document:InstgAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:InstgAgt>
                                 <document:InstdAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:InstdAgt>
                             </document:GrpHdr>
@@ -191,27 +192,9 @@ public class PaymentService {
                     </document:Document>
                 </FPEnvelope>
                 """,
-                instructingAgentId, // AppHdr -> Fr -> Id
-                bizMsgId,           // AppHdr -> BizMsgIdr
-                createDt,           // AppHdr -> CreDt
-                msgId,              // GrpHdr -> MsgId
-                createDtTm,         // GrpHdr -> CreDtTm
-                instructingAgentId, // GrpHdr -> InstgAgt -> Id
-                instructedAgentId,  // GrpHdr -> InstdAgt -> Id (ETSETAA)
-                txId,               // CdtTrfTxInf -> PmtId -> EndToEndId
-                txId,               // CdtTrfTxInf -> PmtId -> TxId
-                currency,           // CdtTrfTxInf -> IntrBkSttlmAmt -> Ccy
-                amount,             // CdtTrfTxInf -> IntrBkSttlmAmt -> Value
-                createDtTm,         // CdtTrfTxInf -> AccptncDtTm
-                currency,           // CdtTrfTxInf -> InstdAmt -> Ccy
-                amount,             // CdtTrfTxInf -> InstdAmt -> Value
-                debtorName,         // CdtTrfTxInf -> Dbtr -> Nm
-                debtorAcctId,       // CdtTrfTxInf -> DbtrAcct -> Id
-                instructingAgentId, // CdtTrfTxInf -> DbtrAgt -> Id
-                instructedAgentId,  // CdtTrfTxInf -> CdtrAgt -> Id
-                creditorName,       // CdtTrfTxInf -> Cdtr -> Nm
-                creditorAcctId,     // CdtTrfTxInf -> CdtrAcct -> Id
-                remittanceInfo      // CdtTrfTxInf -> RmtInf -> Ustrd
+                instructingAgentId, bizMsgId, createDt, msgId, createDtTm, purposeCode, instructingAgentId, instructedAgentId, endToEndId, endToEndId,
+                currency, amount, createDtTm, currency, amount, debtorName, debtorAcctId, instructingAgentId,
+                instructedAgentId, creditorName, creditorAcctId, remittanceInfo
         );
 
         transactionLogger.log(transactionId, "Constructed pacs.008 Message:\n" + xml);
@@ -254,7 +237,7 @@ public class PaymentService {
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/xml");
             httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
             httpPost.setEntity(new StringEntity(signedXml, StandardCharsets.UTF_8));
-
+            
             transactionLogger.log(transactionId, "Payment Request URL: " + incomingUrl);
             transactionLogger.log(transactionId, "Payment Request Body:\n" + signedXml);
 
@@ -262,7 +245,7 @@ public class PaymentService {
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity entity = response.getEntity();
                 String responseString = entity != null ? EntityUtils.toString(entity) : "";
-
+                
                 transactionLogger.log(transactionId, "Payment Response Status: " + statusCode);
                 transactionLogger.log(transactionId, "Payment Response Body: " + responseString);
 
