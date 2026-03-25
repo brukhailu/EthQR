@@ -16,12 +16,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
@@ -94,76 +101,49 @@ public class PaymentService {
         }
     }
 
-    public String processPayment(QRCodeData qrData, String transactionId) throws Exception {
-        String accessToken = getAccessToken(transactionId);
-        String pacs008 = buildPacs008Message(qrData, transactionId);
+    public Map<String, String> processPayment(QRCodeData qrData, String transactionId) throws Exception {
+        String txId = "BBANKETA" + System.currentTimeMillis();
+        String pacs008 = buildPacs008Message(qrData, transactionId, txId);
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
-        return sendPaymentRequest(signedPacs008, accessToken, transactionId);
+        String accessToken = getAccessToken(transactionId);
+        String responseXml = sendPaymentRequest(signedPacs008, accessToken, transactionId);
+        
+        return Map.of("endToEndId", txId, "response", responseXml);
     }
 
-    private String buildPacs008Message(QRCodeData qrData, String transactionId) {
+    private String buildPacs008Message(QRCodeData qrData, String transactionId, String txId) {
         transactionLogger.log(transactionId, "--- 2. Building pacs.008 Message from QR Data ---");
 
         String bizMsgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         String msgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-        String txId = "BBANKETA" + System.currentTimeMillis();
         
-        // Fix Date Format: Truncate to milliseconds (SSS) to comply with common ISO 20022 schemas
-        // Example: 2026-03-24T14:21:41.245+03:00
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(formatter);
-        // Header usually just YYYY-MM-DDThh:mm:ss... but sometimes simplified. Keeping consistent for now.
+        DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(offsetFormatter);
         String createDt = createDtTm;
 
         String amount = qrData.getTransactionAmount() != null ? qrData.getTransactionAmount() : "0.00";
-        // Fix Currency: Ensure Alpha-3 code. If "230", convert to "ETB".
-        String currency = qrData.getTransactionCurrency();
-        if ("230".equals(currency)) {
-            currency = "ETB";
-        } else if (currency == null) {
-            currency = "ETB";
-        }
+        String currency = "ETB";
         
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "N/A";
-        String creditorCity = qrData.getMerchantCity() != null ? qrData.getMerchantCity() : "Addis Ababa";
-        String creditorCountry = qrData.getCountryCode() != null ? qrData.getCountryCode() : "ET";
         
-        // Address block construction - only add fields if present to avoid empty tags
-        StringBuilder addressBlock = new StringBuilder();
-        addressBlock.append("<document:TwnNm>").append(creditorCity).append("</document:TwnNm>");
-        if (qrData.getPostalCode() != null && !qrData.getPostalCode().isEmpty()) {
-            addressBlock.append("<document:PstCd>").append(qrData.getPostalCode()).append("</document:PstCd>");
-        }
-        addressBlock.append("<document:Ctry>").append(creditorCountry).append("</document:Ctry>");
-
-        String instructedAgentId = "ETSETAA";
-        String creditorAcctId = "123456789111";
+        String instructedAgentId = "ETSETAA"; // Per working sample, this is fixed in GrpHdr
+        String creditorAcctId = "000000000000";
         Map<String, String> mai = qrData.getMerchantAccountInformation();
         if (mai != null && mai.containsKey("28")) {
             String[] parts = mai.get("28").split("\\|");
             if (parts.length >= 3) {
-                instructedAgentId = parts[1];
+                // The actual merchant's bank from QR is used as CdtrAgt, not InstdAgt in GrpHdr
+                // instructedAgentId = parts[1]; 
                 creditorAcctId = parts[2];
             }
         }
 
-        String purposeCode = "C2BSQR"; 
+        String purposeCode = "C2BSQR";
         String remittanceInfo = "QR Payment";
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null) {
-            if (additionalData.containsKey("08")) {
-                // If the QR has "Payment", map it to "C2BSQR" or standard code if needed.
-                // Or use as is if it's a code. 
-                // For now, defaulting to C2BSQR for standard QR payments.
-                // But if the QR specifically has a Purpose Code, use it.
-                String rawPurpose = additionalData.get("08");
-                if (rawPurpose.length() <= 4 && rawPurpose.matches("[A-Z]+")) {
-                     purposeCode = rawPurpose;
-                }
-            }
-            if (additionalData.containsKey("05")) {
-                remittanceInfo = additionalData.get("05");
-            }
+            if (additionalData.containsKey("08")) { purposeCode = additionalData.get("08"); }
+            if (additionalData.containsKey("05")) { remittanceInfo = additionalData.get("05"); }
         }
         if (qrData.getContextOfTransaction() != null && !qrData.getContextOfTransaction().isEmpty()) {
             remittanceInfo = qrData.getContextOfTransaction();
@@ -190,7 +170,7 @@ public class PaymentService {
                                 <document:CreDtTm>%s</document:CreDtTm>
                                 <document:NbOfTxs>1</document:NbOfTxs>
                                 <document:SttlmInf><document:SttlmMtd>CLRG</document:SttlmMtd><document:ClrSys><document:Prtry>FP</document:Prtry></document:ClrSys></document:SttlmInf>
-                                <document:PmtTpInf><document:LclInstrm><document:Prtry>CRTRM</document:Prtry></document:LclInstrm><document:CtgyPurp><document:Prtry>%s</document:Prtry></document:CtgyPurp></document:PmtTpInf>
+                                <document:PmtTpInf><document:LclInstrm><document:Prtry>CRTRM</document:Prtry></document:LclInstrm></document:PmtTpInf>
                                 <document:InstgAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:InstgAgt>
                                 <document:InstdAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:InstdAgt>
                             </document:GrpHdr>
@@ -200,26 +180,39 @@ public class PaymentService {
                                 <document:AccptncDtTm>%s</document:AccptncDtTm>
                                 <document:InstdAmt Ccy="%s">%s</document:InstdAmt>
                                 <document:ChrgBr>SLEV</document:ChrgBr>
-                                <document:Dbtr><document:Nm>%s</document:Nm></document:Dbtr>
-                                <document:DbtrAcct><document:Id><document:Othr><document:Id>%s</document:Id></document:Othr></document:Id></document:DbtrAcct>
-                                <document:DbtrAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:DbtrAgt>
+                                <document:Dbtr><document:Nm>%s</document:Nm><document:PstlAdr><document:AdrLine>Address</document:AdrLine></document:PstlAdr></document:Dbtr>
+                                <document:DbtrAcct><document:Id><document:Othr><document:Id>%s</document:Id><document:SchmeNm><document:Prtry>ACCT</document:Prtry></document:SchmeNm><document:Issr>C</document:Issr></document:Othr></document:Id></document:DbtrAcct>
+                                <document:DbtrAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id><document:Issr>ATM</document:Issr></document:Othr></document:FinInstnId></document:DbtrAgt>
                                 <document:CdtrAgt><document:FinInstnId><document:Othr><document:Id>%s</document:Id></document:Othr></document:FinInstnId></document:CdtrAgt>
-                                <document:Cdtr>
-                                    <document:Nm>%s</document:Nm>
-                                    <document:PstlAdr>
-                                        %s
-                                    </document:PstlAdr>
-                                </document:Cdtr>
-                                <document:CdtrAcct><document:Id><document:Othr><document:Id>%s</document:Id></document:Othr></document:Id></document:CdtrAcct>
+                                <document:Cdtr><document:Nm>%s</document:Nm></document:Cdtr>
+                                <document:CdtrAcct><document:Id><document:Othr><document:Id>%s</document:Id><document:SchmeNm><document:Prtry>ACCT</document:Prtry></document:SchmeNm></document:Othr></document:Id></document:CdtrAcct>
                                 <document:RmtInf><document:Ustrd>%s</document:Ustrd></document:RmtInf>
                             </document:CdtTrfTxInf>
                         </document:FIToFICstmrCdtTrf>
                     </document:Document>
                 </FPEnvelope>
                 """,
-                instructingAgentId, bizMsgId, createDt, msgId, createDtTm, purposeCode, instructingAgentId, instructedAgentId, txId, txId,
-                currency, amount, createDtTm, currency, amount, debtorName, debtorAcctId, instructingAgentId,
-                instructedAgentId, creditorName, addressBlock.toString(), creditorAcctId, remittanceInfo
+                instructingAgentId, // AppHdr -> Fr -> Id
+                bizMsgId,           // AppHdr -> BizMsgIdr
+                createDt,           // AppHdr -> CreDt
+                msgId,              // GrpHdr -> MsgId
+                createDtTm,         // GrpHdr -> CreDtTm
+                instructingAgentId, // GrpHdr -> InstgAgt -> Id
+                instructedAgentId,  // GrpHdr -> InstdAgt -> Id (ETSETAA)
+                txId,               // CdtTrfTxInf -> PmtId -> EndToEndId
+                txId,               // CdtTrfTxInf -> PmtId -> TxId
+                currency,           // CdtTrfTxInf -> IntrBkSttlmAmt -> Ccy
+                amount,             // CdtTrfTxInf -> IntrBkSttlmAmt -> Value
+                createDtTm,         // CdtTrfTxInf -> AccptncDtTm
+                currency,           // CdtTrfTxInf -> InstdAmt -> Ccy
+                amount,             // CdtTrfTxInf -> InstdAmt -> Value
+                debtorName,         // CdtTrfTxInf -> Dbtr -> Nm
+                debtorAcctId,       // CdtTrfTxInf -> DbtrAcct -> Id
+                instructingAgentId, // CdtTrfTxInf -> DbtrAgt -> Id
+                instructedAgentId,  // CdtTrfTxInf -> CdtrAgt -> Id
+                creditorName,       // CdtTrfTxInf -> Cdtr -> Nm
+                creditorAcctId,     // CdtTrfTxInf -> CdtrAcct -> Id
+                remittanceInfo      // CdtTrfTxInf -> RmtInf -> Ustrd
         );
 
         transactionLogger.log(transactionId, "Constructed pacs.008 Message:\n" + xml);
@@ -275,8 +268,20 @@ public class PaymentService {
                 transactionLogger.log(transactionId, "Payment Response Body: " + responseString);
                 
                 if (statusCode >= 200 && statusCode < 300) {
-                    transactionLogger.log(transactionId, "Payment Processed Successfully by Server.");
-                    return responseString;
+                    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(responseString)));
+                    XPath xPath = XPathFactory.newInstance().newXPath();
+                    String txStatus = xPath.compile("//*[local-name()='TxSts']/text()").evaluate(doc);
+
+                    if ("ACSC".equals(txStatus)) {
+                        transactionLogger.log(transactionId, "Payment Confirmed with Status: ACSC");
+                        return responseString;
+                    } else {
+                        String reason = xPath.compile("//*[local-name()='RsnDesc']/text()").evaluate(doc);
+                        if (reason == null || reason.isEmpty()) {
+                            reason = "Transaction rejected with status: " + txStatus;
+                        }
+                        throw new IOException(reason);
+                    }
                 } else {
                     throw new IOException("Payment Failed. Status: " + statusCode + ", Detail: " + responseString);
                 }

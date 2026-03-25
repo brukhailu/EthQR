@@ -25,9 +25,6 @@ public class PaymentController {
     @PostMapping("/get-token")
     public ResponseEntity<?> getToken() {
         try {
-            // Note: This endpoint is standalone, for specific token testing if needed.
-            // The process flow handles token internally.
-            // We use a temp ID for logging if called directly.
             String tempId = UUID.randomUUID().toString();
             String accessToken = paymentService.getAccessToken(tempId);
             return ResponseEntity.ok(Collections.singletonMap("access_token", accessToken));
@@ -41,17 +38,16 @@ public class PaymentController {
             @RequestBody QRCodeData qrData,
             @RequestHeader(value = "X-Transaction-Id", required = false) String clientTransactionId) {
         
-        // Use client provided ID or generate new one
         String transactionId = (clientTransactionId != null && !clientTransactionId.isEmpty()) 
                 ? clientTransactionId 
                 : UUID.randomUUID().toString();
 
         try {
-            String response = paymentService.processPayment(qrData, transactionId);
+            Map<String, String> paymentResult = paymentService.processPayment(qrData, transactionId);
             Map<String, String> responseBody = Map.of(
                 "status", "SUCCESS",
-                "response", response,
-                "transactionId", transactionId
+                "response", paymentResult.get("response"),
+                "transactionId", paymentResult.get("endToEndId") // Return the correct ID
             );
             return ResponseEntity.ok(responseBody);
         } catch (Exception e) {
@@ -64,7 +60,7 @@ public class PaymentController {
     }
 
     @GetMapping("/logs/{transactionId}")
-    public ResponseEntity<List<String>> getLogs(@PathVariable String transactionId) {
+    public ResponseEntity<List<String>> getLogs(@PathVariable("transactionId") String transactionId) {
         return ResponseEntity.ok(transactionLogger.getLogs(transactionId));
     }
 }
