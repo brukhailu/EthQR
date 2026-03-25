@@ -88,23 +88,16 @@ public class PaymentService {
                         throw new IOException("Access token not found in response.");
                     }
                 } else {
-                    throw new IOException("Failed to get token.");
+                    throw new IOException("Failed to get token. Status: " + statusCode + ", Detail: " + responseString);
                 }
             }
         }
     }
 
     public String processPayment(QRCodeData qrData, String transactionId) throws Exception {
-        // 1. Get Access Token
         String accessToken = getAccessToken(transactionId);
-
-        // 2. Construct ISO 20022 (pacs.008) Message
         String pacs008 = buildPacs008Message(qrData, transactionId);
-
-        // 3. Get Digital Signature (Digest)
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
-
-        // 4. Send Payment Request
         return sendPaymentRequest(signedPacs008, accessToken, transactionId);
     }
 
@@ -114,19 +107,37 @@ public class PaymentService {
         String bizMsgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         String msgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         String txId = "BBANKETA" + System.currentTimeMillis();
-        String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        
+        // Fix Date Format: Truncate to milliseconds (SSS) to comply with common ISO 20022 schemas
+        // Example: 2026-03-24T14:21:41.245+03:00
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(formatter);
+        // Header usually just YYYY-MM-DDThh:mm:ss... but sometimes simplified. Keeping consistent for now.
         String createDt = createDtTm;
 
         String amount = qrData.getTransactionAmount() != null ? qrData.getTransactionAmount() : "0.00";
-        String currency = qrData.getTransactionCurrency() != null ? qrData.getTransactionCurrency() : "ETB";
+        // Fix Currency: Ensure Alpha-3 code. If "230", convert to "ETB".
+        String currency = qrData.getTransactionCurrency();
+        if ("230".equals(currency)) {
+            currency = "ETB";
+        } else if (currency == null) {
+            currency = "ETB";
+        }
         
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "N/A";
-        String creditorCity = qrData.getMerchantCity() != null ? qrData.getMerchantCity() : "N/A";
+        String creditorCity = qrData.getMerchantCity() != null ? qrData.getMerchantCity() : "Addis Ababa";
         String creditorCountry = qrData.getCountryCode() != null ? qrData.getCountryCode() : "ET";
-        String creditorPostalCode = qrData.getPostalCode() != null ? "<document:PstCd>" + qrData.getPostalCode() + "</document:PstCd>\n" : "";
+        
+        // Address block construction - only add fields if present to avoid empty tags
+        StringBuilder addressBlock = new StringBuilder();
+        addressBlock.append("<document:TwnNm>").append(creditorCity).append("</document:TwnNm>");
+        if (qrData.getPostalCode() != null && !qrData.getPostalCode().isEmpty()) {
+            addressBlock.append("<document:PstCd>").append(qrData.getPostalCode()).append("</document:PstCd>");
+        }
+        addressBlock.append("<document:Ctry>").append(creditorCountry).append("</document:Ctry>");
 
         String instructedAgentId = "ETSETAA";
-        String creditorAcctId = "000000000000";
+        String creditorAcctId = "123456789111";
         Map<String, String> mai = qrData.getMerchantAccountInformation();
         if (mai != null && mai.containsKey("28")) {
             String[] parts = mai.get("28").split("\\|");
@@ -136,12 +147,19 @@ public class PaymentService {
             }
         }
 
-        String purposeCode = "C2BSQR";
+        String purposeCode = "C2BSQR"; 
         String remittanceInfo = "QR Payment";
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null) {
             if (additionalData.containsKey("08")) {
-                purposeCode = additionalData.get("08");
+                // If the QR has "Payment", map it to "C2BSQR" or standard code if needed.
+                // Or use as is if it's a code. 
+                // For now, defaulting to C2BSQR for standard QR payments.
+                // But if the QR specifically has a Purpose Code, use it.
+                String rawPurpose = additionalData.get("08");
+                if (rawPurpose.length() <= 4 && rawPurpose.matches("[A-Z]+")) {
+                     purposeCode = rawPurpose;
+                }
             }
             if (additionalData.containsKey("05")) {
                 remittanceInfo = additionalData.get("05");
@@ -189,9 +207,7 @@ public class PaymentService {
                                 <document:Cdtr>
                                     <document:Nm>%s</document:Nm>
                                     <document:PstlAdr>
-                                        <document:TwnNm>%s</document:TwnNm>
                                         %s
-                                        <document:Ctry>%s</document:Ctry>
                                     </document:PstlAdr>
                                 </document:Cdtr>
                                 <document:CdtrAcct><document:Id><document:Othr><document:Id>%s</document:Id></document:Othr></document:Id></document:CdtrAcct>
@@ -203,7 +219,7 @@ public class PaymentService {
                 """,
                 instructingAgentId, bizMsgId, createDt, msgId, createDtTm, purposeCode, instructingAgentId, instructedAgentId, txId, txId,
                 currency, amount, createDtTm, currency, amount, debtorName, debtorAcctId, instructingAgentId,
-                instructedAgentId, creditorName, creditorCity, creditorPostalCode, creditorCountry, creditorAcctId, remittanceInfo
+                instructedAgentId, creditorName, addressBlock.toString(), creditorAcctId, remittanceInfo
         );
 
         transactionLogger.log(transactionId, "Constructed pacs.008 Message:\n" + xml);
@@ -233,7 +249,7 @@ public class PaymentService {
                     transactionLogger.log(transactionId, "Message Digested Successfully.");
                     return responseString;
                 } else {
-                    throw new IOException("Failed to digest message.");
+                    throw new IOException("Failed to digest message. Status: " + statusCode + ", Detail: " + responseString);
                 }
             }
         }
@@ -262,7 +278,7 @@ public class PaymentService {
                     transactionLogger.log(transactionId, "Payment Processed Successfully by Server.");
                     return responseString;
                 } else {
-                    throw new IOException("Payment Failed.");
+                    throw new IOException("Payment Failed. Status: " + statusCode + ", Detail: " + responseString);
                 }
             }
         }

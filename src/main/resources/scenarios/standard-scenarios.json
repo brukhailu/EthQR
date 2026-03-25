@@ -10,7 +10,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -32,7 +32,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -55,7 +55,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -79,7 +79,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -104,7 +104,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -129,7 +129,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -151,7 +151,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -174,7 +174,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -198,7 +198,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -222,7 +222,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -244,7 +244,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -252,7 +252,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-911223344", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -266,7 +266,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -288,7 +288,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -310,7 +310,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -332,7 +332,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -354,7 +354,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -377,7 +377,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -400,7 +400,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -423,7 +423,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -446,7 +446,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -469,7 +469,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -492,7 +492,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -515,7 +515,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -537,7 +537,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -559,7 +559,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -582,7 +582,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -591,7 +591,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "uetr": "581b314e257f41bfbbdc6384daa31d16",
+      "uetr": "581b314e-257f-41bf-bbdc-6384daa31d16",
       "additionalDataField": { "08": "Purpose" },
       "crc": "5376"
     }
@@ -606,7 +606,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -633,7 +633,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -655,7 +655,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -677,7 +677,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -699,7 +699,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -721,7 +721,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -743,7 +743,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -765,7 +765,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -787,7 +787,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -810,7 +810,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -819,7 +819,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-911223344", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -833,7 +833,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -856,7 +856,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -879,7 +879,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -902,7 +902,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -925,7 +925,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -948,7 +948,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -971,7 +971,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -994,7 +994,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1003,7 +1003,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "02": "911223344", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-911223344", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1017,7 +1017,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1040,7 +1040,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1063,7 +1063,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1086,7 +1086,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1109,7 +1109,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1132,7 +1132,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1155,7 +1155,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1178,7 +1178,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1202,7 +1202,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1212,7 +1212,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "02": "922334455", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-922334455", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1226,7 +1226,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1250,7 +1250,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1274,7 +1274,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1298,7 +1298,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1322,7 +1322,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1346,7 +1346,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1370,7 +1370,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1394,7 +1394,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1418,7 +1418,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1428,7 +1428,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "02": "933445566", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-933445566", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1442,7 +1442,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1466,7 +1466,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1490,7 +1490,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1514,7 +1514,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1538,7 +1538,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1562,7 +1562,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1586,7 +1586,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1610,7 +1610,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1621,7 +1621,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "10": "123456789" },
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -1635,7 +1635,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1646,7 +1646,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "11": "400" },
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "Dinner", "09": "M", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1660,7 +1660,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1671,7 +1671,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "08": "Dinner", "10": "123456789", "11": "400" },
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "Dinner", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1685,7 +1685,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1696,7 +1696,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "912345678", "03": "MAIN-STORE", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1710,7 +1710,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1719,7 +1719,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-005", "02": "911111111", "03": "STORE-005", "04": "123456789", "07": "TERM-005", "08": "Payment", "09": "AEM" },
+      "additionalDataField": { "01": "BILL-005", "02": "+251-911111111", "03": "STORE-005", "04": "123456789", "07": "TERM-005", "08": "Payment", "09": "AEM" },
       "crc": "5376"
     }
   },
@@ -1733,7 +1733,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1742,7 +1742,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-006", "02": "922222222", "03": "STORE-006", "04": "123456789", "07": "TERM-006", "08": "Payment", "10": "123456789" },
+      "additionalDataField": { "01": "BILL-006", "02": "+251-922222222", "03": "STORE-006", "04": "123456789", "07": "TERM-006", "08": "Payment", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -1756,7 +1756,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1765,7 +1765,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-007", "02": "933333333", "03": "STORE-007", "04": "123456789", "07": "TERM-007", "08": "Payment", "11": "400" },
+      "additionalDataField": { "01": "BILL-007", "02": "+251-933333333", "03": "STORE-007", "04": "123456789", "07": "TERM-007", "08": "Payment", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1779,7 +1779,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1788,7 +1788,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-008", "02": "944444444", "03": "STORE-008", "04": "123456789", "07": "TERM-008", "09": "AEM", "10": "123456789", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-008", "02": "+251-944444444", "03": "STORE-008", "04": "123456789", "07": "TERM-008", "09": "AEM", "10": "123456789", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1802,7 +1802,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1811,7 +1811,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-009", "02": "955555555", "03": "STORE-009", "04": "123456789", "07": "TERM-009", "09": "AEM", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-009", "02": "+251-955555555", "03": "STORE-009", "04": "123456789", "07": "TERM-009", "09": "AEM", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1825,7 +1825,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1834,7 +1834,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-010", "02": "966666666", "03": "STORE-010", "04": "123456789", "07": "TERM-010", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-010", "02": "+251-966666666", "03": "STORE-010", "04": "123456789", "07": "TERM-010", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1848,7 +1848,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1859,7 +1859,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "977777777", "03": "STORE-011", "04": "123456789", "07": "TERM-011", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "123456789", "07": "TERM-011", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -1873,7 +1873,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1884,7 +1884,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "977777777", "03": "STORE-011", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1898,7 +1898,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1909,7 +1909,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "977777777", "03": "STORE-011", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1923,7 +1923,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1934,7 +1934,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "977777777", "04": "123456789", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "02": "+251-977777777", "04": "123456789", "07": "TERM-011", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -1948,7 +1948,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1973,7 +1973,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -1983,7 +1983,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "BILL-012", "02": "988888888", "03": "STORE-012", "04": "123456789", "07": "TERM-012", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "additionalDataField": { "01": "BILL-012", "02": "+251-988888888", "03": "STORE-012", "04": "123456789", "07": "TERM-012", "08": "Payment", "09": "AEM", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -1997,7 +1997,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2007,7 +2007,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "BILL-013", "02": "999999999", "03": "STORE-013", "04": "123456789", "07": "TERM-013", "08": "Payment", "09": "AEM", "11": "400" },
+      "additionalDataField": { "01": "BILL-013", "02": "+251-999999999", "03": "STORE-013", "04": "123456789", "07": "TERM-013", "08": "Payment", "09": "AEM", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2021,7 +2021,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2031,7 +2031,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "BILL-014", "02": "900000000", "03": "STORE-014", "04": "123456789", "07": "TERM-014", "08": "Payment", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-014", "02": "+251-900000000", "03": "STORE-014", "04": "123456789", "07": "TERM-014", "08": "Payment", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2045,7 +2045,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2055,7 +2055,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "BILL-015", "02": "911111111", "03": "STORE-015", "04": "123456789", "07": "TERM-015", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-015", "02": "+251-911111111", "03": "STORE-015", "04": "123456789", "07": "TERM-015", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -2069,7 +2069,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2079,7 +2079,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "BILL-016", "02": "922222222", "03": "STORE-016", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-016", "02": "+251-922222222", "03": "STORE-016", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2093,7 +2093,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2103,7 +2103,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "BILL-017", "02": "933333333", "03": "STORE-017", "04": "123456789", "07": "TERM-017", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "additionalDataField": { "01": "BILL-017", "02": "+251-933333333", "03": "STORE-017", "04": "123456789", "07": "TERM-017", "08": "Payment", "09": "AEM", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -2117,7 +2117,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2127,7 +2127,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "BILL-018", "02": "944444444", "03": "STORE-018", "04": "123456789", "07": "TERM-018", "08": "Payment", "09": "AEM", "11": "400" },
+      "additionalDataField": { "01": "BILL-018", "02": "+251-944444444", "03": "STORE-018", "04": "123456789", "07": "TERM-018", "08": "Payment", "09": "AEM", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2141,7 +2141,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2151,7 +2151,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "BILL-019", "02": "955555555", "03": "STORE-019", "04": "123456789", "07": "TERM-019", "08": "Payment", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-019", "02": "+251-955555555", "03": "STORE-019", "04": "123456789", "07": "TERM-019", "08": "Payment", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2165,7 +2165,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2175,7 +2175,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "BILL-020", "02": "966666666", "03": "STORE-020", "04": "123456789", "07": "TERM-020", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-020", "02": "+251-966666666", "03": "STORE-020", "04": "123456789", "07": "TERM-020", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -2189,7 +2189,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2199,7 +2199,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-021", "02": "977777777", "03": "STORE-021", "04": "123456789", "07": "TERM-021", "08": "Payment", "09": "AEM", "10": "123456789" },
+      "additionalDataField": { "01": "BILL-021", "02": "+251-977777777", "03": "STORE-021", "04": "123456789", "07": "TERM-021", "08": "Payment", "09": "AEM", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -2213,7 +2213,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2223,7 +2223,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-022", "02": "988888888", "03": "STORE-022", "04": "123456789", "07": "TERM-022", "08": "Payment", "09": "AEM", "11": "400" },
+      "additionalDataField": { "01": "BILL-022", "02": "+251-988888888", "03": "STORE-022", "04": "123456789", "07": "TERM-022", "08": "Payment", "09": "AEM", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2237,7 +2237,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2247,7 +2247,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-023", "02": "999999999", "03": "STORE-023", "04": "123456789", "07": "TERM-023", "08": "Payment", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-023", "02": "+251-999999999", "03": "STORE-023", "04": "123456789", "07": "TERM-023", "08": "Payment", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2261,7 +2261,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2271,7 +2271,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-024", "02": "900000000", "03": "STORE-024", "04": "123456789", "07": "TERM-024", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-024", "02": "+251-900000000", "03": "STORE-024", "04": "123456789", "07": "TERM-024", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
       "crc": "5376"
     }
   },
@@ -2285,7 +2285,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2295,7 +2295,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-025", "02": "911111111", "03": "STORE-025", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-025", "02": "+251-911111111", "03": "STORE-025", "04": "123456789", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2309,7 +2309,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2319,7 +2319,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-026", "02": "922222222", "03": "STORE-026", "07": "TERM-026", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-026", "02": "+251-922222222", "03": "STORE-026", "07": "TERM-026", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2333,7 +2333,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2343,7 +2343,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "BILL-027", "02": "933333333", "04": "123456789", "07": "TERM-027", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-027", "02": "+251-933333333", "04": "123456789", "07": "TERM-027", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2357,7 +2357,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2381,7 +2381,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2391,7 +2391,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "02": "944444444", "03": "STORE-029", "04": "123456789", "07": "TERM-029", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "02": "+251-944444444", "03": "STORE-029", "04": "123456789", "07": "TERM-029", "08": "Payment", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2405,7 +2405,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2416,7 +2416,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "COMPLEX-TERM", "08": "Complex-Purpose", "09": "AEM", "10": "123456789" },
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "COMPLEX-TERM", "08": "Complex-Purpose", "09": "AEM", "10": "123456789" },
       "crc": "5376"
     }
   },
@@ -2430,7 +2430,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2441,7 +2441,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "09": "AEM", "11": "400" },
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "09": "AEM", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2455,7 +2455,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2466,7 +2466,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "08": "Complex-Purpose", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2480,7 +2480,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2491,7 +2491,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "09": "AEM", "10": "123456789", "11": "400", "08": "Purpose" },
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "123456789", "07": "TERM-COMPLEX", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2505,7 +2505,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2516,7 +2516,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "BILL-COMPLEX", "02": "911111111", "03": "COMPLEX-STORE", "04": "123456789", "08": "Complex-Purpose", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-COMPLEX", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "123456789", "08": "Complex-Purpose", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   },
@@ -2530,7 +2530,7 @@
         "28": {
           "00": "581b314e257f41bfbbdc6384daa31d16",
           "01": "ETSETAA",
-          "02": "100012345678"
+          "02": "1234567890"
         }
       },
       "merchantCategoryCode": "5411",
@@ -2541,7 +2541,7 @@
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "BILL-108", "02": "922222222", "03": "STORE-108", "07": "TERM-108", "08": "Purpose-108", "09": "AEM", "10": "123456789", "11": "400" },
+      "additionalDataField": { "01": "BILL-108", "02": "+251-922222222", "03": "STORE-108", "07": "TERM-108", "08": "Purpose-108", "09": "AEM", "10": "123456789", "11": "400" },
       "crc": "5376"
     }
   }
