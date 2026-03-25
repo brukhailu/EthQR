@@ -73,7 +73,7 @@ public class PaymentService {
             String body = "grant_type=password&username=" + URLEncoder.encode(username, StandardCharsets.UTF_8) +
                     "&password=" + URLEncoder.encode(password, StandardCharsets.UTF_8);
             httpPost.setEntity(new StringEntity(body));
-            
+
             transactionLogger.log(transactionId, "Token Request URL: " + tokenUrl);
             transactionLogger.log(transactionId, "Token Request Body: " + body);
 
@@ -81,7 +81,7 @@ public class PaymentService {
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity entity = response.getEntity();
                 String responseString = entity != null ? EntityUtils.toString(entity) : "";
-                
+
                 transactionLogger.log(transactionId, "Token Response Status: " + statusCode);
                 transactionLogger.log(transactionId, "Token Response Body: " + responseString);
 
@@ -107,7 +107,7 @@ public class PaymentService {
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
         String accessToken = getAccessToken(transactionId);
         String responseXml = sendPaymentRequest(signedPacs008, accessToken, transactionId);
-        
+
         return Map.of("endToEndId", txId, "response", responseXml);
     }
 
@@ -116,24 +116,23 @@ public class PaymentService {
 
         String bizMsgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         String msgId = "BBANKETA" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-        
+
         DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         String createDtTm = LocalDateTime.now().atZone(ZoneId.systemDefault()).format(offsetFormatter);
         String createDt = createDtTm;
 
         String amount = qrData.getTransactionAmount() != null ? qrData.getTransactionAmount() : "0.00";
         String currency = "ETB";
-        
+
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "N/A";
-        
-        String instructedAgentId = "ETSETAA"; // Per working sample, this is fixed in GrpHdr
+
+        String instructedAgentId = "ETSETAA";
         String creditorAcctId = "000000000000";
         Map<String, String> mai = qrData.getMerchantAccountInformation();
         if (mai != null && mai.containsKey("28")) {
             String[] parts = mai.get("28").split("\\|");
             if (parts.length >= 3) {
-                // The actual merchant's bank from QR is used as CdtrAgt, not InstdAgt in GrpHdr
-                // instructedAgentId = parts[1]; 
+                instructedAgentId = parts[1];
                 creditorAcctId = parts[2];
             }
         }
@@ -255,7 +254,7 @@ public class PaymentService {
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/xml");
             httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
             httpPost.setEntity(new StringEntity(signedXml, StandardCharsets.UTF_8));
-            
+
             transactionLogger.log(transactionId, "Payment Request URL: " + incomingUrl);
             transactionLogger.log(transactionId, "Payment Request Body:\n" + signedXml);
 
@@ -263,10 +262,10 @@ public class PaymentService {
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity entity = response.getEntity();
                 String responseString = entity != null ? EntityUtils.toString(entity) : "";
-                
+
                 transactionLogger.log(transactionId, "Payment Response Status: " + statusCode);
                 transactionLogger.log(transactionId, "Payment Response Body: " + responseString);
-                
+
                 if (statusCode >= 200 && statusCode < 300) {
                     Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(responseString)));
                     XPath xPath = XPathFactory.newInstance().newXPath();

@@ -619,8 +619,6 @@
         }
 
         const backendPayload = mapDataToBackendModel(currentQRData);
-
-        // Use custom UUID generator
         const transactionId = generateUUID();
 
         const logConsole = document.getElementById('log-console');
@@ -657,7 +655,7 @@
 
                 document.getElementById('successAmount').textContent = `ETB ${total.toFixed(2)}`;
                 document.getElementById('successMerchant').textContent = document.getElementById('merchantNameDisplay').textContent;
-                document.getElementById('successTxId').textContent = transactionId;
+                document.getElementById('successTxId').textContent = result.transactionId; // Use backend EndToEndId
                 navTo('success');
             }, 1500);
 
