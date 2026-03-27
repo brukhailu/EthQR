@@ -31,13 +31,17 @@
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span><i class="fas fa-edit me-2 text-primary"></i>Generate QR Data</span>
-                        <div class="input-group input-group-sm" style="width: auto;">
-                            <select class="form-select" id="testScenario" onchange="loadScenario()">
-                                <option value="">Select Test Scenario...</option>
-                            </select>
-                            <a href="/api/qr/scenarios" download="standard-scenarios.json" class="btn btn-outline-secondary" title="Download Scenarios">
-                                <i class="fas fa-download"></i>
-                            </a>
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="input-group input-group-sm" style="width: auto;">
+                                <select class="form-select" id="testScenario" onchange="loadScenario()">
+                                    <option value="">Select Test Scenario...</option>
+                                </select>
+                                <a href="/api/qr/scenarios" download="standard-scenarios.json" class="btn btn-outline-secondary" title="Download Scenarios">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                            <button class="btn btn-sm btn-outline-info" onclick="triggerImport()"><i class="fas fa-file-import me-1"></i> Import QR Image</button>
+                            <input type="file" id="qrImportInput" style="display:none" accept="image/*" onchange="handleQrImport(this)">
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -83,12 +87,19 @@
                         </div>
 
                         <div class="text-start">
-                            <label class="form-label">TLV String</label>
-                            <div class="input-group">
-                                <textarea class="form-control font-monospace" id="tlvOutput" rows="5" readonly style="font-size: 0.85em;"></textarea>
-                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
-                                    <i class="fas fa-copy"></i>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">TLV String</label>
+                                <button class="btn btn-sm btn-link text-info p-0 text-decoration-none" onclick="reverseEngineerFromText()">
+                                    <i class="fas fa-undo-alt me-1"></i> Populate Form from Text
                                 </button>
+                            </div>
+                            <div class="input-group">
+                                <textarea class="form-control font-monospace" id="tlvOutput" rows="5" style="font-size: 0.85em;" placeholder="Enter TLV string here to reverse engineer..."></textarea>
+                                <div class="d-flex flex-column gap-1 ms-1">
+                                    <button class="btn btn-outline-secondary h-100" type="button" onclick="copyToClipboard()" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -111,7 +122,6 @@
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 <script>
-    // ... (Keep existing script logic exactly as is, it's specific to this page) ...
     let tagConfig = {};
     let scenarios = [];
 
@@ -128,7 +138,7 @@
             scenarios.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s.id;
-                opt.text = `${s.id}. ${s.name}`;
+                opt.text = s.name;
                 select.appendChild(opt);
             });
 
@@ -172,6 +182,84 @@
             sessionStorage.setItem('autoParseTlv', tlv);
         }
         window.location.href = '/parser';
+    }
+
+    function triggerImport() {
+        document.getElementById('qrImportInput').click();
+    }
+
+    async function handleQrImport(input) {
+        if(input.files && input.files[0]) {
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+            try {
+                const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
+                if(!resp.ok) throw new Error("Decode failed");
+                const data = await resp.json();
+                document.getElementById('tlvOutput').value = data.raw;
+                populateForm(data.parsed);
+                showToast("QR Image imported and form populated", 'success');
+            } catch(e) {
+                showToast("Could not read QR code from image", 'danger');
+            }
+        }
+    }
+
+    function reverseEngineerFromText() {
+        const tlv = document.getElementById('tlvOutput').value.trim();
+        if(!tlv) return showToast("Enter a TLV string first", 'warning');
+
+        fetch('/api/qr/parse', {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain'},
+            body: tlv
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.error) throw new Error(data.error);
+            populateForm(data);
+            showToast("Form populated from TLV text", 'success');
+        })
+        .catch(e => showToast("Invalid TLV: " + e.message, 'danger'));
+    }
+
+    function populateForm(parsedData) {
+        // Reset all inputs first
+        document.querySelectorAll('.gen-input').forEach(i => {
+            if(i.id === 'gen-input-63') return;
+            i.value = '';
+            i.classList.remove('is-valid', 'is-invalid');
+            const lenId = i.id.replace('gen-input', 'gen-len');
+            const lenEl = document.getElementById(lenId);
+            if(lenEl) lenEl.textContent = '00';
+        });
+
+        for (const [tag, val] of Object.entries(parsedData)) {
+            if (tag === '63') continue; // CRC is auto-calculated
+
+            const config = tagConfig[tag];
+            if (!config) continue;
+
+            if (typeof val === 'object' && val !== null) {
+                // Sub-TLV container
+                for (const [sTag, sVal] of Object.entries(val)) {
+                    const input = document.getElementById(`gen-input-${tag}-${sTag}`);
+                    if (input) {
+                        input.value = sVal;
+                        validateInput(input, tag, sTag);
+                        updateLen(`gen-len-${tag}-${sTag}`, sVal);
+                    }
+                }
+            } else {
+                // Primitive field
+                const input = document.getElementById(`gen-input-${tag}`);
+                if (input) {
+                    input.value = val;
+                    validateInput(input, tag);
+                    updateLen(`gen-len-${tag}`, val);
+                }
+            }
+        }
     }
 
     function validateTagValue(tag, value, config) {
@@ -269,7 +357,10 @@
 
     function updateLen(id, val) {
         const el = document.getElementById(id);
-        if(el) el.textContent = val.length.toString().padStart(2, '0');
+        if(el) {
+            const length = typeof val === 'string' ? val.length : 0;
+            el.textContent = length.toString().padStart(2, '0');
+        }
     }
 
     function validateInput(input, tag, subTag = null) {
@@ -287,11 +378,11 @@
 
         const res = validateTagValue(tag, val, targetConfig);
         if(res.valid) {
-            input.classList.remove('is-invalid', 'is-valid');
+            input.classList.remove('is-invalid');
             input.classList.add('is-valid');
             if(icon) { icon.classList.remove('d-none'); }
         } else {
-            input.classList.remove('is-valid', 'is-invalid');
+            input.classList.remove('is-valid');
             input.classList.add('is-invalid');
             if(icon) icon.classList.add('d-none');
         }
@@ -302,9 +393,7 @@
         const scenario = scenarios.find(s => s.id === id);
 
         document.querySelectorAll('.gen-input').forEach(i => {
-            // Skip CRC field which is disabled/readonly
             if(i.id === 'gen-input-63') return;
-
             i.value = '';
             i.classList.remove('is-valid', 'is-invalid');
             const lenId = i.id.replace('gen-input', 'gen-len');
@@ -333,9 +422,7 @@
 
         for (const [tag, config] of Object.entries(tagConfig)) {
             if(tag === '63') continue;
-
             const field = config.dataField;
-
             if (field && d[field] !== undefined) {
                 if (typeof d[field] !== 'object') {
                     const el = document.getElementById(`gen-input-${tag}`);
@@ -367,7 +454,6 @@
                     }
                 }
             }
-
             if (config.dataField === 'additionalDataField' && d.additionalDataField) {
                  if(config.subTags) {
                     config.subTags.forEach(st => {
@@ -378,7 +464,6 @@
                     });
                  }
             }
-
             if (config.dataField === 'merchantInformationLanguageTemplate' && d.merchantInformationLanguageTemplate) {
                  if(config.subTags) {
                     config.subTags.forEach(st => {
@@ -389,7 +474,6 @@
                     });
                  }
             }
-
             if(tag === '85' && d.transactionTypeCode) {
                 if(typeof d.transactionTypeCode === 'object') {
                     config.subTags.forEach(st => {
@@ -400,7 +484,6 @@
                     });
                 }
             }
-
              if (config.dataField === 'unreservedTemplates' && d.unreservedTemplates && d.unreservedTemplates[tag]) {
                 const tagData = d.unreservedTemplates[tag];
                 if (config.subTags) {
@@ -425,25 +508,18 @@
 
         for (const [tag, config] of Object.entries(tagConfig)) {
             if(tag === '63') continue;
-
             const field = config.dataField;
-
             if (config.subTags && config.subTags.length > 0) {
                 let anyFilled = false;
-
                 if (config.delimiter) {
                     let delim = config.delimiter; if(delim === '\\|') delim = '|';
-
                     const values = config.subTags.map(st => {
                          const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
                          return el ? el.value : '';
                     });
-
                     if(values.some(v => v !== '')) {
                         anyFilled = true;
-
                         const valStr = values.join(delim);
-
                         if (config.container) {
                              if(!payload.merchantAccountInformation) payload.merchantAccountInformation = {};
                              payload.merchantAccountInformation[tag] = valStr;
@@ -462,7 +538,6 @@
                             anyFilled = true;
                         }
                     });
-
                     if (anyFilled) {
                         if (field === 'additionalDataField') payload.additionalDataField = subMap;
                         else if (field === 'merchantInformationLanguageTemplate') payload.merchantInformationLanguageTemplate = subMap;
@@ -502,24 +577,19 @@
                 body: JSON.stringify(payload)
             });
             if(!strResp.ok) throw new Error((await strResp.json()).error || 'Generation failed');
-
             const tlv = await strResp.text();
             document.getElementById('tlvOutput').value = tlv;
-
             const imgResp = await fetch('/api/qr/generate', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
             if(!imgResp.ok) throw new Error('Image generation failed');
-
             const blob = await imgResp.blob();
             document.getElementById('qrImage').src = URL.createObjectURL(blob);
             document.getElementById('qrImage').style.display = 'block';
             document.getElementById('qrPlaceholder').style.display = 'none';
-
             showToast('QR Code Generated Successfully', 'success');
-
         } catch (e) {
             showToast(e.message, 'danger');
         }
