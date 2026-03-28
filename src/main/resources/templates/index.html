@@ -121,7 +121,7 @@
 
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
-<script>
+<script th:inline="javascript">
     let tagConfig = {};
     let scenarios = [];
 
@@ -138,7 +138,7 @@
             scenarios.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s.id;
-                opt.text = s.name;
+                opt.text = `${s.id}. ${s.name}`;
                 select.appendChild(opt);
             });
 
@@ -146,7 +146,6 @@
 
         } catch (e) {
             showToast('Error loading configuration', 'danger');
-            console.error(e);
         }
     };
 
@@ -154,10 +153,10 @@
         const container = document.getElementById('toastContainer');
         const id = 'toast-' + Date.now();
         const html = `
-            <div id="${id}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="${id}" class="toast align-items-center text-white bg-${type} border-0 shadow-lg" role="alert">
                 <div class="d-flex">
-                    <div class="toast-body">${message}</div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <div class="toast-body fw-600">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
                 </div>
             </div>
         `;
@@ -190,8 +189,20 @@
 
     async function handleQrImport(input) {
         if(input.files && input.files[0]) {
+            const file = input.files[0];
+
+            // Preview the imported image
+            const reader = new FileReader();
+            reader.onload = e => {
+                const qrImage = document.getElementById('qrImage');
+                qrImage.src = e.target.result;
+                qrImage.style.display = 'block';
+                document.getElementById('qrPlaceholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+
             const formData = new FormData();
-            formData.append('file', input.files[0]);
+            formData.append('file', file);
             try {
                 const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
                 if(!resp.ok) throw new Error("Decode failed");
@@ -345,9 +356,9 @@
                 <td class="tag-id">${tag}</td>
                 <td>${config.name}</td>
                 <td>${mo}</td>
-                <td class="meta-cell">${type}</td>
-                <td class="meta-cell">${maxLen}</td>
-                <td>${lenHtml}</td>
+                <td class="text-center meta-cell">${type}</td>
+                <td class="text-center meta-cell">${maxLen}</td>
+                <td class="text-center">${lenHtml}</td>
                 <td>${valueHtml}</td>
                 <td><i class="fas fa-check-circle text-success d-none" id="${inputId}-valid"></i></td>
             `;
@@ -500,10 +511,8 @@
 
     async function generateQR() {
         const payload = {
-            merchantAccountInformation: {},
-            additionalDataField: {},
-            merchantInformationLanguageTemplate: {},
-            unreservedTemplates: {}
+            merchantAccountInformation: {}, additionalDataField: {},
+            merchantInformationLanguageTemplate: {}, unreservedTemplates: {}
         };
 
         for (const [tag, config] of Object.entries(tagConfig)) {
@@ -520,23 +529,15 @@
                     if(values.some(v => v !== '')) {
                         anyFilled = true;
                         const valStr = values.join(delim);
-                        if (config.container) {
-                             if(!payload.merchantAccountInformation) payload.merchantAccountInformation = {};
-                             payload.merchantAccountInformation[tag] = valStr;
-                        }
-                        else if (field === 'transactionTypeCode') {
-                             payload.transactionTypeCode = valStr;
-                        }
+                        if (config.container) { payload.merchantAccountInformation[tag] = valStr; }
+                        else if (field === 'transactionTypeCode') { payload.transactionTypeCode = valStr; }
                     }
                 }
                 else {
                     const subMap = {};
                     config.subTags.forEach(st => {
                         const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
-                        if(el && el.value) {
-                            subMap[st.tag] = el.value;
-                            anyFilled = true;
-                        }
+                        if(el && el.value) { subMap[st.tag] = el.value; anyFilled = true; }
                     });
                     if (anyFilled) {
                         if (field === 'additionalDataField') payload.additionalDataField = subMap;
@@ -545,14 +546,10 @@
                              if(!payload.unreservedTemplates[tag]) payload.unreservedTemplates[tag] = {};
                              payload.unreservedTemplates[tag] = subMap;
                         }
-                        else if (config.container) {
-                            payload.merchantAccountInformation[tag] = subMap;
-                        }
+                        else if (config.container) { payload.merchantAccountInformation[tag] = subMap; }
                         else if (field === 'transactionTypeCode') {
                              let tlvStr = '';
-                             for(const [st, val] of Object.entries(subMap)) {
-                                 tlvStr += st + val.length.toString().padStart(2, '0') + val;
-                             }
+                             for(const [st, val] of Object.entries(subMap)) { tlvStr += st + val.length.toString().padStart(2, '0') + val; }
                              payload.transactionTypeCode = tlvStr;
                         }
                     }
@@ -561,28 +558,21 @@
             else {
                 const el = document.getElementById(`gen-input-${tag}`);
                 if (el && el.value) {
-                    if (config.container) {
-                        payload.merchantAccountInformation[tag] = el.value;
-                    } else if (field) {
-                        payload[field] = el.value;
-                    }
+                    if (config.container) { payload.merchantAccountInformation[tag] = el.value; }
+                    else if (field) { payload[field] = el.value; }
                 }
             }
         }
 
         try {
             const strResp = await fetch('/api/qr/generate-string', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(!strResp.ok) throw new Error((await strResp.json()).error || 'Generation failed');
             const tlv = await strResp.text();
             document.getElementById('tlvOutput').value = tlv;
             const imgResp = await fetch('/api/qr/generate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(!imgResp.ok) throw new Error('Image generation failed');
             const blob = await imgResp.blob();
