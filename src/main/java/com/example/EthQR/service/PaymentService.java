@@ -245,7 +245,7 @@ public class PaymentService {
         String categoryPurpose = determineCategoryPurpose(qrData, userInput);
         String purposeCode = determinePurposeCode(qrData, userInput);
         // Parse Merchant Account Information (tag 28)
-        String instructedAgentId = "VITAETAA";
+        String instructedAgentId = "ETSTETA";
         String creditorAcctId = "000000000000";
         String clearingType = "ACCT";
         String guid = null;
@@ -323,6 +323,35 @@ public class PaymentService {
         String merchantTaxId = extractMerchantTaxId(qrData);
         String merchantChannel = extractMerchantChannel(qrData);
 
+// ===== ADD THESE MISSING EXTRACTIONS =====
+// Tag 52: Merchant Category Code (MCC) - for Creditor Organization ID
+        String merchantCategoryCode = qrData.getMerchantCategoryCode();
+        transactionLogger.log(transactionId, "Merchant Category Code (MCC): " + merchantCategoryCode);
+
+// Tag 58: Country Code - for Creditor Country and CountryOfRes
+        String countryCode = qrData.getCountryCode() != null ? qrData.getCountryCode() : "ET";
+
+// Tag 61: Postal Code
+        String postalCode = qrData.getPostalCode();
+        transactionLogger.log(transactionId, "Postal Code: " + postalCode);
+
+// Tag 84: UETR from QR (already used, but ensure it's logged)
+        if (qrData.getUetr() != null) {
+            transactionLogger.log(transactionId, "UETR from QR: " + qrData.getUetr());
+        }
+
+// Address components from additional data (if available)
+        String creditorStreetName = null;
+        String creditorBuildingNumber = null;
+        String creditorAddressLine = null;
+        Map<String, String> additionalData = qrData.getAdditionalDataField();
+        if (additionalData != null) {
+            if (additionalData.containsKey("14")) creditorStreetName = additionalData.get("14");
+            if (additionalData.containsKey("15")) creditorBuildingNumber = additionalData.get("15");
+            if (additionalData.containsKey("16")) creditorAddressLine = additionalData.get("16");
+        }
+// ===== END OF ADDITIONS =====
+
         // Determine if this is a bill payment
         boolean isBillPayment = "C2BBPT".equals(categoryPurpose) || billNumber != null;
 
@@ -346,6 +375,7 @@ public class PaymentService {
                 .withUetr(uetr)
                 .withCurrency(currency)
                 .withAmount(totalAmount.toString())
+                .withTipAmount(String.valueOf(calculateTipAmountForRemittance(qrData, userInput)))  // ADD THIS
                 .withChargeBearer(chargeBearer)
                 .withLocalInstrument(localInstrument)
                 .withCategoryPurpose(categoryPurpose)
@@ -359,10 +389,16 @@ public class PaymentService {
                 .withDebtorClearingType(defaultDebtorClearingType)
                 .withDebtorPrivateId(defaultDebtorPrivateId)
                 .withDebtorPrivateIdScheme(defaultDebtorPrivateIdScheme)
-                // Creditor info (Merchant)
+                // Creditor info (Merchant) - UPDATED WITH ALL FIELDS
                 .withCreditorName(creditorName)
+                .withCreditorStreetName(creditorStreetName)           // ADDED
+                .withCreditorBuildingNumber(creditorBuildingNumber)   // ADDED
+                .withCreditorPostalCode(postalCode)                   // ADDED
                 .withCreditorTownName(creditorTownName)
-                .withCreditorCountryOfRes("ET")
+                .withCreditorCountry(countryCode)                     // ADDED
+                .withCreditorAddressLine(creditorAddressLine)         // ADDED
+                .withCreditorOrgId(merchantCategoryCode)              // ADDED (MCC)
+                .withCreditorCountryOfRes(countryCode)                // UPDATED (use actual country code)
                 .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")
                 .withCreditorAcctId(creditorAcctId)
                 .withCreditorClearingType(clearingType)
@@ -426,7 +462,35 @@ public class PaymentService {
 
         return defaultPurposeCode;
     }
+    private BigDecimal calculateTipAmountForRemittance(QRCodeData qrData, PaymentRequest userInput) {
+        if (userInput.getTipAmount() != null) {
+            return userInput.getTipAmount();
+        }
 
+        String tipIndicator = qrData.getTipOrConvenienceIndicator();
+        if (tipIndicator != null) {
+            switch (tipIndicator) {
+                case "02": // Fixed tip amount
+                    if (qrData.getValueOfConvenienceFeeFixed() != null && !qrData.getValueOfConvenienceFeeFixed().isEmpty()) {
+                        return new BigDecimal(qrData.getValueOfConvenienceFeeFixed());
+                    }
+                    break;
+                case "03": // Percentage tip - calculate from base amount
+                    BigDecimal baseAmount = BigDecimal.ZERO;
+                    if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
+                        baseAmount = new BigDecimal(qrData.getTransactionAmount());
+                    } else if (userInput.getAmount() != null) {
+                        baseAmount = userInput.getAmount();
+                    }
+                    if (qrData.getValueOfConvenienceFeePercentage() != null && !qrData.getValueOfConvenienceFeePercentage().isEmpty()) {
+                        BigDecimal percentage = new BigDecimal(qrData.getValueOfConvenienceFeePercentage());
+                        return baseAmount.multiply(percentage).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+                    }
+                    break;
+            }
+        }
+        return BigDecimal.ZERO;
+    }
     private String buildRemittanceUnstructured(QRCodeData qrData, PaymentRequest userInput) {
         StringBuilder sb = new StringBuilder();
 
@@ -976,6 +1040,9 @@ public class PaymentService {
             xml.append("                <document:PmtId>\n");
             xml.append("                    <document:EndToEndId>").append(escapeXml(endToEndId)).append("</document:EndToEndId>\n");
             xml.append("                    <document:TxId>").append(escapeXml(txId)).append("</document:TxId>\n");
+//            if (uetr != null && !uetr.isEmpty()) {
+//                xml.append("                    <document:UETR>").append(escapeXml(uetr)).append("</document:UETR>\n");
+//            }
             xml.append("                </document:PmtId>\n");
             xml.append("                <document:IntrBkSttlmAmt Ccy=\"").append(escapeXml(currency)).append("\">").append(escapeXml(amount)).append("</document:IntrBkSttlmAmt>\n");
             xml.append("                <document:AccptncDtTm>").append(escapeXml(createDtTm)).append("</document:AccptncDtTm>\n");
