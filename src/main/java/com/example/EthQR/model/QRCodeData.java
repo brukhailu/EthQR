@@ -28,6 +28,9 @@ public class QRCodeData {
     private String ecommerce; // ID 83
     private String uetr; // ID 84
     private String transactionTypeCode; // ID 85
+    
+    // Explicit bill number for easier mapping if not in additionalDataField
+    private String billNumber;
 
     private Map<String, Map<String, String>> unreservedTemplates; // ID 80-99 (Legacy/Other)
 }

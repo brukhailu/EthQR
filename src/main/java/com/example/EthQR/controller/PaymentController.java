@@ -1,8 +1,10 @@
 package com.example.EthQR.controller;
 
 import com.example.EthQR.model.QRCodeData;
+import com.example.EthQR.model.PaymentRequest;
 import com.example.EthQR.service.PaymentService;
 import com.example.EthQR.service.TransactionLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class PaymentController {
     @Autowired
     private TransactionLogger transactionLogger;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @PostMapping("/get-token")
     public ResponseEntity<?> getToken() {
         try {
@@ -35,7 +40,7 @@ public class PaymentController {
 
     @PostMapping("/process")
     public ResponseEntity<?> processPayment(
-            @RequestBody QRCodeData qrData,
+            @RequestBody Map<String, Object> requestBody,
             @RequestHeader(value = "X-Transaction-Id", required = false) String clientTransactionId) {
         
         String transactionId = (clientTransactionId != null && !clientTransactionId.isEmpty()) 
@@ -43,11 +48,26 @@ public class PaymentController {
                 : UUID.randomUUID().toString();
 
         try {
-            Map<String, String> paymentResult = paymentService.processPayment(qrData, transactionId);
+            QRCodeData qrData;
+            PaymentRequest userInput;
+
+            if (requestBody.containsKey("qrCodeData")) {
+                qrData = objectMapper.convertValue(requestBody.get("qrCodeData"), QRCodeData.class);
+            } else {
+                qrData = objectMapper.convertValue(requestBody, QRCodeData.class);
+            }
+
+            if (requestBody.containsKey("paymentRequest")) {
+                userInput = objectMapper.convertValue(requestBody.get("paymentRequest"), PaymentRequest.class);
+            } else {
+                userInput = objectMapper.convertValue(requestBody, PaymentRequest.class);
+            }
+
+            Map<String, String> paymentResult = paymentService.processPayment(qrData, userInput, transactionId);
             Map<String, String> responseBody = Map.of(
                 "status", "SUCCESS",
                 "response", paymentResult.get("response"),
-                "transactionId", paymentResult.get("endToEndId") // Return the correct ID
+                "transactionId", paymentResult.get("endToEndId")
             );
             return ResponseEntity.ok(responseBody);
         } catch (Exception e) {

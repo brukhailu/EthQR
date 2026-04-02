@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  ethqr-simulator:
+    build: .
+    container_name: ethqr-simulator
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      # You can override properties here if needed
+      # - PAYMENT_TOKEN_URL=http://your-prod-ip:9001/v1/token
+    restart: unless-stopped
