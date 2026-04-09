@@ -25,4 +25,9 @@ public class WebController {
     public String mobileSimulator() {
         return "mobile-simulator";
     }
+
+    @GetMapping("/mapping-guide")
+    public String mappingGuide() {
+        return "mapping-guide";
+    }
 }

@@ -78,7 +78,7 @@ public class PaymentService {
     @Value("${payment.debtor.address.line:Addis Ababa}")
     private String defaultDebtorAddressLine;
 
-    @Value("${payment.debtor.mobile:+251-900000000}")
+    @Value("${payment.debtor.mobile:+251-922561328}")
     private String defaultDebtorMobile;
 
     @Value("${payment.debtor.email:customer@example.com}")
@@ -152,13 +152,24 @@ public class PaymentService {
         String txId = generateTransactionId();
         String uetr = qrData.getUetr() != null ? qrData.getUetr() : UUID.randomUUID().toString();
 
-        // Calculate total amount including tip
-        BigDecimal totalAmount = calculateTotalAmount(qrData, userInput);
+        // Determine the single effective tip amount to use for all calculations and XML
+        BigDecimal effectiveTipAmount = determineEffectiveTipAmount(qrData, userInput);
+        transactionLogger.log(transactionId, "Effective Tip Amount: " + effectiveTipAmount);
+
+        // Calculate BASE amount (without tip) and TOTAL amount (for display only)
+        BigDecimal baseAmount = getBaseAmount(qrData, userInput);
+        BigDecimal totalAmount = baseAmount.add(effectiveTipAmount);  // Only for display/success screen
+
+        transactionLogger.log(transactionId, "Base Amount: " + baseAmount);
+        transactionLogger.log(transactionId, "Tip Amount: " + effectiveTipAmount);
+        transactionLogger.log(transactionId, "Total Amount (for display): " + totalAmount);
+
         String currency = qrData.getTransactionCurrency() != null ?
                 getCurrencyCode(qrData.getTransactionCurrency()) : defaultCurrency;
 
+        // Build message - passing base amount (without tip) and tip amount separately
         Pacs008Message message = buildPacs008Message(qrData, userInput, transactionId,
-                endToEndId, txId, uetr, totalAmount, currency);
+                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency);  // ← baseAmount, not totalAmount!
         String pacs008 = message.toXml();
 
 
@@ -175,8 +186,49 @@ public class PaymentService {
         result.put("response", responseXml);
         return result;
     }
+    private BigDecimal getBaseAmount(QRCodeData qrData, PaymentRequest userInput) {
+        // Get base amount from QR or user input (this is the amount without tip)
+        if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
+            return new BigDecimal(qrData.getTransactionAmount());
+        } else if (userInput.getAmount() != null) {
+            return userInput.getAmount();
+        }
+        return BigDecimal.ZERO;
+    }
 
-    private BigDecimal calculateTotalAmount(QRCodeData qrData, PaymentRequest userInput) {
+    private BigDecimal determineEffectiveTipAmount(QRCodeData qrData, PaymentRequest userInput) {
+        // Priority 1: User-entered tip amount (always use this if provided, covers prompted case)
+        if (userInput.getTipAmount() != null) {
+            return userInput.getTipAmount();
+        }
+
+        // Priority 2: QR logic
+        String tipIndicator = qrData.getTipOrConvenienceIndicator();
+        if (tipIndicator != null) {
+            switch (tipIndicator) {
+                case "02": // Fixed tip amount
+                    if (qrData.getValueOfConvenienceFeeFixed() != null && !qrData.getValueOfConvenienceFeeFixed().isEmpty()) {
+                        return new BigDecimal(qrData.getValueOfConvenienceFeeFixed());
+                    }
+                    break;
+                case "03": // Percentage tip
+                    BigDecimal baseAmount = BigDecimal.ZERO;
+                    if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
+                        baseAmount = new BigDecimal(qrData.getTransactionAmount());
+                    } else if (userInput.getAmount() != null) {
+                        baseAmount = userInput.getAmount();
+                    }
+                    if (qrData.getValueOfConvenienceFeePercentage() != null && !qrData.getValueOfConvenienceFeePercentage().isEmpty()) {
+                        BigDecimal percentage = new BigDecimal(qrData.getValueOfConvenienceFeePercentage());
+                        return baseAmount.multiply(percentage).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+                    }
+                    break;
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calculateTotalAmount(QRCodeData qrData, PaymentRequest userInput, BigDecimal effectiveTipAmount) {
         BigDecimal baseAmount = BigDecimal.ZERO;
 
         // Get base amount from QR or user input
@@ -186,34 +238,7 @@ public class PaymentService {
             baseAmount = userInput.getAmount();
         }
 
-        // Add tip if present
-        String tipIndicator = qrData.getTipOrConvenienceIndicator();
-        BigDecimal tipAmount = BigDecimal.ZERO;
-
-        if (userInput.getTipAmount() != null) {
-            tipAmount = userInput.getTipAmount();
-        } else if (tipIndicator != null) {
-            switch (tipIndicator) {
-                case "01": // Prompted to customer - use user input
-                    if (userInput.getTipAmount() != null) {
-                        tipAmount = userInput.getTipAmount();
-                    }
-                    break;
-                case "02": // Fixed tip amount
-                    if (qrData.getValueOfConvenienceFeeFixed() != null && !qrData.getValueOfConvenienceFeeFixed().isEmpty()) {
-                        tipAmount = new BigDecimal(qrData.getValueOfConvenienceFeeFixed());
-                    }
-                    break;
-                case "03": // Percentage tip
-                    if (qrData.getValueOfConvenienceFeePercentage() != null && !qrData.getValueOfConvenienceFeePercentage().isEmpty()) {
-                        BigDecimal percentage = new BigDecimal(qrData.getValueOfConvenienceFeePercentage());
-                        tipAmount = baseAmount.multiply(percentage).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
-                    }
-                    break;
-            }
-        }
-
-        return baseAmount.add(tipAmount);
+        return baseAmount.add(effectiveTipAmount);
     }
 
     private String getCurrencyCode(String numericCurrency) {
@@ -230,7 +255,7 @@ public class PaymentService {
     private Pacs008Message buildPacs008Message(QRCodeData qrData, PaymentRequest userInput,
                                                String transactionId, String endToEndId,
                                                String txId, String uetr,
-                                               BigDecimal totalAmount, String currency) {
+                                               BigDecimal totalAmount, BigDecimal effectiveTipAmount, String currency) {
         transactionLogger.log(transactionId, "--- 2. Building pacs.008 Message from QR Data ---");
 
         DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
@@ -284,8 +309,9 @@ public class PaymentService {
             // You can use GUID in remittance or as reference
             transactionLogger.log(transactionId, "QR Transaction GUID: " + guid);
         }
+
         // Build remittance information
-        String remittanceUnstructured = buildRemittanceUnstructured(qrData, userInput);
+        String remittanceUnstructured = buildRemittanceUnstructured(qrData, userInput, effectiveTipAmount);
         String billNumber = extractBillNumber(qrData, userInput);
         String mobileNumber = extractMobileNumber(qrData, userInput);
         String storeLabel = extractStoreLabel(qrData);
@@ -295,6 +321,10 @@ public class PaymentService {
         // Check for additional consumer data request (tag 62 sub 09)
         String additionalConsumerData = extractAdditionalConsumerDataRequest(qrData);
         boolean requestAddress = additionalConsumerData != null && additionalConsumerData.contains("A");
+        boolean requestAddressStreet = additionalConsumerData != null && additionalConsumerData.contains("S");
+        boolean requestAddressBuilding = additionalConsumerData != null && additionalConsumerData.contains("B");
+        boolean requestAddressTown = additionalConsumerData != null && additionalConsumerData.contains("T");
+        boolean requestAddressCountry = additionalConsumerData != null && additionalConsumerData.contains("C");
         boolean requestEmail = additionalConsumerData != null && additionalConsumerData.contains("E");
         boolean requestMobile = additionalConsumerData != null && additionalConsumerData.contains("M");
 
@@ -307,21 +337,37 @@ public class PaymentService {
                 userInput.getConsumerMobile() : null;
 
         // Build debtor info (customer info)
-        String debtorName = userInput.getCustomerName() != null ?
-                userInput.getCustomerName() : defaultDebtorName;
-        String debtorAddress = (consumerAddress != null) ? consumerAddress : defaultDebtorAddressLine;
-        String debtorMobile = (consumerMobile != null) ? consumerMobile :
-                (userInput.getCustomerMobile() != null ? userInput.getCustomerMobile() : defaultDebtorMobile);
-        String debtorEmail = (consumerEmail != null) ? consumerEmail :
-                (userInput.getCustomerEmail() != null ? userInput.getCustomerEmail() : defaultDebtorEmail);
-        String debtorAcctId = userInput.getCustomerAccountId() != null ?
-                userInput.getCustomerAccountId() : defaultDebtorAcctId;
+        // Build debtor info (customer info) - UPDATED to use all fields
+        String debtorName = userInput.getDebtorName() != null ?
+                userInput.getDebtorName() :
+                (userInput.getCustomerName() != null ? userInput.getCustomerName() : defaultDebtorName);
+
+        String debtorAddress = userInput.getDebtorAddress() != null ?
+                userInput.getDebtorAddress() :
+                (userInput.getConsumerAddress() != null ? userInput.getConsumerAddress() :
+                        (userInput.getCustomerAddress() != null ? userInput.getCustomerAddress() : defaultDebtorAddressLine));
+
+        String debtorMobile = userInput.getDebtorMobile() != null ?
+                userInput.getDebtorMobile() :
+                (userInput.getConsumerMobile() != null ? userInput.getConsumerMobile() :
+                        (userInput.getCustomerMobile() != null ? userInput.getCustomerMobile() : defaultDebtorMobile));
+
+        String debtorEmail = userInput.getDebtorEmail() != null ?
+                userInput.getDebtorEmail() :
+                (userInput.getConsumerEmail() != null ? userInput.getConsumerEmail() :
+                        (userInput.getCustomerEmail() != null ? userInput.getCustomerEmail() : defaultDebtorEmail));
+
+        String debtorAcctId = userInput.getDebtorAccountId() != null ?
+                userInput.getDebtorAccountId() :
+                (userInput.getCustomerAccountId() != null ? userInput.getCustomerAccountId() : defaultDebtorAcctId);
 
         // Build creditor info (merchant info)
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "Merchant";
         String creditorTownName = qrData.getMerchantCity() != null ? qrData.getMerchantCity() : "";
         String merchantTaxId = extractMerchantTaxId(qrData);
         String merchantChannel = extractMerchantChannel(qrData);
+        String merchantMobile = extractMerchantMobile(qrData);
+
 
 // ===== ADD THESE MISSING EXTRACTIONS =====
 // Tag 52: Merchant Category Code (MCC) - for Creditor Organization ID
@@ -375,7 +421,7 @@ public class PaymentService {
                 .withUetr(uetr)
                 .withCurrency(currency)
                 .withAmount(totalAmount.toString())
-                .withTipAmount(String.valueOf(calculateTipAmountForRemittance(qrData, userInput)))  // ADD THIS
+                .withTipAmount(effectiveTipAmount.compareTo(BigDecimal.ZERO) > 0 ? effectiveTipAmount.toString() : null)
                 .withChargeBearer(chargeBearer)
                 .withLocalInstrument(localInstrument)
                 .withCategoryPurpose(categoryPurpose)
@@ -400,6 +446,7 @@ public class PaymentService {
                 .withCreditorOrgId(merchantCategoryCode)              // ADDED (MCC)
                 .withCreditorCountryOfRes(countryCode)                // UPDATED (use actual country code)
                 .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")
+                .withCreditorMobile(merchantMobile)
                 .withCreditorAcctId(creditorAcctId)
                 .withCreditorClearingType(clearingType)
                 // Optional fields
@@ -454,45 +501,41 @@ public class PaymentService {
         if (additionalData != null && additionalData.containsKey("08")) {
             String purpose = additionalData.get("08");
             if (purpose != null) {
-                if (purpose.toLowerCase().contains("online")) return "ONLPUR";
-                if (purpose.toLowerCase().contains("salary")) return "SALA";
-                if (purpose.toLowerCase().contains("government")) return "GOVT";
+                String p = purpose.toLowerCase();
+                if (p.contains("online")) return "ONLPUR";
+                if (p.contains("salary")) return "SALA";
+                if (p.contains("government")) return "GOVTP";
+                if (p.contains("airline") || p.contains("ticket")) return "AIRTK";
+                if (p.contains("bar") || p.contains("club")) return "BCLUB";
+                if (p.contains("bus")) return "BUSTP";
+                if (p.contains("school") || p.contains("college") || p.contains("university") || p.contains("education")) return "EDUPT";
+                if (p.contains("entertainment") || p.contains("recreation")) return "ENTMT";
+                if (p.contains("forex")) return "FOREX";
+                if (p.contains("gambling") || p.contains("betting") || p.contains("lottery") || p.contains("casino")) return "GAMBL";
+                if (p.contains("gift") || p.contains("souvenir") || p.contains("novelty")) return "GIFTS";
+                if (p.contains("grocery") || p.contains("supermarket")) return "GROCS";
+                if (p.contains("spa") || p.contains("beauty")) return "HLTHS";
+                if (p.contains("hospital")) return "HOSPT";
+                if (p.contains("loan")) return "LOANP";
+                if (p.contains("pet")) return "PETSP";
+                if (p.contains("pharmacy") || p.contains("medicine")) return "PHARM";
+                if (p.contains("restaurant") || p.contains("cafe") || p.contains("food")) return "RETNTP";
+                if (p.contains("ride") || p.contains("taxi") || p.contains("uber")) return "RIDES";
+                if (p.contains("stationery") || p.contains("office")) return "STOFS";
+                if (p.contains("train") || p.contains("subway")) return "TRNST";
+                if (p.contains("utility") || p.contains("bill") || p.contains("electric") || p.contains("water")) return "UTSBP";
             }
         }
 
         return defaultPurposeCode;
     }
-    private BigDecimal calculateTipAmountForRemittance(QRCodeData qrData, PaymentRequest userInput) {
-        if (userInput.getTipAmount() != null) {
-            return userInput.getTipAmount();
-        }
 
-        String tipIndicator = qrData.getTipOrConvenienceIndicator();
-        if (tipIndicator != null) {
-            switch (tipIndicator) {
-                case "02": // Fixed tip amount
-                    if (qrData.getValueOfConvenienceFeeFixed() != null && !qrData.getValueOfConvenienceFeeFixed().isEmpty()) {
-                        return new BigDecimal(qrData.getValueOfConvenienceFeeFixed());
-                    }
-                    break;
-                case "03": // Percentage tip - calculate from base amount
-                    BigDecimal baseAmount = BigDecimal.ZERO;
-                    if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
-                        baseAmount = new BigDecimal(qrData.getTransactionAmount());
-                    } else if (userInput.getAmount() != null) {
-                        baseAmount = userInput.getAmount();
-                    }
-                    if (qrData.getValueOfConvenienceFeePercentage() != null && !qrData.getValueOfConvenienceFeePercentage().isEmpty()) {
-                        BigDecimal percentage = new BigDecimal(qrData.getValueOfConvenienceFeePercentage());
-                        return baseAmount.multiply(percentage).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
-                    }
-                    break;
-            }
-        }
-        return BigDecimal.ZERO;
-    }
-    private String buildRemittanceUnstructured(QRCodeData qrData, PaymentRequest userInput) {
+    private String buildRemittanceUnstructured(QRCodeData qrData, PaymentRequest userInput, BigDecimal effectiveTipAmount) {
         StringBuilder sb = new StringBuilder();
+
+        if (effectiveTipAmount != null && effectiveTipAmount.compareTo(BigDecimal.ZERO) > 0) {
+            sb.append("Tip Payment: ");
+        }
 
         if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().isEmpty()) {
             sb.append(userInput.getRemittanceInfo());
@@ -500,19 +543,19 @@ public class PaymentService {
 
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null) {
-            if (additionalData.containsKey("05") && sb.length() == 0) {
+            if (additionalData.containsKey("05") && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
                 sb.append(additionalData.get("05"));
             }
-            if (additionalData.containsKey("08") && sb.length() == 0) {
+            if (additionalData.containsKey("08") && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
                 sb.append(additionalData.get("08"));
             }
         }
 
-        if (qrData.getContextOfTransaction() != null && sb.length() == 0) {
+        if (qrData.getContextOfTransaction() != null && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
             sb.append(qrData.getContextOfTransaction());
         }
 
-        if (sb.length() == 0) {
+        if (sb.length() == 0 || sb.toString().equals("Tip Payment: ")) {
             sb.append("QR Payment");
         }
 
@@ -589,6 +632,13 @@ public class PaymentService {
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null && additionalData.containsKey("11")) {
             return additionalData.get("11");
+        }
+        return null;
+    }
+    private String extractMerchantMobile(QRCodeData qrData) {
+        Map<String, String> additionalData = qrData.getAdditionalDataField();
+        if (additionalData != null && additionalData.containsKey("02")) {
+            return additionalData.get("02");
         }
         return null;
     }
@@ -726,6 +776,7 @@ public class PaymentService {
         private String creditorOrgId;
         private String creditorCountryOfRes;
         private String creditorContactChannel;
+        private String creditorMobile;
         private String creditorAcctId;
         private String creditorClearingType;
 
@@ -916,6 +967,10 @@ public class PaymentService {
             this.creditorContactChannel = channel;
             return this;
         }
+        public Pacs008Message withCreditorMobile(String mobile) {
+            this.creditorMobile = mobile;
+            return this;
+        }
 
         public Pacs008Message withCreditorAcctId(String id) {
             this.creditorAcctId = id;
@@ -971,7 +1026,37 @@ public class PaymentService {
             this.terminalId = id;
             return this;
         }
+        private String buildRemittanceString() {
+            StringBuilder sb = new StringBuilder();
 
+            // Add bill number if present
+//            if (billNumber != null && !billNumber.isEmpty()) {
+//                sb.append("Bill: ").append(billNumber).append(" ");
+//            }
+//
+//            // Add mobile number if present (for top-up)
+//            if (mobileNumber != null && !mobileNumber.isEmpty()) {
+//                sb.append("Mobile: ").append(mobileNumber).append(" ");
+//            }
+//
+//            // Add store label if present
+//            if (storeLabel != null && !storeLabel.isEmpty()) {
+//                sb.append("Store: ").append(storeLabel).append(" ");
+//            }
+//
+//            // Add loyalty number if present
+//            if (loyaltyNumber != null && !loyaltyNumber.isEmpty()) {
+//                sb.append("Loyalty: ").append(loyaltyNumber).append(" ");
+//            }
+
+            // Add remittance info from user input
+            if (remittanceUnstructured != null && !remittanceUnstructured.isEmpty()) {
+                sb.append(remittanceUnstructured);
+            }
+
+            String result = sb.toString().trim();
+            return result.isEmpty() ? "QR Payment" : result;
+        }
         public String toXml() {
             StringBuilder xml = new StringBuilder();
             xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -1040,13 +1125,12 @@ public class PaymentService {
             xml.append("                <document:PmtId>\n");
             xml.append("                    <document:EndToEndId>").append(escapeXml(endToEndId)).append("</document:EndToEndId>\n");
             xml.append("                    <document:TxId>").append(escapeXml(txId)).append("</document:TxId>\n");
-//            if (uetr != null && !uetr.isEmpty()) {
-//                xml.append("                    <document:UETR>").append(escapeXml(uetr)).append("</document:UETR>\n");
-//            }
             xml.append("                </document:PmtId>\n");
-            xml.append("                <document:IntrBkSttlmAmt Ccy=\"").append(escapeXml(currency)).append("\">").append(escapeXml(amount)).append("</document:IntrBkSttlmAmt>\n");
+            xml.append("                <document:IntrBkSttlmAmt Ccy=\"").append(escapeXml(currency)).append("\">")
+                    .append(escapeXml(amount)).append("</document:IntrBkSttlmAmt>\n");
             xml.append("                <document:AccptncDtTm>").append(escapeXml(createDtTm)).append("</document:AccptncDtTm>\n");
-            xml.append("                <document:InstdAmt Ccy=\"").append(escapeXml(currency)).append("\">").append(escapeXml(amount)).append("</document:InstdAmt>\n");
+            xml.append("                <document:InstdAmt Ccy=\"").append(escapeXml(currency)).append("\">")
+                    .append(escapeXml(amount)).append("</document:InstdAmt>\n");
             xml.append("                <document:ChrgBr>").append(escapeXml(chargeBearer)).append("</document:ChrgBr>\n");
 
             // Debtor (Customer)
@@ -1111,7 +1195,7 @@ public class PaymentService {
             xml.append("                    </document:FinInstnId>\n");
             xml.append("                </document:CdtrAgt>\n");
 
-            // Creditor (Merchant) - Updated with all optional fields
+            // Creditor (Merchant)
             xml.append("                <document:Cdtr>\n");
             xml.append("                    <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
 
@@ -1158,11 +1242,17 @@ public class PaymentService {
             }
 
             // Contact Details
-            if (creditorContactChannel != null) {
+            if (creditorContactChannel != null || creditorMobile != null || terminalId != null) {
                 xml.append("                    <document:CtctDtls>\n");
                 xml.append("                        <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
+                if (creditorMobile != null && !creditorMobile.isEmpty()) {
+                    xml.append("                        <document:MobNb>").append(escapeXml(creditorMobile)).append("</document:MobNb>\n");
+                }
                 xml.append("                        <document:Othr>\n");
                 xml.append("                            <document:ChanlTp>").append(escapeXml(creditorContactChannel)).append("</document:ChanlTp>\n");
+                if (terminalId != null && !terminalId.isEmpty()) {
+                    xml.append("                            <document:Id>").append(escapeXml(terminalId)).append("</document:Id>\n");
+                }
                 xml.append("                        </document:Othr>\n");
                 xml.append("                    </document:CtctDtls>\n");
             }
@@ -1193,12 +1283,12 @@ public class PaymentService {
             xml.append("                    <document:Prtry>").append(escapeXml(purposeCode)).append("</document:Prtry>\n");
             xml.append("                </document:Purp>\n");
 
-            // InstructionForNextAgent (for bill payments)
-            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
-                xml.append("                <document:InstrForNxtAgt>\n");
-                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
-                xml.append("                </document:InstrForNxtAgt>\n");
-            }
+//            // InstructionForNextAgent (for bill payments)
+//            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
+//                xml.append("                <document:InstrForNxtAgt>\n");
+//                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
+//                xml.append("                </document:InstrForNxtAgt>\n");
+//            }
 
             // Tax (if merchant tax ID exists)
             if (merchantTaxId != null && !merchantTaxId.isEmpty()) {
@@ -1209,24 +1299,47 @@ public class PaymentService {
                 xml.append("                </document:Tax>\n");
             }
 
-            // Remittance Information
+            // Remittance Information - CORRECTED PER BPC DOCUMENTATION
             xml.append("                <document:RmtInf>\n");
 
-// Unstructured remittance (always include if present)
-            if (remittanceUnstructured != null && !remittanceUnstructured.isEmpty()) {
-                xml.append("                    <document:Ustrd>").append(escapeXml(remittanceUnstructured)).append("</document:Ustrd>\n");
+// Unstructured remittance
+            String unstructuredRemittance = buildRemittanceString();
+            if (unstructuredRemittance != null && !unstructuredRemittance.isEmpty()) {
+                xml.append("                    <document:Ustrd>").append(escapeXml(unstructuredRemittance)).append("</document:Ustrd>\n");
             }
 
-// Structured remittance - ONLY include if there is a tip amount
-            if (tipAmount != null && !tipAmount.isEmpty() && new BigDecimal(tipAmount).compareTo(BigDecimal.ZERO) > 0) {
+// Structured remittance for tip - CORRECT STRUCTURE
+            boolean hasTip = tipAmount != null && !tipAmount.isEmpty() && new BigDecimal(tipAmount).compareTo(BigDecimal.ZERO) > 0;
+            if (hasTip) {
+                BigDecimal tip = new BigDecimal(tipAmount);
+                BigDecimal baseAmt = new BigDecimal(amount);
+
                 xml.append("                    <document:Strd>\n");
                 xml.append("                        <document:RfrdDocAmt>\n");
-                xml.append("                            <document:DuePyblAmt Ccy=\"").append(escapeXml(currency)).append("\">").append(escapeXml(tipAmount)).append("</document:DuePyblAmt>\n");
+                // Due payable amount = base amount (what is actually due)
+                xml.append("                            <document:DuePyblAmt Ccy=\"").append(escapeXml(currency)).append("\">")
+                        .append(tip.toString()).append("</document:DuePyblAmt>\n");
+
+//                // Adjustment amount and reason for tip
+//                xml.append("                            <document:AdjstmntAmtAndRsn>\n");
+//                // Amount = tip amount
+//                xml.append("                                <document:Amt Ccy=\"").append(escapeXml(currency)).append("\">")
+//                        .append(tip.toString()).append("</document:Amt>\n");
+//                // CreditDebitIndicator: DBIT means the amount is added (debit to customer)
+//                xml.append("                                <document:CdtDbtInd>DBIT</document:CdtDbtInd>\n");
+//                // Reason for adjustment
+//                xml.append("                                <document:Rsn>\n");
+//                xml.append("                                    <document:Prtry>TIPC</document:Prtry>\n");  // TIPC = Tip Charge
+//                xml.append("                                </document:Rsn>\n");
+//                xml.append("                            </document:AdjstmntAmtAndRsn>\n");
+
                 xml.append("                        </document:RfrdDocAmt>\n");
                 xml.append("                    </document:Strd>\n");
             }
 
             xml.append("                </document:RmtInf>\n");
+
+            // ========== END OF CORRECTED REMITTANCE ==========
 
             xml.append("            </document:CdtTrfTxInf>\n");
             xml.append("        </document:FIToFICstmrCdtTrf>\n");

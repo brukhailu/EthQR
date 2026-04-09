@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/layout :: head(title='Ethswitch QR - Mobile Simulator')}">
 </head>
 <style>
-    /* Override body to allow scrolling but keep centering logic for the frame */
+    /* ... keep all existing styles ... */
     body {
         font-family: 'Inter', sans-serif;
         background-color: #eef2f5;
@@ -11,7 +11,7 @@
         flex-direction: column;
         height: 100vh;
         margin: 0;
-        overflow: hidden; /* Prevent page scroll, scroll inside frame if needed */
+        overflow: hidden;
     }
 
     .main-container {
@@ -22,15 +22,13 @@
         overflow: hidden;
     }
 
-    /* Left Side: Mobile Simulator */
     .sim-container {
-        flex: 0 0 400px; /* Fixed width for the phone */
+        flex: 0 0 400px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    /* Right Side: Log Viewer */
     .log-container {
         flex: 1;
         display: flex;
@@ -57,10 +55,9 @@
         word-wrap: break-word;
     }
 
-    /* Mobile Device Frame */
     .mobile-frame {
         width: 375px;
-        height: 85vh; /* Responsive height to fit screen */
+        height: 85vh;
         max-height: 800px;
         min-height: 600px;
         background-color: #fff;
@@ -73,7 +70,6 @@
         flex-direction: column;
     }
 
-    /* Status Bar (Fake) */
     .status-bar {
         height: 30px;
         background-color: #fff;
@@ -88,7 +84,6 @@
         flex-shrink: 0;
     }
 
-    /* App Header */
     .app-header {
         background: linear-gradient(135deg, #0d6efd, #0043a8);
         color: white;
@@ -99,20 +94,17 @@
         flex-shrink: 0;
     }
 
-    /* Content Area */
     .app-content {
         flex: 1;
         overflow-y: auto;
         padding: 20px;
         background-color: #f8f9fa;
         position: relative;
-        /* Hide Scrollbar */
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
     .app-content::-webkit-scrollbar { display: none; }
 
-    /* Bottom Nav */
     .bottom-nav {
         background-color: white;
         border-top: 1px solid #eee;
@@ -132,7 +124,6 @@
     .nav-item-sim.active { color: #0d6efd; }
     .nav-item-sim i { font-size: 20px; display: block; margin-bottom: 2px; }
 
-    /* Floating Scan Button */
     .scan-fab {
         width: 56px;
         height: 56px;
@@ -153,11 +144,9 @@
         z-index: 20;
     }
 
-    /* Screens */
     .screen { display: none; height: 100%; flex-direction: column; }
     .screen.active { display: flex; }
 
-    /* Wallet Cards */
     .wallet-card {
         background: linear-gradient(135deg, #6610f2, #4d09bf);
         color: white;
@@ -167,7 +156,6 @@
         box-shadow: 0 8px 20px rgba(102, 16, 242, 0.25);
     }
 
-    /* Transaction Details */
     .tx-detail-row {
         display: flex;
         justify-content: space-between;
@@ -178,7 +166,6 @@
     .tx-detail-label { color: #6c757d; }
     .tx-detail-val { font-weight: 600; text-align: right; }
 
-    /* Input Overlays */
     .scanner-overlay {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -202,14 +189,12 @@
     }
     @keyframes scan { 0% {top:0} 50% {top:100%} 100% {top:0} }
 
-    /* Input Controls */
     .btn-pay { width: 100%; border-radius: 12px; padding: 12px; font-weight: 600; }
     .amount-input { font-size: 2rem; text-align: center; border: none; background: transparent; font-weight: 700; color: #333; width: 100%; margin: 10px 0; }
     .amount-input:focus { outline: none; }
 
     .toast-container { position: absolute; top: 40px; left: 20px; right: 20px; z-index: 1060; }
 
-    /* Drag and Drop Zone - Mobile Style */
     .drop-zone {
         border: 2px dashed rgba(255,255,255,0.5);
         border-radius: 15px;
@@ -235,16 +220,29 @@
         opacity: 0;
         cursor: pointer;
     }
+
+    .tip-amount-display {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #ffc107;
+    }
+    .total-amount-display {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    .bill-number-input {
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
 </style>
 <body>
 
 <nav th:replace="~{fragments/layout :: header(activeTab='simulator')}"></nav>
 
 <div class="main-container">
-    <!-- Left Side: Mobile Simulator -->
     <div class="sim-container">
         <div class="mobile-frame">
-            <!-- Fake Status Bar -->
             <div class="status-bar">
                 <span>9:41</span>
                 <span><i class="fas fa-wifi me-1"></i> <i class="fas fa-battery-full"></i></span>
@@ -298,7 +296,6 @@
                 <div class="scanner-box"><div class="scanner-line"></div></div>
 
                 <div class="mt-5 w-75">
-                    <!-- Drop Zone -->
                     <div class="drop-zone" id="dropZone">
                         <i class="fas fa-image"></i>
                         <p>Drag & Drop QR Here<br>or Click to Upload</p>
@@ -321,23 +318,63 @@
                         <h5 id="merchantNameDisplay">Merchant Name</h5>
                         <small class="text-muted" id="merchantCityDisplay">Addis Ababa, ET</small>
                     </div>
+
+                    <!-- Bill Number Section (Tag 62/01) -->
+                    <div id="billNumberSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
+                        <h6 class="mb-2"><i class="fas fa-receipt text-primary me-2"></i>Bill Number</h6>
+                        <input type="text" id="billNumberInput" class="form-control bill-number-input" placeholder="Enter bill number">
+                    </div>
+
+                    <!-- Amount Section -->
                     <div class="card p-3 mb-3 border-0 shadow-sm text-center">
-                        <small class="text-muted">Total Amount</small>
-                        <div class="d-flex justify-content-center align-items-center"><span class="fs-4 text-muted me-1">ETB</span><input type="number" id="txAmountInput" class="amount-input" value="0.00" readonly></div>
+                        <small class="text-muted">Amount</small>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="fs-4 text-muted me-1">ETB</span>
+                            <input type="number" id="txAmountInput" class="amount-input" value="0.00" step="0.01">
+                        </div>
                     </div>
+
+                    <!-- Tip Section (Tags 55-57) -->
                     <div id="tipSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
-                        <div class="d-flex justify-content-between align-items-center mb-2"><span class="fw-bold"><i class="fas fa-coins text-warning me-2"></i>Tip / Convenience Fee</span><span id="tipTypeBadge" class="badge bg-secondary">Fixed</span></div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold"><i class="fas fa-coins text-warning me-2"></i>Tip / Convenience Fee</span>
+                            <span id="tipTypeBadge" class="badge bg-secondary">Fixed</span>
+                        </div>
                         <div id="tipInputContainer"></div>
+                        <div id="tipAmountDisplay" class="text-end mt-2 small text-muted d-none"></div>
                     </div>
+
+                    <!-- Mobile Number for Top-up Section (Tag 62/02) -->
+                    <div id="mobileNumberSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
+                        <h6 class="mb-2"><i class="fas fa-mobile-alt text-success me-2"></i>Mobile Number (Top-up)</h6>
+                        <input type="tel" id="mobileNumberInput" class="form-control" placeholder="+251-XXXXXXXXX">
+                    </div>
+
+                    <!-- Consumer Data Section (Tag 62/09) -->
                     <div id="consumerDataSection" class="card p-3 mb-3 border-0 shadow-sm d-none">
                         <h6 class="mb-3"><i class="fas fa-user-edit text-info me-2"></i>Additional Info Required</h6>
                         <div id="consumerFields"></div>
                     </div>
+
+                    <!-- Transaction Details -->
                     <div class="card p-3 mb-3 border-0 shadow-sm">
-                        <div class="tx-detail-row"><span class="tx-detail-label">Purpose</span><span class="tx-detail-val" id="txPurpose">Payment</span></div>
-                        <div class="tx-detail-row"><span class="tx-detail-label">Reference</span><span class="tx-detail-val" id="txRef">N/A</span></div>
+                        <div class="tx-detail-row">
+                            <span class="tx-detail-label">Purpose</span>
+                            <span class="tx-detail-val" id="txPurpose">Payment</span>
+                        </div>
+                        <div class="tx-detail-row">
+                            <span class="tx-detail-label">Reference</span>
+                            <span class="tx-detail-val" id="txRef">N/A</span>
+                        </div>
+                        <div id="totalAmountRow" class="tx-detail-row d-none">
+                            <span class="tx-detail-label fw-bold">Total Amount</span>
+                            <span class="tx-detail-val fw-bold text-primary" id="totalAmountDisplay">ETB 0.00</span>
+                        </div>
                     </div>
-                    <div class="mt-auto"><button class="btn btn-primary btn-pay btn-lg shadow" onclick="processPayment()">Confirm Payment <i class="fas fa-lock ms-2"></i></button></div>
+
+                    <div class="mt-auto">
+                        <button class="btn btn-primary btn-pay btn-lg shadow" onclick="processPayment()">Confirm Payment <i class="fas fa-lock ms-2"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -368,7 +405,6 @@
         </div>
     </div>
 
-    <!-- Right Side: Log Viewer -->
     <div class="log-container">
         <div class="log-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-terminal me-2"></i>Transaction Log</span>
@@ -381,10 +417,11 @@
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 <script>
-    // ... (Keep existing script logic) ...
     let currentQRData = null;
     let currentRawTlv = "";
     let logPollInterval = null;
+    let currentTipAmount = 0;
+    let currentBaseAmount = 0;
 
     const tagMap = {
         '00': 'payloadFormatIndicator', '01': 'pointOfInitiationMethod', '52': 'merchantCategoryCode',
@@ -408,12 +445,12 @@
             document.getElementById('screen-scan').style.display = 'flex';
         } else {
             document.getElementById('screen-scan').style.display = 'none';
-            document.getElementById('screen-' + screenId).classList.add('active');
+            const screen = document.getElementById('screen-' + screenId);
+            if(screen) screen.classList.add('active');
         }
     }
 
     function openScanner() { navTo('scan'); setupDragAndDrop(); }
-    function triggerFileUpload() { document.getElementById('simFileInput').click(); }
 
     function setupDragAndDrop() {
         const dropZone = document.getElementById('dropZone');
@@ -482,28 +519,126 @@
         }
     }
 
+    function updateTotalAmountDisplay() {
+        const amountInput = document.getElementById('txAmountInput');
+        let baseAmount = parseFloat(amountInput.value) || 0;
+        let tipAmount = currentTipAmount;
+        let totalAmount = baseAmount + tipAmount;
+
+        const totalRow = document.getElementById('totalAmountRow');
+        const totalDisplay = document.getElementById('totalAmountDisplay');
+
+        if (tipAmount > 0) {
+            totalRow.classList.remove('d-none');
+            totalDisplay.textContent = `ETB ${totalAmount.toFixed(2)}`;
+        } else {
+            totalRow.classList.add('d-none');
+        }
+
+        // Also update the tip amount display if present
+        const tipAmountSpan = document.getElementById('tipAmountSpan');
+        if (tipAmountSpan) {
+            tipAmountSpan.textContent = tipAmount.toFixed(2);
+        }
+    }
+
+    function calculateTip() {
+        const amountInput = document.getElementById('txAmountInput');
+        let baseAmount = parseFloat(amountInput.value) || 0;
+
+        const tipInd = currentQRData?.['55'];
+        let tipAmount = 0;
+
+        if (tipInd === '02') {
+            // Fixed tip amount from QR
+            tipAmount = parseFloat(currentQRData['56'] || 0);
+            currentTipAmount = tipAmount;
+            const tipDisplay = document.getElementById('tipAmountDisplay');
+            if (tipDisplay) {
+                tipDisplay.classList.remove('d-none');
+                tipDisplay.innerHTML = `Tip: ETB ${tipAmount.toFixed(2)}`;
+            }
+        } else if (tipInd === '03') {
+            // Percentage tip from QR
+            const pct = parseFloat(currentQRData['57'] || 0);
+            tipAmount = (baseAmount * pct) / 100;
+            currentTipAmount = tipAmount;
+            const tipDisplay = document.getElementById('tipAmountDisplay');
+            if (tipDisplay) {
+                tipDisplay.classList.remove('d-none');
+                tipDisplay.innerHTML = `Tip (${pct}%): ETB ${tipAmount.toFixed(2)}`;
+            }
+        } else if (tipInd === '01') {
+            // User-entered tip - already handled by tipInput field
+            const tipInput = document.getElementById('tipUserInput');
+            if (tipInput) {
+                tipAmount = parseFloat(tipInput.value) || 0;
+                currentTipAmount = tipAmount;
+            }
+        }
+
+        updateTotalAmountDisplay();
+        return tipAmount;
+    }
+
     function processScannedQR(data, raw) {
         currentQRData = data;
         currentRawTlv = raw;
+        currentTipAmount = 0;
 
+        // Reset all sections
         document.getElementById('tipSection').classList.add('d-none');
         document.getElementById('consumerDataSection').classList.add('d-none');
-        document.getElementById('txAmountInput').readOnly = true;
-        document.getElementById('txAmountInput').style.borderBottom = 'none';
+        document.getElementById('billNumberSection').classList.add('d-none');
+        document.getElementById('mobileNumberSection').classList.add('d-none');
+        document.getElementById('totalAmountRow').classList.add('d-none');
 
+        // Set merchant info
         document.getElementById('merchantNameDisplay').textContent = data['59'] || 'Unknown Merchant';
         document.getElementById('merchantCityDisplay').textContent = `${data['60'] || 'City'}, ${data['58'] || 'ET'}`;
 
+        // Handle amount (Tag 54)
+        const amountInput = document.getElementById('txAmountInput');
         if(data['54']) {
-            document.getElementById('txAmountInput').value = parseFloat(data['54']).toFixed(2);
+            currentBaseAmount = parseFloat(data['54']);
+            amountInput.value = currentBaseAmount.toFixed(2);
+            amountInput.readOnly = true;
+            amountInput.style.borderBottom = 'none';
         } else {
-            document.getElementById('txAmountInput').value = "";
-            document.getElementById('txAmountInput').placeholder = "0.00";
-            document.getElementById('txAmountInput').readOnly = false;
-            document.getElementById('txAmountInput').style.borderBottom = '2px solid #0d6efd';
-            document.getElementById('txAmountInput').focus();
+            amountInput.value = "";
+            amountInput.placeholder = "0.00";
+            amountInput.readOnly = false;
+            amountInput.style.borderBottom = '2px solid #0d6efd';
         }
 
+        // Handle Bill Number (Tag 62/01) - PROMPTED VALUE
+        const tag62 = data['62'] || {};
+        if (tag62['01'] === '***') {
+            // QR indicates customer should input bill number
+            const billSection = document.getElementById('billNumberSection');
+            billSection.classList.remove('d-none');
+            document.getElementById('billNumberInput').value = '';
+        } else if (tag62['01']) {
+            // Bill number is hardcoded in QR
+            const billSection = document.getElementById('billNumberSection');
+            billSection.classList.remove('d-none');
+            document.getElementById('billNumberInput').value = tag62['01'];
+            document.getElementById('billNumberInput').readOnly = true;
+        }
+
+        // Handle Mobile Number for Top-up (Tag 62/02) - PROMPTED VALUE
+        if (tag62['02'] === '***') {
+            const mobileSection = document.getElementById('mobileNumberSection');
+            mobileSection.classList.remove('d-none');
+            document.getElementById('mobileNumberInput').value = '';
+        } else if (tag62['02']) {
+            const mobileSection = document.getElementById('mobileNumberSection');
+            mobileSection.classList.remove('d-none');
+            document.getElementById('mobileNumberInput').value = tag62['02'];
+            document.getElementById('mobileNumberInput').readOnly = true;
+        }
+
+        // Handle Tip Logic (Tags 55-57)
         const tipInd = data['55'];
         if(tipInd) {
             const tipSec = document.getElementById('tipSection');
@@ -511,57 +646,113 @@
             tipSec.classList.remove('d-none');
 
             if(tipInd === '01') {
+                // Prompt user for tip amount
                 document.getElementById('tipTypeBadge').textContent = 'Enter Tip';
-                tipContainer.innerHTML = `<div class="input-group"><span class="input-group-text">ETB</span><input type="number" id="tipInput" class="form-control" placeholder="0.00"></div>`;
+                tipContainer.innerHTML = `
+                    <div class="input-group">
+                        <span class="input-group-text">ETB</span>
+                        <input type="number" id="tipUserInput" class="form-control" placeholder="0.00" step="0.01" oninput="calculateTip()">
+                    </div>
+                    <div id="tipAmountDisplay" class="text-end mt-2 small text-muted d-none"></div>
+                `;
             } else if (tipInd === '02') {
+                // Fixed tip amount from QR
                 const fixedVal = data['56'] || '0.00';
                 document.getElementById('tipTypeBadge').textContent = 'Fixed Fee';
-                tipContainer.innerHTML = `<div class="d-flex justify-content-between"><span>Fee Amount</span><span class="fw-bold">ETB ${fixedVal}</span></div><input type="hidden" id="tipInput" value="${fixedVal}">`;
+                tipContainer.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span>Fee Amount</span>
+                        <span class="fw-bold">ETB ${fixedVal}</span>
+                    </div>
+                    <input type="hidden" id="tipFixedValue" value="${fixedVal}">
+                    <div id="tipAmountDisplay" class="text-end mt-2 small text-muted"></div>
+                `;
+                currentTipAmount = parseFloat(fixedVal);
+                setTimeout(() => calculateTip(), 100);
             } else if (tipInd === '03') {
+                // Percentage tip from QR
                 const pctVal = data['57'] || '0.00';
                 document.getElementById('tipTypeBadge').textContent = `${pctVal}% Fee`;
-                tipContainer.innerHTML = `<div class="text-muted small">Checking total...</div><input type="hidden" id="tipPct" value="${pctVal}">`;
+                tipContainer.innerHTML = `
+                    <div class="text-muted small">Calculating tip based on amount...</div>
+                    <input type="hidden" id="tipPctValue" value="${pctVal}">
+                    <div id="tipAmountDisplay" class="text-end mt-2 small text-muted"></div>
+                `;
+                setTimeout(() => calculateTip(), 100);
             }
         }
 
-        const tag62 = data['62'];
+        // Handle Additional Consumer Data Request (Tag 62/09)
+        const consumerReq = tag62['09'];
+        if(consumerReq) {
+            const consumerSec = document.getElementById('consumerDataSection');
+            const consumerFields = document.getElementById('consumerFields');
+            consumerSec.classList.remove('d-none');
+
+            let reqHtml = '';
+            if(consumerReq.includes('M')) {
+                reqHtml += `<div class="mb-2">
+                    <label class="small text-muted">Mobile Number</label>
+                    <input type="tel" id="consumerMobile" class="form-control form-control-sm" placeholder="+251-XXXXXXXXX">
+                </div>`;
+            }
+            if(consumerReq.includes('E')) {
+                reqHtml += `<div class="mb-2">
+                    <label class="small text-muted">Email</label>
+                    <input type="email" id="consumerEmail" class="form-control form-control-sm" placeholder="customer@example.com">
+                </div>`;
+            }
+            if(consumerReq.includes('A')) {
+                reqHtml += `<div class="mb-2">
+                    <label class="small text-muted">Address</label>
+                    <input type="text" id="consumerAddress" class="form-control form-control-sm" placeholder="Street, City, Country">
+                </div>`;
+            }
+            consumerFields.innerHTML = reqHtml;
+        }
+
+        // Set purpose and reference
         let purpose = "Payment";
         let ref = "N/A";
 
-        if(tag62) {
-            if(tag62['01']) ref = `Bill: ${tag62['01']}`;
-            if(tag62['05']) ref = tag62['05'];
-            if(tag62['08']) purpose = tag62['08'];
-
-            const req = tag62['09'];
-            if(req) {
-                document.getElementById('consumerDataSection').classList.remove('d-none');
-                let reqHtml = '';
-                if(req.includes('M')) reqHtml += `<div class="mb-2"><label class="small text-muted">Mobile Number</label><input type="tel" class="form-control form-control-sm" value="+251911223344"></div>`;
-                if(req.includes('E')) reqHtml += `<div class="mb-2"><label class="small text-muted">Email</label><input type="email" class="form-control form-control-sm" value="bruk@example.com"></div>`;
-                if(req.includes('A')) reqHtml += `<div class="mb-2"><label class="small text-muted">Address</label><input type="text" class="form-control form-control-sm" value="Addis Ababa, Bole"></div>`;
-                document.getElementById('consumerFields').innerHTML = reqHtml;
-            }
-        }
-
-        if (ref === "N/A" && data['63']) {
-             ref = "CRC-" + data['63'];
-        }
+        if(tag62['08']) purpose = tag62['08'];
+        if(tag62['05']) ref = tag62['05'];
+        if(tag62['01'] && ref === "N/A") ref = `Bill: ${tag62['01']}`;
 
         document.getElementById('txPurpose').textContent = purpose;
         document.getElementById('txRef').textContent = ref;
 
+        // Add amount change listener for percentage tips
+        amountInput.addEventListener('input', function() {
+            if (tipInd === '03') calculateTip();
+            updateTotalAmountDisplay();
+        });
+
         navTo('confirm');
     }
 
-    function mapDataToBackendModel(rawData) {
+    function mapDataToBackendModel(rawData, userInputs) {
         const mapped = {
             merchantAccountInformation: {},
             additionalDataField: {},
             merchantInformationLanguageTemplate: {},
-            unreservedTemplates: {}
+            unreservedTemplates: {},
+            // User input fields
+            amount: userInputs.amount,
+            tipAmount: userInputs.tipAmount,
+            customerName: userInputs.customerName,
+            customerAccountId: userInputs.customerAccountId,
+            customerMobile: userInputs.customerMobile,
+            customerEmail: userInputs.customerEmail,
+            consumerAddress: userInputs.consumerAddress,
+            consumerMobile: userInputs.consumerMobile,
+            consumerEmail: userInputs.consumerEmail,
+            billNumber: userInputs.billNumber,
+            mobileNumber: userInputs.mobileNumber,
+            remittanceInfo: userInputs.remittanceInfo
         };
 
+        // Map QR tags
         for (const [tag, val] of Object.entries(rawData)) {
             if (tagMap[tag]) {
                 mapped[tagMap[tag]] = val;
@@ -580,7 +771,13 @@
                 }
             }
             else if (tag === '62' && typeof val === 'object') {
-                mapped.additionalDataField = val;
+                // Merge with user inputs for prompted values
+                mapped.additionalDataField = { ...val };
+                if (userInputs.billNumber) mapped.additionalDataField['01'] = userInputs.billNumber;
+                if (userInputs.mobileNumber) mapped.additionalDataField['02'] = userInputs.mobileNumber;
+                if (userInputs.consumerMobile) mapped.additionalDataField['09M'] = userInputs.consumerMobile;
+                if (userInputs.consumerEmail) mapped.additionalDataField['09E'] = userInputs.consumerEmail;
+                if (userInputs.consumerAddress) mapped.additionalDataField['09A'] = userInputs.consumerAddress;
             }
             else if (tag === '64' && typeof val === 'object') {
                 mapped.merchantInformationLanguageTemplate = val;
@@ -591,11 +788,11 @@
                 }
             }
         }
+
         return mapped;
     }
 
     function generateUUID() {
-        // Fallback for non-secure contexts
         if (typeof crypto !== 'undefined' && crypto.randomUUID) {
             return crypto.randomUUID();
         }
@@ -609,53 +806,53 @@
         const btn = document.querySelector('.btn-pay');
         const amountEl = document.getElementById('txAmountInput');
 
-        if(!amountEl.readOnly && (!amountEl.value || parseFloat(amountEl.value) <= 0)) {
+        // Validate amount
+        let baseAmount = parseFloat(amountEl.value);
+        if (isNaN(baseAmount) || baseAmount <= 0) {
             showToast("Please enter a valid amount", "warning");
             return;
         }
 
-        let total = parseFloat(amountEl.value);
-        let tipAmount = 0;
+         // Calculate tip amount
+    let tipAmount = currentTipAmount;
+    const tipInd = currentQRData?.['55'];
 
-        // 1. Tip Calculation Logic
-        const tipInput = document.getElementById('tipInput');
-        const tipPct = document.getElementById('tipPct');
-
-        if (tipInput && tipInput.value) {
-            tipAmount = parseFloat(tipInput.value);
-        } else if (tipPct && tipPct.value) {
-            const pct = parseFloat(tipPct.value);
-            tipAmount = (total * pct) / 100;
+    if (tipInd === '01') {
+        const tipInput = document.getElementById('tipUserInput');
+        if (tipInput) {
+            tipAmount = parseFloat(tipInput.value) || 0;
         }
+    } else if (tipInd === '02') {
+        tipAmount = parseFloat(currentQRData['56'] || 0);
+    } else if (tipInd === '03') {
+        const pct = parseFloat(currentQRData['57'] || 0);
+        tipAmount = (baseAmount * pct) / 100;
+    }
 
-        total += tipAmount;
+    // For display only - total amount
+    const totalAmount = baseAmount + tipAmount;
 
-        // Update the QR data with the FINAL total amount
-        currentQRData['54'] = total.toFixed(2);
 
-        // 2. Capture Consumer Data if present
-        const mobInput = document.getElementById('consumerMobile');
-        if (mobInput && mobInput.value) {
-            if(!currentQRData['62']) currentQRData['62'] = {};
-            currentQRData['62']['02'] = mobInput.value;
-        }
+          const userInputs = {
+        amount: baseAmount,           // ← BASE amount (without tip)
+        tipAmount: tipAmount,         // ← Tip amount ONLY
+        customerName: "Bruk Hailu",
+        customerAccountId: "2305130000483",
+        customerMobile: document.getElementById('consumerMobile')?.value || null,
+        customerEmail: document.getElementById('consumerEmail')?.value || null,
+        consumerAddress: document.getElementById('consumerAddress')?.value || null,
+        consumerMobile: document.getElementById('consumerMobile')?.value || null,
+        consumerEmail: document.getElementById('consumerEmail')?.value || null,
+        billNumber: document.getElementById('billNumberInput')?.value || null,
+        mobileNumber: document.getElementById('mobileNumberInput')?.value || null,
+        remittanceInfo: ` to ${currentQRData['59'] || 'Merchant'}`
+    };
 
-        // 3. Update Remittance Info with Tip Details
-        if (tipAmount > 0) {
-            if (!currentQRData['62']) currentQRData['62'] = {};
-            let currentPurpose = currentQRData['62']['08'] || "Payment";
-            // Append tip info to Purpose or Context (which maps to Ustrd)
-            // Or ideally, we should update the 'contextOfTransaction' if available
-            // Let's modify the mapDataToBackendModel output or just update 62-08/80 here
-            // Best approach: If we have a tip, append it to the Unstructured Remittance info
-            // which comes from Tag 80 or Tag 62-05/08 in our PaymentService logic.
+        // Update QR data with final total amount
+        currentQRData['54'] = totalAmount.toFixed(2);
 
-            // We'll append it to Tag 80 (Context) as a safe bet for Ustrd
-            let existingContext = currentQRData['80'] || currentQRData['62']['05'] || "QR Payment";
-            currentQRData['80'] = `${existingContext} / Tip: ${tipAmount.toFixed(2)}`;
-        }
-
-        const backendPayload = mapDataToBackendModel(currentQRData);
+        // Build backend payload
+        const backendPayload = mapDataToBackendModel(currentQRData, userInputs);
 
         const transactionId = generateUUID();
 
@@ -691,9 +888,9 @@
                     logConsole.scrollTop = logConsole.scrollHeight;
                 });
 
-                document.getElementById('successAmount').textContent = `ETB ${total.toFixed(2)}`;
+                document.getElementById('successAmount').textContent = `ETB ${totalAmount.toFixed(2)}`;
                 document.getElementById('successMerchant').textContent = document.getElementById('merchantNameDisplay').textContent;
-                document.getElementById('successTxId').textContent = result.transactionId; // Use backend EndToEndId
+                document.getElementById('successTxId').textContent = result.endToEndId || transactionId;
                 navTo('success');
             }, 1500);
 
@@ -706,7 +903,7 @@
 
             setTimeout(() => {
                 document.getElementById('failReason').textContent = e.message;
-                navTo('screen-fail');
+                navTo('fail');
             }, 2000);
 
         } finally {
