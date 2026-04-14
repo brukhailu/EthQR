@@ -1,6 +1,6 @@
 [
-  { "tag": "00", "name": "Payload Format Indicator", "dataField": "payloadFormatIndicator", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^01$", "mandatory": true },
-  { "tag": "01", "name": "Point of Initiation Method", "dataField": "pointOfInitiationMethod", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^(11|12)$", "mandatory": true },
+  { "tag": "00", "name": "Payload Format Indicator (Default 01)", "dataField": "payloadFormatIndicator", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^01$", "mandatory": true },
+  { "tag": "01", "name": "Point of Initiation Method (11- for Static QR, 12- for Dynamic QR", "dataField": "pointOfInitiationMethod", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^(11|12)$", "mandatory": true },
   { "tag": "02", "name": "Visa", "dataField": "merchantAccountInformation", "container": true, "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": false },
   { "tag": "03", "name": "Visa", "dataField": "merchantAccountInformation", "container": true, "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": false },
   { "tag": "04", "name": "Mastercard", "dataField": "merchantAccountInformation", "container": true, "dataType": "ANS", "minLength": 1, "maxLength": 99, "mandatory": false },
@@ -28,7 +28,7 @@
   { "tag": "52", "name": "Merchant Category Code", "dataField": "merchantCategoryCode", "dataType": "N", "minLength": 4, "maxLength": 4, "mandatory": true },
   { "tag": "53", "name": "Transaction Currency", "dataField": "transactionCurrency", "dataType": "N", "minLength": 3, "maxLength": 3, "mandatory": true },
   { "tag": "54", "name": "Transaction Amount", "dataField": "transactionAmount", "dataType": "ANS", "minLength": 1, "maxLength": 13, "pattern": "^\\d{1,10}(\\.\\d{1,2})?$", "mandatory": false },
-  { "tag": "55", "name": "Tip or Convenience Indicator", "dataField": "tipOrConvenienceIndicator", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^(01|02|03)$", "mandatory": false },
+  { "tag": "55", "name": "Tip or Convenience Indicator (01 – Prompt customer for Adding Tip in payment. \n02 – Fixed Tip Amount included in QR (Tag 56) \n  03 – Percentage based TIP as per %age defined in Tag 57. )", "dataField": "tipOrConvenienceIndicator", "dataType": "N", "minLength": 2, "maxLength": 2, "pattern": "^(01|02|03)$", "mandatory": false },
   { "tag": "56", "name": "Value of Convenience Fee Fixed", "dataField": "valueOfConvenienceFeeFixed", "dataType": "ANS", "minLength": 1, "maxLength": 13, "pattern": "^\\d{1,10}(\\.\\d{1,2})?$", "mandatory": false },
   { "tag": "57", "name": "Value of Convenience Fee Percentage", "dataField": "valueOfConvenienceFeePercentage", "dataType": "ANS", "minLength": 1, "maxLength": 5, "pattern": "^\\d{1,2}(\\.\\d{1,2})?$", "mandatory": false },
   { "tag": "58", "name": "Country Code", "dataField": "countryCode", "dataType": "ANS", "minLength": 2, "maxLength": 2, "pattern": "^[A-Z]{2}$", "mandatory": true },
@@ -44,9 +44,9 @@
     { "tag": "06", "name": "Customer ID", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": false },
     { "tag": "07", "name": "Terminal ID", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": false },
     { "tag": "08", "name": "Purpose of Transaction", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": true },
-    { "tag": "09", "name": "Additional Consumer Data Request", "dataType": "ANS", "minLength": 1, "maxLength": 3, "pattern": "^[AEM]+$", "mandatory": false },
+    { "tag": "09", "name": "Additional Consumer Data Request (A=Address, M=Mobile, E=Email)", "dataType": "ANS", "minLength": 1, "maxLength": 3, "pattern": "^[AEM]+$", "mandatory": false },
     { "tag": "10", "name": "Merchant Tax ID", "dataType": "ANS", "minLength": 1, "maxLength": 25, "mandatory": false },
-    { "tag": "11", "name": "Merchant Channel", "dataType": "ANS", "minLength": 1, "maxLength": 3, "pattern": "^[0-7]{3}$", "mandatory": false }
+    { "tag": "11", "name": "Merchant Channel - Extended to 4 from 3, QRCP", "dataType": "ANS", "minLength": 1, "maxLength": 4, "mandatory": false }
   ]},
   { "tag": "63", "name": "CRC", "dataField": "crc", "dataType": "ANS", "minLength": 4, "maxLength": 4, "mandatory": true },
   { "tag": "64", "name": "Merchant Information - Language Template", "dataField": "merchantInformationLanguageTemplate", "isSubTLV": true, "mandatory": false, "subTags": [

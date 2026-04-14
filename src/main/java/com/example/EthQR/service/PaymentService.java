@@ -338,29 +338,32 @@ public class PaymentService {
 
         // Build debtor info (customer info)
         // Build debtor info (customer info) - UPDATED to use all fields
+// Build debtor info (customer info) - PRIORITIZE PROMPTED VALUES
         String debtorName = userInput.getDebtorName() != null ?
                 userInput.getDebtorName() :
                 (userInput.getCustomerName() != null ? userInput.getCustomerName() : defaultDebtorName);
 
-        String debtorAddress = userInput.getDebtorAddress() != null ?
-                userInput.getDebtorAddress() :
-                (userInput.getConsumerAddress() != null ? userInput.getConsumerAddress() :
-                        (userInput.getCustomerAddress() != null ? userInput.getCustomerAddress() : defaultDebtorAddressLine));
+// Priority for Address: Prompted consumer address > user input > default
+        String debtorAddress = consumerAddress != null ? consumerAddress :
+                (userInput.getDebtorAddress() != null ? userInput.getDebtorAddress() :
+                        (userInput.getConsumerAddress() != null ? userInput.getConsumerAddress() :
+                                (userInput.getCustomerAddress() != null ? userInput.getCustomerAddress() : defaultDebtorAddressLine)));
 
-        String debtorMobile = userInput.getDebtorMobile() != null ?
-                userInput.getDebtorMobile() :
-                (userInput.getConsumerMobile() != null ? userInput.getConsumerMobile() :
-                        (userInput.getCustomerMobile() != null ? userInput.getCustomerMobile() : defaultDebtorMobile));
+// Priority for Mobile: Prompted consumer mobile > user input > default
+        String debtorMobile = consumerMobile != null ? consumerMobile :
+                (userInput.getDebtorMobile() != null ? userInput.getDebtorMobile() :
+                        (userInput.getConsumerMobile() != null ? userInput.getConsumerMobile() :
+                                (userInput.getCustomerMobile() != null ? userInput.getCustomerMobile() : defaultDebtorMobile)));
 
-        String debtorEmail = userInput.getDebtorEmail() != null ?
-                userInput.getDebtorEmail() :
-                (userInput.getConsumerEmail() != null ? userInput.getConsumerEmail() :
-                        (userInput.getCustomerEmail() != null ? userInput.getCustomerEmail() : defaultDebtorEmail));
+// Priority for Email: Prompted consumer email > user input > default
+        String debtorEmail = consumerEmail != null ? consumerEmail :
+                (userInput.getDebtorEmail() != null ? userInput.getDebtorEmail() :
+                        (userInput.getConsumerEmail() != null ? userInput.getConsumerEmail() :
+                                (userInput.getCustomerEmail() != null ? userInput.getCustomerEmail() : defaultDebtorEmail)));
 
         String debtorAcctId = userInput.getDebtorAccountId() != null ?
                 userInput.getDebtorAccountId() :
                 (userInput.getCustomerAccountId() != null ? userInput.getCustomerAccountId() : defaultDebtorAcctId);
-
         // Build creditor info (merchant info)
         String creditorName = qrData.getMerchantName() != null ? qrData.getMerchantName() : "Merchant";
         String creditorTownName = qrData.getMerchantCity() != null ? qrData.getMerchantCity() : "";
@@ -408,6 +411,8 @@ public class PaymentService {
         String bizMsgId = instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
         String msgId = instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
 
+        // After building consumerAddress, consumerEmail, consumerMobile from prompts...
+
         return new Pacs008Message()
                 .withBizMsgId(bizMsgId)
                 .withMsgId(msgId)
@@ -426,25 +431,31 @@ public class PaymentService {
                 .withLocalInstrument(localInstrument)
                 .withCategoryPurpose(categoryPurpose)
                 .withPurposeCode(purposeCode)
-                // Debtor info (Customer)
+                // Debtor info (Customer) - USE PROMPTED VALUES FIRST
                 .withDebtorName(debtorName)
-                .withDebtorAddressLine(debtorAddress)
-                .withDebtorMobile(debtorMobile)
-                .withDebtorEmail(debtorEmail)
+                .withDebtorAddressLine(
+                        consumerAddress != null ? consumerAddress : debtorAddress
+                )
+                .withDebtorMobile(
+                        consumerMobile != null ? consumerMobile : debtorMobile
+                )
+                .withDebtorEmail(
+                        consumerEmail != null ? consumerEmail : debtorEmail
+                )
                 .withDebtorAcctId(debtorAcctId)
                 .withDebtorClearingType(defaultDebtorClearingType)
-                .withDebtorPrivateId(defaultDebtorPrivateId)
-                .withDebtorPrivateIdScheme(defaultDebtorPrivateIdScheme)
-                // Creditor info (Merchant) - UPDATED WITH ALL FIELDS
+                .withDebtorPrivateId(loyaltyNumber != null ? loyaltyNumber : null)
+                .withDebtorPrivateIdScheme("LPNB")
+                // Creditor info (Merchant)
                 .withCreditorName(creditorName)
-                .withCreditorStreetName(creditorStreetName)           // ADDED
-                .withCreditorBuildingNumber(creditorBuildingNumber)   // ADDED
-                .withCreditorPostalCode(postalCode)                   // ADDED
+                .withCreditorStreetName(creditorStreetName)
+                .withCreditorBuildingNumber(creditorBuildingNumber)
+                .withCreditorPostalCode(postalCode)
                 .withCreditorTownName(creditorTownName)
-                .withCreditorCountry(countryCode)                     // ADDED
-                .withCreditorAddressLine(creditorAddressLine)         // ADDED
-                .withCreditorOrgId(merchantCategoryCode)              // ADDED (MCC)
-                .withCreditorCountryOfRes(countryCode)                // UPDATED (use actual country code)
+                .withCreditorCountry(countryCode)
+                .withCreditorAddressLine(creditorAddressLine)
+                .withCreditorOrgId(merchantCategoryCode)
+                .withCreditorCountryOfRes(countryCode)
                 .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")
                 .withCreditorMobile(merchantMobile)
                 .withCreditorAcctId(creditorAcctId)
@@ -452,15 +463,14 @@ public class PaymentService {
                 // Optional fields
                 .withUltimateCreditorId(ultimateCreditorId)
                 .withMerchantTaxId(merchantTaxId)
-                .withInstructionForNextAgent(isBillPayment ? instructedAgentId : null)
+                .withInstructionForNextAgent(instructedAgentId)  // Always include
                 .withRemittanceUnstructured(remittanceUnstructured)
                 .withBillNumber(billNumber)
-                .withMobileNumber(mobileNumber)
+                .withMobileNumber(mobileNumber)  // QR Tag 02 for merchant mobile
                 .withStoreLabel(storeLabel)
                 .withLoyaltyNumber(loyaltyNumber)
                 .withTerminalId(terminalId);
     }
-
     private String determineCategoryPurpose(QRCodeData qrData, PaymentRequest userInput) {
         // Priority: User input > QR data > Default
 
@@ -534,7 +544,7 @@ public class PaymentService {
         StringBuilder sb = new StringBuilder();
 
         if (effectiveTipAmount != null && effectiveTipAmount.compareTo(BigDecimal.ZERO) > 0) {
-            sb.append("Tip Payment: ");
+            sb.append("Tip: ");
         }
 
         if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().isEmpty()) {
@@ -1077,7 +1087,7 @@ public class PaymentService {
             xml.append("            <header:FIId>\n");
             xml.append("                <header:FinInstnId>\n");
             xml.append("                    <header:Othr>\n");
-            xml.append("                        <header:Id>").append(escapeXml(instructedAgentId)).append("</header:Id>\n");
+            xml.append("                        <header:Id>FP</header:Id>\n");
             xml.append("                    </header:Othr>\n");
             xml.append("                </header:FinInstnId>\n");
             xml.append("            </header:FIId>\n");
@@ -1133,7 +1143,19 @@ public class PaymentService {
                     .append(escapeXml(amount)).append("</document:InstdAmt>\n");
             xml.append("                <document:ChrgBr>").append(escapeXml(chargeBearer)).append("</document:ChrgBr>\n");
 
-            // Debtor (Customer)
+            // UltmtDbtr (Ultimate Debtor - matches sample)
+            if (debtorName != null) {
+                xml.append("                <document:UltmtDbtr>\n");
+                xml.append("                    <document:Nm>").append(escapeXml(debtorName)).append("</document:Nm>\n");
+                if (creditorCountry != null) {
+                    xml.append("                    <document:PstlAdr>\n");
+                    xml.append("                        <document:Ctry>").append(escapeXml(creditorCountry)).append("</document:Ctry>\n");
+                    xml.append("                    </document:PstlAdr>\n");
+                }
+                xml.append("                </document:UltmtDbtr>\n");
+            }
+
+            // Dbtr (Debtor) - MATCHES SAMPLE EXACTLY
             xml.append("                <document:Dbtr>\n");
             xml.append("                    <document:Nm>").append(escapeXml(debtorName)).append("</document:Nm>\n");
             xml.append("                    <document:PstlAdr>\n");
@@ -1163,7 +1185,7 @@ public class PaymentService {
             }
             xml.append("                </document:Dbtr>\n");
 
-            // Debtor Account
+            // DbtrAcct - MATCHES SAMPLE EXACTLY
             xml.append("                <document:DbtrAcct>\n");
             xml.append("                    <document:Id>\n");
             xml.append("                        <document:Othr>\n");
@@ -1176,7 +1198,7 @@ public class PaymentService {
             xml.append("                    </document:Id>\n");
             xml.append("                </document:DbtrAcct>\n");
 
-            // Debtor Agent
+            // DbtrAgt - MATCHES SAMPLE EXACTLY
             xml.append("                <document:DbtrAgt>\n");
             xml.append("                    <document:FinInstnId>\n");
             xml.append("                        <document:Othr>\n");
@@ -1186,7 +1208,7 @@ public class PaymentService {
             xml.append("                    </document:FinInstnId>\n");
             xml.append("                </document:DbtrAgt>\n");
 
-            // Creditor Agent
+            // CdtrAgt - MATCHES SAMPLE EXACTLY
             xml.append("                <document:CdtrAgt>\n");
             xml.append("                    <document:FinInstnId>\n");
             xml.append("                        <document:Othr>\n");
@@ -1195,37 +1217,19 @@ public class PaymentService {
             xml.append("                    </document:FinInstnId>\n");
             xml.append("                </document:CdtrAgt>\n");
 
-            // Creditor (Merchant)
+            // Cdtr (Creditor) - MATCHES SAMPLE EXACTLY
             xml.append("                <document:Cdtr>\n");
             xml.append("                    <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
-
-            // Full Postal Address
-            if (creditorStreetName != null || creditorBuildingNumber != null ||
-                    creditorPostalCode != null || creditorTownName != null ||
-                    creditorCountry != null || creditorAddressLine != null) {
-                xml.append("                    <document:PstlAdr>\n");
-                if (creditorStreetName != null && !creditorStreetName.isEmpty()) {
-                    xml.append("                        <document:StrtNm>").append(escapeXml(creditorStreetName)).append("</document:StrtNm>\n");
-                }
-                if (creditorBuildingNumber != null && !creditorBuildingNumber.isEmpty()) {
-                    xml.append("                        <document:BldgNb>").append(escapeXml(creditorBuildingNumber)).append("</document:BldgNb>\n");
-                }
-                if (creditorPostalCode != null && !creditorPostalCode.isEmpty()) {
-                    xml.append("                        <document:PstCd>").append(escapeXml(creditorPostalCode)).append("</document:PstCd>\n");
-                }
-                if (creditorTownName != null && !creditorTownName.isEmpty()) {
-                    xml.append("                        <document:TwnNm>").append(escapeXml(creditorTownName)).append("</document:TwnNm>\n");
-                }
-                if (creditorCountry != null && !creditorCountry.isEmpty()) {
-                    xml.append("                        <document:Ctry>").append(escapeXml(creditorCountry)).append("</document:Ctry>\n");
-                }
-                if (creditorAddressLine != null && !creditorAddressLine.isEmpty()) {
-                    xml.append("                        <document:AdrLine>").append(escapeXml(creditorAddressLine)).append("</document:AdrLine>\n");
-                }
-                xml.append("                    </document:PstlAdr>\n");
+            xml.append("                    <document:PstlAdr>\n");
+            if (creditorTownName != null && !creditorTownName.isEmpty()) {
+                xml.append("                        <document:TwnNm>").append(escapeXml(creditorTownName)).append("</document:TwnNm>\n");
             }
+            if (creditorCountry != null && !creditorCountry.isEmpty()) {
+                xml.append("                        <document:Ctry>").append(escapeXml(creditorCountry)).append("</document:Ctry>\n");
+            }
+            xml.append("                    </document:PstlAdr>\n");
 
-            // Organization ID (MCC code)
+            // Organization ID (MCC)
             if (creditorOrgId != null && !creditorOrgId.isEmpty()) {
                 xml.append("                    <document:Id>\n");
                 xml.append("                        <document:OrgId>\n");
@@ -1241,25 +1245,25 @@ public class PaymentService {
                 xml.append("                    <document:CtryOfRes>").append(escapeXml(creditorCountryOfRes)).append("</document:CtryOfRes>\n");
             }
 
-            // Contact Details
-            if (creditorContactChannel != null || creditorMobile != null || terminalId != null) {
-                xml.append("                    <document:CtctDtls>\n");
-                xml.append("                        <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
-                if (creditorMobile != null && !creditorMobile.isEmpty()) {
-                    xml.append("                        <document:MobNb>").append(escapeXml(creditorMobile)).append("</document:MobNb>\n");
-                }
-                xml.append("                        <document:Othr>\n");
-                xml.append("                            <document:ChanlTp>").append(escapeXml(creditorContactChannel)).append("</document:ChanlTp>\n");
-                if (terminalId != null && !terminalId.isEmpty()) {
-                    xml.append("                            <document:Id>").append(escapeXml(terminalId)).append("</document:Id>\n");
-                }
-                xml.append("                        </document:Othr>\n");
-                xml.append("                    </document:CtctDtls>\n");
+            // Contact Details - MATCHES SAMPLE WITH ALL FIELDS
+            xml.append("                    <document:CtctDtls>\n");
+            xml.append("                        <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
+            // Store label goes in Dept field
+            if (storeLabel != null && !storeLabel.isEmpty()) {
+                xml.append("                        <document:Dept>").append(escapeXml(storeLabel)).append("</document:Dept>\n");
             }
+            xml.append("                        <document:Othr>\n");
+            xml.append("                            <document:ChanlTp>").append(escapeXml(creditorContactChannel)).append("</document:ChanlTp>\n");
 
+            // Terminal ID goes here
+            if (terminalId != null && !terminalId.isEmpty()) {
+                xml.append("                            <document:Id>").append(escapeXml(terminalId)).append("</document:Id>\n");
+            }
+            xml.append("                        </document:Othr>\n");
+            xml.append("                    </document:CtctDtls>\n");
             xml.append("                </document:Cdtr>\n");
 
-            // Creditor Account
+            // CdtrAcct - MATCHES SAMPLE EXACTLY
             xml.append("                <document:CdtrAcct>\n");
             xml.append("                    <document:Id>\n");
             xml.append("                        <document:Othr>\n");
@@ -1271,26 +1275,40 @@ public class PaymentService {
             xml.append("                    </document:Id>\n");
             xml.append("                </document:CdtrAcct>\n");
 
-            // Ultimate Creditor (if bill payment)
-            if (ultimateCreditorId != null && !ultimateCreditorId.isEmpty()) {
+            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up)
+            if (mobileNumber != null && !mobileNumber.isEmpty()) {
+                xml.append("                <document:UltmtCdtr>\n");
+                xml.append("                    <document:Id>\n");
+                xml.append("                        <document:PrvtId>\n");
+                xml.append("                            <document:Othr>\n");
+                xml.append("                                <document:Id>").append(escapeXml(mobileNumber)).append("</document:Id>\n");
+                xml.append("                                <document:SchmeNm>\n");
+                xml.append("                                    <document:Prtry>MOBN</document:Prtry>\n");
+                xml.append("                                </document:SchmeNm>\n");
+                xml.append("                            </document:Othr>\n");
+                xml.append("                        </document:PrvtId>\n");
+                xml.append("                    </document:Id>\n");
+                xml.append("                </document:UltmtCdtr>\n");
+            } else if (ultimateCreditorId != null && !ultimateCreditorId.isEmpty()) {
+                // For bill payments
                 xml.append("                <document:UltmtCdtr>\n");
                 xml.append("                    <document:Nm>").append(escapeXml(ultimateCreditorId)).append("</document:Nm>\n");
                 xml.append("                </document:UltmtCdtr>\n");
             }
 
-            // Purpose
+            // InstrForNxtAgt - MATCHES SAMPLE EXACTLY
+            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
+                xml.append("                <document:InstrForNxtAgt>\n");
+                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
+                xml.append("                </document:InstrForNxtAgt>\n");
+            }
+
+            // Purp - MATCHES SAMPLE EXACTLY
             xml.append("                <document:Purp>\n");
             xml.append("                    <document:Prtry>").append(escapeXml(purposeCode)).append("</document:Prtry>\n");
             xml.append("                </document:Purp>\n");
 
-//            // InstructionForNextAgent (for bill payments)
-//            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
-//                xml.append("                <document:InstrForNxtAgt>\n");
-//                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
-//                xml.append("                </document:InstrForNxtAgt>\n");
-//            }
-
-            // Tax (if merchant tax ID exists)
+            // Tax - MATCHES SAMPLE EXACTLY
             if (merchantTaxId != null && !merchantTaxId.isEmpty()) {
                 xml.append("                <document:Tax>\n");
                 xml.append("                    <document:Cdtr>\n");
@@ -1299,47 +1317,26 @@ public class PaymentService {
                 xml.append("                </document:Tax>\n");
             }
 
-            // Remittance Information - CORRECTED PER BPC DOCUMENTATION
+            // RmtInf (Remittance Information) - MATCHES SAMPLE EXACTLY
             xml.append("                <document:RmtInf>\n");
-
-// Unstructured remittance
             String unstructuredRemittance = buildRemittanceString();
             if (unstructuredRemittance != null && !unstructuredRemittance.isEmpty()) {
                 xml.append("                    <document:Ustrd>").append(escapeXml(unstructuredRemittance)).append("</document:Ustrd>\n");
             }
 
-// Structured remittance for tip - CORRECT STRUCTURE
+            // Structured remittance for tip - MATCHES SAMPLE EXACTLY
+            // In your toXml() method - REPLACE the current tip section with:
             boolean hasTip = tipAmount != null && !tipAmount.isEmpty() && new BigDecimal(tipAmount).compareTo(BigDecimal.ZERO) > 0;
             if (hasTip) {
-                BigDecimal tip = new BigDecimal(tipAmount);
-                BigDecimal baseAmt = new BigDecimal(amount);
-
                 xml.append("                    <document:Strd>\n");
                 xml.append("                        <document:RfrdDocAmt>\n");
-                // Due payable amount = base amount (what is actually due)
                 xml.append("                            <document:DuePyblAmt Ccy=\"").append(escapeXml(currency)).append("\">")
-                        .append(tip.toString()).append("</document:DuePyblAmt>\n");
-
-//                // Adjustment amount and reason for tip
-//                xml.append("                            <document:AdjstmntAmtAndRsn>\n");
-//                // Amount = tip amount
-//                xml.append("                                <document:Amt Ccy=\"").append(escapeXml(currency)).append("\">")
-//                        .append(tip.toString()).append("</document:Amt>\n");
-//                // CreditDebitIndicator: DBIT means the amount is added (debit to customer)
-//                xml.append("                                <document:CdtDbtInd>DBIT</document:CdtDbtInd>\n");
-//                // Reason for adjustment
-//                xml.append("                                <document:Rsn>\n");
-//                xml.append("                                    <document:Prtry>TIPC</document:Prtry>\n");  // TIPC = Tip Charge
-//                xml.append("                                </document:Rsn>\n");
-//                xml.append("                            </document:AdjstmntAmtAndRsn>\n");
-
+                        .append(escapeXml(tipAmount)).append("</document:DuePyblAmt>\n");
                 xml.append("                        </document:RfrdDocAmt>\n");
                 xml.append("                    </document:Strd>\n");
             }
 
             xml.append("                </document:RmtInf>\n");
-
-            // ========== END OF CORRECTED REMITTANCE ==========
 
             xml.append("            </document:CdtTrfTxInf>\n");
             xml.append("        </document:FIToFICstmrCdtTrf>\n");
