@@ -302,6 +302,7 @@
                         <input type="file" id="simFileInput" accept="image/*" onchange="handleSimFileUpload(this)">
                     </div>
 
+                    <button class="btn btn-outline-light w-100 mb-2" onclick="handlePasteImageFromClipboard()"><i class="fas fa-paste me-2"></i>Paste QR Image</button>
                     <button class="btn btn-outline-light w-100 mb-2" onclick="handleSimPaste()"><i class="fas fa-font me-2"></i>Paste TLV String</button>
                     <button class="btn btn-link text-white w-100" onclick="navTo('home')">Cancel</button>
                 </div>
@@ -500,6 +501,38 @@
             showToast("Could not read QR code from image", 'danger');
         }
     }
+
+    async function handlePasteImageFromClipboard() {
+        try {
+            const items = await navigator.clipboard.read();
+            for (const item of items) {
+                const imageTypes = item.types.filter(type => type.startsWith('image/'));
+                if (imageTypes.length > 0) {
+                    const blob = await item.getType(imageTypes[0]);
+                    await handleImageBlob(blob);
+                    showToast("Image pasted from clipboard", "success");
+                    return;
+                }
+            }
+            showToast("No image found in clipboard", "warning");
+        } catch (e) {
+            showToast("Unable to read clipboard. Please try Ctrl+V or check permissions.", "danger");
+        }
+    }
+
+    // Global paste handler for the simulator
+    window.addEventListener('paste', (e) => {
+        // Only handle if scanner is open
+        if (document.getElementById('screen-scan').style.display === 'flex') {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (const item of items) {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const blob = item.getAsFile();
+                    handleImageBlob(blob);
+                }
+            }
+        }
+    });
 
     async function handleSimPaste() {
         const text = prompt("Paste TLV String here:");

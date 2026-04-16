@@ -444,8 +444,8 @@ public class PaymentService {
                 )
                 .withDebtorAcctId(debtorAcctId)
                 .withDebtorClearingType(defaultDebtorClearingType)
-                .withDebtorPrivateId(loyaltyNumber != null ? loyaltyNumber : null)
-                .withDebtorPrivateIdScheme("LPNB")
+//                .withDebtorPrivateId(loyaltyNumber != null ? loyaltyNumber : null)
+                .withDebtorPrivateIdScheme(loyaltyNumber != null ? loyaltyNumber : null)
                 // Creditor info (Merchant)
                 .withCreditorName(creditorName)
                 .withCreditorStreetName(creditorStreetName)
@@ -1167,7 +1167,7 @@ public class PaymentService {
                 xml.append("                            <document:Othr>\n");
                 xml.append("                                <document:Id>").append(escapeXml(debtorPrivateId)).append("</document:Id>\n");
                 xml.append("                                <document:SchmeNm>\n");
-                xml.append("                                    <document:Prtry>").append(escapeXml(debtorPrivateIdScheme)).append("</document:Prtry>\n");
+                xml.append("                                    <document:Prtry>").append(escapeXml(loyaltyNumber)).append("</document:Prtry>\n");
                 xml.append("                                </document:SchmeNm>\n");
                 xml.append("                            </document:Othr>\n");
                 xml.append("                        </document:PrvtId>\n");
