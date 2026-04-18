@@ -6,6 +6,7 @@ import com.example.EthQR.service.PaymentService;
 import com.example.EthQR.service.TransactionLogger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +28,14 @@ public class PaymentController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Value("${payment.env.default:45}")
+    private String defaultEnv;
+
     @PostMapping("/get-token")
     public ResponseEntity<?> getToken() {
         try {
             String tempId = UUID.randomUUID().toString();
-            String accessToken = paymentService.getAccessToken(tempId);
+            String accessToken = paymentService.getAccessToken(tempId, defaultEnv);
             return ResponseEntity.ok(Collections.singletonMap("access_token", accessToken));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Collections.singletonMap("error", e.getMessage()));
@@ -46,6 +50,8 @@ public class PaymentController {
         String transactionId = (clientTransactionId != null && !clientTransactionId.isEmpty()) 
                 ? clientTransactionId 
                 : UUID.randomUUID().toString();
+
+        String env = requestBody.containsKey("env") ? requestBody.get("env").toString() : defaultEnv;
 
         try {
             QRCodeData qrData;
@@ -63,7 +69,7 @@ public class PaymentController {
                 userInput = objectMapper.convertValue(requestBody, PaymentRequest.class);
             }
 
-            Map<String, String> paymentResult = paymentService.processPayment(qrData, userInput, transactionId);
+            Map<String, String> paymentResult = paymentService.processPayment(qrData, userInput, transactionId, env);
             Map<String, String> responseBody = Map.of(
                 "status", "SUCCESS",
                 "response", paymentResult.get("response"),

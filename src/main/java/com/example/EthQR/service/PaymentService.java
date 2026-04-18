@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -44,6 +45,9 @@ public class PaymentService {
 
     @Autowired
     private TransactionLogger transactionLogger;
+
+    @Autowired
+    private Environment springEnv;
 
     @Value("${payment.token.url}")
     private String tokenUrl;
@@ -107,20 +111,32 @@ public class PaymentService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String getAccessToken(String transactionId) throws Exception {
-        transactionLogger.log(transactionId, "--- 1. Requesting Access Token ---");
+    // Helper to get environment-specific properties with fallback
+    private String getProp(String env, String key, String fallback) {
+        String envKey = "payment." + env + "." + key;
+        String value = springEnv.getProperty(envKey);
+        return (value != null) ? value : fallback;
+    }
+
+    public String getAccessToken(String transactionId, String env) throws Exception {
+        String activeTokenUrl = getProp(env, "token.url", tokenUrl);
+        String activeJwt = getProp(env, "jwt.assertion", jwtAssertion);
+        String activeUser = getProp(env, "username", username);
+        String activePass = getProp(env, "password", password);
+
+        transactionLogger.log(transactionId, "--- 1. Requesting Access Token [" + env + "] ---");
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(tokenUrl);
+            HttpPost httpPost = new HttpPost(activeTokenUrl);
 
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            httpPost.setHeader("jwt-assertion", jwtAssertion);
+            httpPost.setHeader("jwt-assertion", activeJwt);
             httpPost.setHeader(HttpHeaders.USER_AGENT, "Apache-HttpClient/4.5.14 (Java/21.0.9)");
 
-            String body = "grant_type=password&username=" + URLEncoder.encode(username, StandardCharsets.UTF_8) +
-                    "&password=" + URLEncoder.encode(password, StandardCharsets.UTF_8);
+            String body = "grant_type=password&username=" + URLEncoder.encode(activeUser, StandardCharsets.UTF_8) +
+                    "&password=" + URLEncoder.encode(activePass, StandardCharsets.UTF_8);
             httpPost.setEntity(new StringEntity(body));
 
-            transactionLogger.log(transactionId, "Token Request URL: " + tokenUrl);
+            transactionLogger.log(transactionId, "Token Request URL: " + activeTokenUrl);
             transactionLogger.log(transactionId, "Token Request Body: " + body);
 
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
@@ -147,9 +163,12 @@ public class PaymentService {
         }
     }
 
-    public Map<String, String> processPayment(QRCodeData qrData, PaymentRequest userInput, String transactionId) throws Exception {
-        String endToEndId = generateEndToEndId();
-        String txId = generateTransactionId();
+    public Map<String, String> processPayment(QRCodeData qrData, PaymentRequest userInput, String transactionId, String env) throws Exception {
+        String activeIncomingUrl = getProp(env, "incoming.url", incomingUrl);
+        String activeBic = getProp(env, "bic", instructingAgentId);
+
+        String endToEndId = generateEndToEndId(activeBic);
+        String txId = generateTransactionId(activeBic);
         String uetr = qrData.getUetr() != null ? qrData.getUetr() : UUID.randomUUID().toString();
 
         // Determine the single effective tip amount to use for all calculations and XML
@@ -169,13 +188,13 @@ public class PaymentService {
 
         // Build message - passing base amount (without tip) and tip amount separately
         Pacs008Message message = buildPacs008Message(qrData, userInput, transactionId,
-                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency);  // ← baseAmount, not totalAmount!
+                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency, activeBic);  
         String pacs008 = message.toXml();
 
 
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
-        String accessToken = getAccessToken(transactionId);
-        String responseXml = sendPaymentRequest(signedPacs008, accessToken, transactionId);
+        String accessToken = getAccessToken(transactionId, env);
+        String responseXml = sendPaymentRequest(signedPacs008, accessToken, transactionId, activeIncomingUrl);
 
         Map<String, String> result = new HashMap<>();
         result.put("endToEndId", endToEndId);
@@ -255,7 +274,7 @@ public class PaymentService {
     private Pacs008Message buildPacs008Message(QRCodeData qrData, PaymentRequest userInput,
                                                String transactionId, String endToEndId,
                                                String txId, String uetr,
-                                               BigDecimal totalAmount, BigDecimal effectiveTipAmount, String currency) {
+                                               BigDecimal baseAmountArg, BigDecimal effectiveTipAmount, String currency, String activeBic) {
         transactionLogger.log(transactionId, "--- 2. Building pacs.008 Message from QR Data ---");
 
         DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
@@ -408,10 +427,11 @@ public class PaymentService {
         String ultimateCreditorId = billNumber;
 
         // Generate unique IDs
-        String bizMsgId = instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
-        String msgId = instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        String bizMsgId = activeBic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        String msgId = activeBic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
 
-        // After building consumerAddress, consumerEmail, consumerMobile from prompts...
+        // Total amount for message
+        BigDecimal totalAmount = baseAmountArg.add(effectiveTipAmount);
 
         return new Pacs008Message()
                 .withBizMsgId(bizMsgId)
@@ -419,7 +439,7 @@ public class PaymentService {
                 .withCreateDt(createDt)
                 .withCreateDtTm(createDtTm)
                 .withSigningTime(signingTime)
-                .withInstructingAgentId(instructingAgentId)
+                .withInstructingAgentId(activeBic)
                 .withInstructedAgentId(instructedAgentId)
                 .withEndToEndId(endToEndId)
                 .withTxId(txId)
@@ -482,7 +502,7 @@ public class PaymentService {
         if (additionalData != null && additionalData.containsKey("08")) {
             String purpose = additionalData.get("08");
             if (purpose != null) {
-                if (purpose.toLowerCase().contains("bill")) return "C2BBPT";
+                if (purpose.toLowerCase().contains("bill")) return "C2BSQR";
                 if (purpose.toLowerCase().contains("merchant")) return "C2BSQR";
             }
         }
@@ -491,12 +511,12 @@ public class PaymentService {
         if (mcc != null) {
             // Bill payment MCCs (utilities, telecom, etc.)
             if (mcc.startsWith("48") || mcc.startsWith("49") || mcc.equals("9399")) {
-                return "C2BBPT";
+                return "C2BSQR";
             }
         }
 
         if (qrData.getBillNumber() != null) {
-            return "C2BBPT";
+            return "C2BSQR";
         }
 
         return defaultCategoryPurpose;
@@ -653,12 +673,12 @@ public class PaymentService {
         return null;
     }
 
-    private String generateEndToEndId() {
-        return instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+    private String generateEndToEndId(String bic) {
+        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
     }
 
-    private String generateTransactionId() {
-        return instructingAgentId + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+    private String generateTransactionId(String bic) {
+        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
     }
 
     private String getDigestedMessage(String xmlMessage, String transactionId) throws Exception {
@@ -690,15 +710,15 @@ public class PaymentService {
         }
     }
 
-    private String sendPaymentRequest(String signedXml, String accessToken, String transactionId) throws Exception {
+    private String sendPaymentRequest(String signedXml, String accessToken, String transactionId, String activeIncomingUrl) throws Exception {
         transactionLogger.log(transactionId, "--- 4. Sending Final Payment Request ---");
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(incomingUrl);
+            HttpPost httpPost = new HttpPost(activeIncomingUrl);
             httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "application/xml");
             httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
             httpPost.setEntity(new StringEntity(signedXml, StandardCharsets.UTF_8));
 
-            transactionLogger.log(transactionId, "Payment Request URL: " + incomingUrl);
+            transactionLogger.log(transactionId, "Payment Request URL: " + activeIncomingUrl);
             transactionLogger.log(transactionId, "Payment Request Body:\n" + signedXml);
 
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
@@ -1165,9 +1185,9 @@ public class PaymentService {
                 xml.append("                    <document:Id>\n");
                 xml.append("                        <document:PrvtId>\n");
                 xml.append("                            <document:Othr>\n");
-                xml.append("                                <document:Id>").append(escapeXml(debtorPrivateId)).append("</document:Id>\n");
+//                xml.append("                                <document:Id>").append(escapeXml(debtorPrivateId)).append("</document:Id>\n");
                 xml.append("                                <document:SchmeNm>\n");
-                xml.append("                                    <document:Prtry>").append(escapeXml(loyaltyNumber)).append("</document:Prtry>\n");
+                xml.append("                                    <document:Prtry>").append(escapeXml(debtorPrivateId)).append("</document:Prtry>\n");
                 xml.append("                                </document:SchmeNm>\n");
                 xml.append("                            </document:Othr>\n");
                 xml.append("                        </document:PrvtId>\n");
@@ -1296,12 +1316,12 @@ public class PaymentService {
                 xml.append("                </document:UltmtCdtr>\n");
             }
 
-            // InstrForNxtAgt - MATCHES SAMPLE EXACTLY
-            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
-                xml.append("                <document:InstrForNxtAgt>\n");
-                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
-                xml.append("                </document:InstrForNxtAgt>\n");
-            }
+            // InstrForNxtAgt - MATCHES SAMPLE EXACTLY for bill paymenet only as per the spec and comment stay here always
+//            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
+//                xml.append("                <document:InstrForNxtAgt>\n");
+//                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
+//                xml.append("                </document:InstrForNxtAgt>\n");
+//            }
 
             // Purp - MATCHES SAMPLE EXACTLY
             xml.append("                <document:Purp>\n");

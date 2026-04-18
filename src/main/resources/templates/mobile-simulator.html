@@ -235,6 +235,28 @@
         font-family: monospace;
         letter-spacing: 1px;
     }
+
+    .env-switcher {
+        position: absolute;
+        top: 40px;
+        right: 20px;
+        z-index: 1000;
+    }
+    .env-btn {
+        padding: 4px 10px;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 20px;
+        border: 2px solid white;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .env-btn.active {
+        background: white;
+        color: #0d6efd;
+    }
 </style>
 <body>
 
@@ -246,6 +268,11 @@
             <div class="status-bar">
                 <span>9:41</span>
                 <span><i class="fas fa-wifi me-1"></i> <i class="fas fa-battery-full"></i></span>
+            </div>
+
+            <div class="env-switcher">
+                <button id="env-45" class="env-btn active" onclick="switchEnv('45')">.45</button>
+                <button id="env-44" class="env-btn" onclick="switchEnv('44')">.44</button>
             </div>
 
             <!-- Home Screen -->
@@ -423,6 +450,7 @@
     let logPollInterval = null;
     let currentTipAmount = 0;
     let currentBaseAmount = 0;
+    let currentEnv = '45'; // Default environment
 
     const tagMap = {
         '00': 'payloadFormatIndicator', '01': 'pointOfInitiationMethod', '52': 'merchantCategoryCode',
@@ -432,6 +460,14 @@
         '80': 'contextOfTransaction', '81': 'discountsAndLoyalty', '82': 'offlineToOnline',
         '83': 'ecommerce', '84': 'uetr', '85': 'transactionTypeCode'
     };
+
+    // Function to switch environment
+    function switchEnv(env) {
+        currentEnv = env;
+        document.querySelectorAll('.env-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('env-' + env).classList.add('active');
+        showToast("Switched to Environment ." + env, "info");
+    }
 
     function showToast(msg, type='info') {
         const container = document.querySelector('.mobile-frame .toast-container');
@@ -886,12 +922,13 @@
 
         // Build backend payload
         const backendPayload = mapDataToBackendModel(currentQRData, userInputs);
+        backendPayload.env = currentEnv; // Add the selected environment to the payload
 
         const transactionId = generateUUID();
 
         const logConsole = document.getElementById('log-console');
         clearLog();
-        logConsole.textContent = `Transaction ID: ${transactionId}\nInitiating transaction...\n`;
+        logConsole.textContent = `Transaction ID: ${transactionId}\nEnvironment: .${currentEnv}\nInitiating transaction...\n`;
 
         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Processing...`;
         btn.disabled = true;
@@ -923,7 +960,7 @@
 
                 document.getElementById('successAmount').textContent = `ETB ${totalAmount.toFixed(2)}`;
                 document.getElementById('successMerchant').textContent = document.getElementById('merchantNameDisplay').textContent;
-                document.getElementById('successTxId').textContent = result.endToEndId || transactionId;
+                document.getElementById('successTxId').textContent = result.transactionId || transactionId;
                 navTo('success');
             }, 1500);
 
