@@ -19,12 +19,32 @@ public class TLVTag {
     private Integer maxLength;
     private String pattern; // Regex pattern for validation
     private boolean mandatory; // Is this tag mandatory
+    private List<Option> options; // For predefined values
+    private String uiType; // e.g. "checkbox" for multi-select
+    private String isoPath; // ISO 20022 mapping path
+    private String isoExample; // Real-world XML example for mapping
+
+    public static class Option {
+        private String value;
+        private String label;
+
+        public Option() {}
+        public Option(String value, String label) {
+            this.value = value;
+            this.label = label;
+        }
+
+        public String getValue() { return value; }
+        public void setValue(String value) { this.value = value; }
+        public String getLabel() { return label; }
+        public void setLabel(String label) { this.label = label; }
+    }
 
     public TLVTag() {
         // No-arg constructor for Jackson
     }
 
-    public TLVTag(String tag, String name, boolean isSubTLV, List<TLVTag> subTags, String dataField, boolean container, String delimiter, String dataType, Integer minLength, Integer maxLength, String pattern, boolean mandatory) {
+    public TLVTag(String tag, String name, boolean isSubTLV, List<TLVTag> subTags, String dataField, boolean container, String delimiter, String dataType, Integer minLength, Integer maxLength, String pattern, boolean mandatory, List<Option> options, String uiType, String isoPath, String isoExample) {
         this.tag = tag;
         this.name = name;
         this.isSubTLV = isSubTLV;
@@ -37,6 +57,10 @@ public class TLVTag {
         this.maxLength = maxLength;
         this.pattern = pattern;
         this.mandatory = mandatory;
+        this.options = options;
+        this.uiType = uiType;
+        this.isoPath = isoPath;
+        this.isoExample = isoExample;
     }
 
     // Getters and Setters
@@ -134,5 +158,37 @@ public class TLVTag {
 
     public void setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
+    }
+
+    public String getUiType() {
+        return uiType;
+    }
+
+    public void setUiType(String uiType) {
+        this.uiType = uiType;
+    }
+
+    public String getIsoPath() {
+        return isoPath;
+    }
+
+    public void setIsoPath(String isoPath) {
+        this.isoPath = isoPath;
+    }
+
+    public String getIsoExample() {
+        return isoExample;
+    }
+
+    public void setIsoExample(String isoExample) {
+        this.isoExample = isoExample;
     }
 }

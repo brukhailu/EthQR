@@ -4,71 +4,242 @@
 </head>
 <style>
     /* Page Specific Styles */
-    .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); border-radius: 0.5rem; margin-bottom: 1.5rem; }
-    .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; padding: 1rem 1.5rem; }
+    .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); border-radius: 0.5rem; margin-bottom: 2rem; }
+    .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; padding: 1.25rem 1.5rem; }
 
-    .table-qr th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; vertical-align: middle; color: #6c757d; }
-    .table-qr td { vertical-align: middle; font-size: 0.9em; }
-    .tag-id { font-family: 'Courier New', monospace; font-weight: bold; color: #0d6efd; }
-    .meta-cell { color: #6c757d; font-size: 0.85em; }
+    /* Improved table layout with better spacing */
+    .table-qr { width: 100%; margin-bottom: 0; }
+    .table-qr th {
+        background-color: #f8f9fa;
+        text-transform: uppercase;
+        font-size: 0.75em;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+        color: #6c757d;
+        padding: 12px 8px;
+        white-space: nowrap;
+    }
+    .table-qr td {
+        vertical-align: middle;
+        font-size: 0.9em;
+        padding: 12px 8px;
+    }
+    .tag-id {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        color: #0d6efd;
+        white-space: nowrap;
+    }
+    .meta-cell {
+        color: #6c757d;
+        font-size: 0.85em;
+        white-space: nowrap;
+        text-align: center;
+    }
 
-    #qrImage { max-width: 250px; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.5rem; }
-    .len-badge { font-family: monospace; font-size: 0.85em; color: #6c757d; }
-    .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
-    .badge-optional { background-color: #6c757d; font-size: 0.7em; }
+    #qrImage { max-width: 250px; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 0.5rem; margin-bottom: 1rem; }
+    .len-badge {
+        font-family: monospace;
+        font-size: 0.8em;
+        color: #6c757d;
+        display: inline-block;
+        min-width: 32px;
+        text-align: center;
+        background: #f1f3f5;
+        padding: 4px 6px;
+        border-radius: 12px;
+    }
+    .badge-mandatory { background-color: #dc3545; font-size: 0.7em; padding: 4px 8px; }
+    .badge-optional { background-color: #6c757d; font-size: 0.7em; padding: 4px 8px; }
 
-    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 1060; }
+    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 3000; }
+
+    /* Fluid layout - removed overflows and max-heights */
+    .qr-table-container {
+        position: relative;
+        border-radius: 0.5rem;
+    }
+
+    /* Standard z-index and positioning */
+    .dropdown-menu, .popover { z-index: 2050; }
+
+    .gen-input.form-select {
+        min-width: 120px;
+        background-color: #fff;
+        border-color: #d1d9e6;
+        font-size: 0.9em;
+        padding: 6px 10px;
+    }
+    .gen-input.form-control {
+        border-color: #d1d9e6;
+        font-size: 0.9em;
+        padding: 6px 10px;
+    }
+
+    /* Nested table improvements */
+    .nested-table {
+        width: 100%;
+        margin: 0;
+    }
+    .nested-table td {
+        padding: 8px 6px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .sub-tag-container {
+        border-left: 4px solid #e0e7ff;
+        padding-left: 15px;
+        background-color: #fafbff;
+        margin: 8px 0;
+        border-radius: 6px;
+    }
+
+    /* Multi-select dropdown improvements */
+    .dropdown-checkbox-menu {
+        padding: 10px;
+        min-width: 220px;
+    }
+    .dropdown-checkbox-menu .form-check {
+        margin-bottom: 8px;
+        font-size: 0.9em;
+    }
+    .multi-select-btn {
+        text-align: left;
+        min-width: 140px;
+        width: 100%;
+        border-color: #d1d9e6;
+        background-color: #fff;
+        font-size: 0.9em;
+        padding: 6px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Input sizing */
+    .gen-input-text {
+        min-width: 220px;
+        width: 100%;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+
+    /* Icon styling */
+    .iso-path-info {
+        color: #0dcaf0;
+        cursor: pointer;
+        font-size: 0.85rem;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+    .iso-path-info:hover { color: #0b5ed7; }
+
+    /* Popover styling */
+    .iso-popover { max-width: 480px; }
+    .iso-popover .popover-header {
+        background-color: #0d6efd;
+        color: white;
+        font-size: 0.85rem;
+        padding: 10px 15px;
+    }
+    .iso-popover-content {
+        background: #1e1e2e;
+        color: #e9ecef;
+        font-size: 0.8rem;
+    }
+    .iso-popover-header {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        word-break: break-all;
+    }
+    .iso-popover-body {
+        padding: 15px;
+        position: relative;
+    }
+    .iso-popover-body pre {
+        margin: 0;
+        font-size: 0.75rem;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    .iso-copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        background: #495057;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+    }
+    .iso-copy-btn:hover { background: #0d6efd; }
+
+    /* Validation icons */
+    .fa-check-circle { font-size: 1.1rem; }
+    .is-valid { border-color: #198754; background-image: none; }
+    .is-invalid { border-color: #dc3545; background-image: none; }
+
+    /* Sticky header */
+    .sticky-top { position: sticky; top: 0; background-color: #f8f9fa; z-index: 20; }
+
+    /* Paste area hint */
+    .paste-hint {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
 </style>
 <body>
 
 <nav th:replace="~{fragments/layout :: header(activeTab='generator')}"></nav>
 
 <main>
-    <div class="container-fluid py-4 px-4">
-        <div class="row g-4">
+    <div class="container-fluid py-5 px-5">
+        <div class="row g-5">
             <!-- Left Column: Generator -->
             <div class="col-lg-8">
                 <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-edit me-2 text-primary"></i>Generate QR Data</span>
-                        <div class="d-flex gap-2 align-items-center">
-                            <div class="input-group input-group-sm" style="width: auto;">
-                                <select class="form-select" id="testScenario" onchange="loadScenario()">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <span class="fs-5"><i class="fas fa-edit me-2 text-primary"></i>Generate QR Data</span>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <div class="input-group" style="width: auto;">
+                                <select class="form-select" id="testScenario" onchange="loadScenario()" style="min-width: 200px;">
                                     <option value="">Select Test Scenario...</option>
                                 </select>
                                 <a href="/api/qr/scenarios" download="standard-scenarios.json" class="btn btn-outline-secondary" title="Download Scenarios">
                                     <i class="fas fa-download"></i>
                                 </a>
                             </div>
-                            <button class="btn btn-sm btn-outline-info" onclick="triggerImport()"><i class="fas fa-file-import me-1"></i> Import QR Image</button>
+                            <button class="btn btn-outline-info" onclick="triggerImport()"><i class="fas fa-file-import me-1"></i> Import Image</button>
                             <input type="file" id="qrImportInput" style="display:none" accept="image/*" onchange="handleQrImport(this)">
                         </div>
                     </div>
                     <div class="card-body p-0">
-                        <div id="scenarioGuideline" class="alert alert-info d-none m-3" role="alert">
+                        <div id="scenarioGuideline" class="alert alert-info m-4" style="display: none;" role="alert">
                             <i class="fas fa-info-circle me-2"></i><span id="scenarioDesc"></span>
                         </div>
-                        <div class="table-responsive" style="max-height: 800px; overflow-y: auto;">
+                        <div class="qr-table-container">
                             <table class="table table-hover table-qr mb-0" id="generationTable">
-                                <thead class="table-light sticky-top" style="z-index: 10;">
-                                    <tr>
-                                        <th style="width: 50px;">Tag</th>
-                                        <th style="width: 180px;">Name</th>
-                                        <th style="width: 40px;">M/O</th>
-                                        <th style="width: 50px;">Type</th>
-                                        <th style="width: 60px;">Max Len</th>
-                                        <th style="width: 50px;">Len</th>
-                                        <th>Value</th>
-                                        <th style="width: 30px;"></th>
-                                    </tr>
+                                <thead class="sticky-top">
+                                <tr>
+                                    <th style="width: 60px;">Tag</th>
+                                    <th style="width: 200px;">Name</th>
+                                    <th style="width: 50px;">M/O</th>
+                                    <th style="width: 60px;">Type</th>
+                                    <th style="width: 70px;">Max Len</th>
+                                    <th style="width: 65px;">Len</th>
+                                    <th>Value</th>
+                                    <th style="width: 40px;"></th>
+                                </tr>
                                 </thead>
                                 <tbody id="generationTableBody"></tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="card-footer bg-white">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary btn-lg" onclick="generateQR()">
+                    <div class="card-footer bg-white p-4">
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg py-3" onclick="generateQR()">
                                 <i class="fas fa-qrcode me-2"></i>Generate QR Code
                             </button>
                         </div>
@@ -79,32 +250,36 @@
             <!-- Right Column: Result -->
             <div class="col-lg-4">
                 <div class="card sticky-top" style="top: 100px;">
-                    <div class="card-header"><i class="fas fa-image me-2 text-success"></i>Generated Result</div>
-                    <div class="card-body text-center">
-                        <div class="mb-3" style="min-height: 250px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 0.5rem;">
-                            <img id="qrImage" src="" alt="QR Code will appear here" style="display: none;">
-                            <p id="qrPlaceholder" class="text-muted">Generated QR code will appear here.</p>
+                    <div class="card-header fs-5"><i class="fas fa-image me-2 text-success"></i>Generated Result</div>
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4" id="dropZone" style="min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 0.5rem; cursor: pointer;" onclick="triggerImport()">
+                            <img id="qrImage" src="" alt="QR Code" style="display: none; max-width: 100%;">
+                            <div id="qrPlaceholder">
+                                <i class="fas fa-qrcode fa-4x text-light mb-3"></i>
+                                <p class="text-muted mb-1">Generated QR code will appear here.</p>
+                                <p class="text-primary small mb-0">Click to import or press <b>Ctrl+V</b> to paste</p>
+                            </div>
                         </div>
 
                         <div class="text-start">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label mb-0">TLV String</label>
+                                <label class="form-label fw-bold mb-0">TLV String</label>
                                 <button class="btn btn-sm btn-link text-info p-0 text-decoration-none" onclick="reverseEngineerFromText()">
-                                    <i class="fas fa-undo-alt me-1"></i> Populate Form from Text
+                                    <i class="fas fa-undo-alt me-1"></i> Populate Form
                                 </button>
                             </div>
                             <div class="input-group">
-                                <textarea class="form-control font-monospace" id="tlvOutput" rows="5" style="font-size: 0.85em;" placeholder="Enter TLV string here to reverse engineer..."></textarea>
-                                <div class="d-flex flex-column gap-1 ms-1">
-                                    <button class="btn btn-outline-secondary h-100" type="button" onclick="copyToClipboard()" title="Copy">
+                                <textarea class="form-control font-monospace" id="tlvOutput" rows="6" style="font-size: 0.85em; background-color: #fdfdfd;" placeholder="Enter TLV string here to reverse engineer..."></textarea>
+                                <div class="d-flex flex-column gap-1 ms-2">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()" title="Copy">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-3">
-                            <button onclick="goToParser()" class="btn btn-outline-primary w-100">
+                        <div class="mt-4">
+                            <button onclick="goToParser()" class="btn btn-outline-primary btn-lg w-100">
                                 <i class="fas fa-search me-2"></i>Analyze in Deep Parser
                             </button>
                         </div>
@@ -125,6 +300,12 @@
     let tagConfig = {};
     let scenarios = [];
 
+    const currencyMap = {
+        '230': 'ETB',
+        '840': 'USD',
+        '978': 'EUR'
+    };
+
     window.onload = async () => {
         try {
             const [tagsResp, scenariosResp] = await Promise.all([
@@ -134,20 +315,35 @@
             tagConfig = await tagsResp.json();
             scenarios = await scenariosResp.json();
 
-            const select = document.getElementById('testScenario');
-            scenarios.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.text = `${s.id}. ${s.name}`;
-                select.appendChild(opt);
-            });
+            if (scenarios && scenarios.forEach) {
+                const select = document.getElementById('testScenario');
+                scenarios.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.text = `${s.id}. ${s.name}`;
+                    select.appendChild(opt);
+                });
+            }
 
             buildGenerationTable();
 
         } catch (e) {
+            console.error('Config Load Error:', e);
             showToast('Error loading configuration', 'danger');
         }
     };
+
+    // Global Paste Support (Works on HTTP)
+    document.addEventListener('paste', async (event) => {
+        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        for (const item of items) {
+            if (item.type.indexOf('image') !== -1) {
+                const blob = item.getAsFile();
+                handleImageFile(blob);
+                break;
+            }
+        }
+    });
 
     function showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
@@ -155,7 +351,7 @@
         const html = `
             <div id="${id}" class="toast align-items-center text-white bg-${type} border-0 shadow-lg" role="alert">
                 <div class="d-flex">
-                    <div class="toast-body fw-600">${message}</div>
+                    <div class="toast-body fw-bold">${message}</div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
                 </div>
             </div>
@@ -167,11 +363,11 @@
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
 
-    function copyToClipboard() {
-        const text = document.getElementById('tlvOutput').value;
+    function copyToClipboard(textToCopy = null) {
+        const text = textToCopy || document.getElementById('tlvOutput').value;
         if(text) {
             navigator.clipboard.writeText(text);
-            showToast('TLV copied to clipboard', 'success');
+            showToast('Copied to clipboard', 'success');
         }
     }
 
@@ -189,30 +385,31 @@
 
     async function handleQrImport(input) {
         if(input.files && input.files[0]) {
-            const file = input.files[0];
+            handleImageFile(input.files[0]);
+        }
+    }
 
-            // Preview the imported image
-            const reader = new FileReader();
-            reader.onload = e => {
-                const qrImage = document.getElementById('qrImage');
-                qrImage.src = e.target.result;
-                qrImage.style.display = 'block';
-                document.getElementById('qrPlaceholder').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
+    async function handleImageFile(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const qrImage = document.getElementById('qrImage');
+            qrImage.src = e.target.result;
+            qrImage.style.display = 'block';
+            document.getElementById('qrPlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
 
-            const formData = new FormData();
-            formData.append('file', file);
-            try {
-                const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
-                if(!resp.ok) throw new Error("Decode failed");
-                const data = await resp.json();
-                document.getElementById('tlvOutput').value = data.raw;
-                populateForm(data.parsed);
-                showToast("QR Image imported and form populated", 'success');
-            } catch(e) {
-                showToast("Could not read QR code from image", 'danger');
-            }
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
+            if(!resp.ok) throw new Error("Decode failed");
+            const data = await resp.json();
+            document.getElementById('tlvOutput').value = data.raw;
+            populateForm(data.parsed);
+            showToast("QR Image processed successfully", 'success');
+        } catch(e) {
+            showToast("Could not read QR code from image", 'danger');
         }
     }
 
@@ -235,34 +432,50 @@
     }
 
     function populateForm(parsedData) {
-        // Reset all inputs first
         document.querySelectorAll('.gen-input').forEach(i => {
             if(i.id === 'gen-input-63') return;
-            i.value = '';
-            i.classList.remove('is-valid', 'is-invalid');
+            if(i.classList.contains('multi-select-value')) {
+                 i.value = '';
+                 const parent = i.closest('td');
+                 if(parent) {
+                    parent.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                    const btn = parent.querySelector('.multi-select-btn');
+                    if(btn) btn.textContent = 'Select...';
+                 }
+            } else {
+                i.value = '';
+                i.classList.remove('is-valid', 'is-invalid');
+            }
             const lenId = i.id.replace('gen-input', 'gen-len');
             const lenEl = document.getElementById(lenId);
             if(lenEl) lenEl.textContent = '00';
         });
 
         for (const [tag, val] of Object.entries(parsedData)) {
-            if (tag === '63') continue; // CRC is auto-calculated
-
+            if (tag === '63') continue;
             const config = tagConfig[tag];
             if (!config) continue;
 
             if (typeof val === 'object' && val !== null) {
-                // Sub-TLV container
                 for (const [sTag, sVal] of Object.entries(val)) {
                     const input = document.getElementById(`gen-input-${tag}-${sTag}`);
                     if (input) {
-                        input.value = sVal;
+                        if(input.classList.contains('multi-select-value')) {
+                             input.value = sVal;
+                             const parent = input.closest('td');
+                             parent.querySelectorAll('.form-check-input').forEach(cb => {
+                                 cb.checked = sVal.includes(cb.value);
+                             });
+                             const btn = parent.querySelector('.multi-select-btn');
+                             if(btn) btn.textContent = sVal || 'Select...';
+                        } else {
+                             input.value = sVal;
+                        }
                         validateInput(input, tag, sTag);
                         updateLen(`gen-len-${tag}-${sTag}`, sVal);
                     }
                 }
             } else {
-                // Primitive field
                 const input = document.getElementById(`gen-input-${tag}`);
                 if (input) {
                     input.value = val;
@@ -291,11 +504,115 @@
         return { valid: true };
     }
 
+    function updateMultiSelect(tag, subTag) {
+        const id = `gen-input-${tag}-${subTag}`;
+        const input = document.getElementById(id);
+        if (!input) return;
+        const parent = input.closest('td');
+        const checkboxes = parent.querySelectorAll('.form-check-input');
+        const checkedValues = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+        const finalValue = checkedValues.sort().join('');
+
+        input.value = finalValue;
+        const btn = parent.querySelector('.multi-select-btn');
+        btn.textContent = finalValue || 'Select...';
+
+        validateInput(input, tag, subTag);
+        updateLen(`gen-len-${tag}-${subTag}`, finalValue);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text.replace(/&/g, "&amp;")
+                   .replace(/</g, "&lt;")
+                   .replace(/>/g, "&gt;")
+                   .replace(/"/g, "&quot;")
+                   .replace(/'/g, "&#039;");
+    }
+
+    function getPrettifiedXml(config, tag, subTag = null) {
+        if (!config || !config.isoExample) return "";
+
+        let value = "";
+        const inputId = subTag ? `gen-input-${tag}-${subTag}` : `gen-input-${tag}`;
+        const input = document.getElementById(inputId);
+        if (input) value = input.value;
+
+        let displayValue = value || "[VALUE]";
+        if (tag === '53' && currencyMap[value]) {
+            displayValue = currencyMap[value];
+        }
+
+        let xml = config.isoExample.replace("{{VALUE}}", displayValue);
+
+        if (tag === '54' || tag === '56') {
+            const currInput = document.getElementById('gen-input-53');
+            if (currInput && currInput.value && currencyMap[currInput.value]) {
+                xml = xml.replace(/Ccy=['"]ETB['"]/g, `Ccy='${currencyMap[currInput.value]}'`);
+            }
+        }
+
+        let level = 0;
+        let result = '';
+        const tokens = xml.split(/(<[^>]+>)/g).filter(t => t.trim() !== "");
+
+        tokens.forEach(token => {
+            if (token.startsWith('</')) {
+                level--;
+                result += '  '.repeat(level) + token + '\n';
+            } else if (token.startsWith('<') && !token.endsWith('/>')) {
+                result += '  '.repeat(level) + token + '\n';
+                level++;
+            } else {
+                result += '  '.repeat(level) + token + '\n';
+            }
+        });
+
+        return result.trim();
+    }
+
     function buildGenerationTable() {
         const tbody = document.getElementById('generationTableBody');
+        if (!tbody) return;
         tbody.innerHTML = '';
 
         const sortedTags = Object.keys(tagConfig).sort((a, b) => parseInt(a) - parseInt(b));
+
+        const createIsoPathIcon = (conf, t, st = null) => {
+            if (!conf || !conf.isoPath) return '';
+            const stArg = st ? `'${st}'` : 'null';
+            return `<i class="fas fa-info-circle iso-path-info" onclick="showIsoPopover(this, '${t}', ${stArg})" title="View ISO 20022 mapping"></i>`;
+        };
+
+        const createInputHtml = (conf, id, t, st = null) => {
+            if (!conf) return '';
+            const stArg = st ? `'${st}'` : 'null';
+
+            if(conf.uiType === 'checkbox' && conf.options) {
+                return `
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle multi-select-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">Select...</button>
+                        <input type="hidden" id="${id}" class="gen-input multi-select-value" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''}>
+                        <div class="dropdown-menu dropdown-checkbox-menu">
+                            ${conf.options.map(o => `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="${o.value}" id="chk-${id}-${o.value}" onchange="updateMultiSelect('${t}', ${stArg})">
+                                    <label class="form-check-label" for="chk-${id}-${o.value}">${o.label} (${o.value})</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if(conf.options && conf.options.length > 0) {
+                return `<select class="form-select form-select-sm gen-input" id="${id}" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''} onchange="validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);">
+                    <option value="">Select...</option>
+                    ${conf.options.map(o => `<option value="${o.value}" title="${o.label}">${o.value} - ${o.label}</option>`).join('')}
+                </select>`;
+            } else {
+                const placeholder = conf.pattern ? `Format: ${conf.pattern}` : '';
+                return `<input type="text" class="form-control form-control-sm gen-input gen-input-text" id="${id}" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''} placeholder="${placeholder}" oninput="validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);">`;
+            }
+        };
 
         sortedTags.forEach(tag => {
             const config = tagConfig[tag];
@@ -307,63 +624,97 @@
 
             let valueHtml = '';
             let lenHtml = `<span id="${lenId}" class="len-badge">00</span>`;
+            const isoPathIcon = createIsoPathIcon(config, tag);
 
             if (tag === '63') {
-                valueHtml = `<input type="text" class="form-control form-control-sm gen-input text-muted" id="${inputId}" data-tag="${tag}" value="Auto-calculated" readonly disabled>`;
+                valueHtml = `<input type="text" class="form-control form-control-sm gen-input text-muted" id="${inputId}" data-tag="${tag}" value="Auto-calculated" readonly disabled style="width:130px">`;
                 lenHtml = '<span class="len-badge">04</span>';
             }
             else if (config.subTags && config.subTags.length > 0) {
                 lenHtml = '-';
-                let subTable = `<table class="table table-sm nested-table mb-0" style="width:100%"><tbody>`;
+                let subTable = `<table class="nested-table"><tbody>`;
                 config.subTags.forEach(st => {
                     const subMo = st.mandatory ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
-                    const subType = st.dataType || '-';
-                    const subMaxLen = st.maxLength || '-';
                     const subInputId = `gen-input-${tag}-${st.tag}`;
                     const subLenId = `gen-len-${tag}-${st.tag}`;
-                    const placeholder = st.pattern ? `Format: ${st.pattern}` : '';
+                    const subIsoIcon = createIsoPathIcon(st, tag, st.tag);
                     subTable += `
                         <tr>
-                            <td style="width: 40px;" class="text-muted small">${st.tag}</td>
-                            <td style="width: 150px;" class="text-muted small">${st.name}</td>
-                            <td style="width: 30px;">${subMo}</td>
-                            <td style="width: 40px;" class="meta-cell">${subType}</td>
-                            <td style="width: 50px;" class="meta-cell">${subMaxLen}</td>
-                            <td style="width: 40px;"><span id="${subLenId}" class="len-badge">00</span></td>
-                            <td><input type="text" class="form-control form-control-sm gen-input" id="${subInputId}" data-tag="${tag}" data-subtag="${st.tag}" placeholder="${placeholder}" oninput="validateInput(this, '${tag}', '${st.tag}'); updateLen('${subLenId}', this.value);"></td>
-                            <td style="width: 25px;"><i class="fas fa-check-circle text-success d-none" id="${subInputId}-valid"></i></td>
+                            <td style="width: 50px;"><code style="font-size:0.9rem;">${st.tag}</code></td>
+                            <td style="width: 180px;">${st.name} ${subIsoIcon}</td>
+                            <td style="width: 40px;">${subMo}</td>
+                            <td style="width: 50px;" class="text-center">${st.dataType || '-'}</td>
+                            <td style="width: 55px;" class="text-center">${st.maxLength || '-'}</td>
+                            <td style="width: 50px;"><span id="${subLenId}" class="len-badge">00</span></td>
+                            <td>${createInputHtml(st, subInputId, tag, st.tag)}</td>
+                            <td style="width: 40px;"><i class="fas fa-check-circle text-success d-none" id="${subInputId}-valid"></i></td>
                         </tr>
                     `;
                 });
                 subTable += `</tbody></table>`;
-                valueHtml += `<div class="sub-tag-container">${subTable}</div>`;
-
+                valueHtml = `<div class="sub-tag-container">${subTable}</div>`;
             } else {
-                const placeholder = config.pattern ? `Format: ${config.pattern}` : '';
-                if(config.pattern && config.pattern.includes('|')) {
-                     const options = config.pattern.replace(/[\^\$\(\)]/g, '').split('|');
-                     valueHtml = `<select class="form-select form-select-sm gen-input" id="${inputId}" data-tag="${tag}" onchange="validateInput(this, '${tag}'); updateLen('${lenId}', this.value);">
-                        <option value="">Select...</option>
-                        ${options.map(o => `<option value="${o}">${o}</option>`).join('')}
-                     </select>`;
-                } else {
-                    valueHtml = `<input type="text" class="form-control form-control-sm gen-input" id="${inputId}" data-tag="${tag}" placeholder="${placeholder}" oninput="validateInput(this, '${tag}'); updateLen('${lenId}', this.value);">`;
-                }
+                valueHtml = createInputHtml(config, inputId, tag);
             }
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="tag-id">${tag}</td>
-                <td>${config.name}</td>
+                <td>${config.name} ${isoPathIcon}</td>
                 <td>${mo}</td>
-                <td class="text-center meta-cell">${type}</td>
-                <td class="text-center meta-cell">${maxLen}</td>
+                <td class="meta-cell">${type}</td>
+                <td class="meta-cell">${maxLen}</td>
                 <td class="text-center">${lenHtml}</td>
                 <td>${valueHtml}</td>
                 <td><i class="fas fa-check-circle text-success d-none" id="${inputId}-valid"></i></td>
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    function showIsoPopover(el, tag, subTag = null) {
+        const existing = bootstrap.Popover.getInstance(el);
+        if (existing) { existing.dispose(); }
+
+        const config = subTag ? tagConfig[tag].subTags.find(s => s.tag === subTag) : tagConfig[tag];
+        const xml = getPrettifiedXml(config, tag, subTag);
+
+        const content = `
+            <div class="iso-popover-content">
+                <div class="iso-popover-header"><code>${escapeHtml(config.isoPath)}</code></div>
+                <div class="iso-popover-body">
+                    <button class="btn btn-sm iso-copy-btn" onclick="copyIsoContent('${tag}', ${subTag ? `'${subTag}'` : 'null'})">
+                        <i class="fas fa-copy me-1"></i>Copy
+                    </button>
+                    <pre>${escapeHtml(xml)}</pre>
+                </div>
+            </div>
+        `;
+
+        const popover = new bootstrap.Popover(el, {
+            container: 'body',
+            html: true,
+            title: '<div class="popover-header">ISO 20022 Mapping</div>',
+            content: content,
+            trigger: 'click',
+            placement: 'right',
+            customClass: 'iso-popover'
+        });
+        popover.show();
+
+        const closeHandler = (e) => {
+            if (!el.contains(e.target) && !document.querySelector('.iso-popover')?.contains(e.target)) {
+                popover.hide();
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closeHandler), 100);
+    }
+
+    function copyIsoContent(tag, subTag = null) {
+        const config = subTag ? tagConfig[tag].subTags.find(s => s.tag === subTag) : tagConfig[tag];
+        const xml = getPrettifiedXml(config, tag, subTag);
+        copyToClipboard(xml);
     }
 
     function updateLen(id, val) {
@@ -377,6 +728,7 @@
     function validateInput(input, tag, subTag = null) {
         const val = input.value;
         const config = tagConfig[tag];
+        if (!config) return;
         const targetConfig = subTag ? config.subTags.find(s => s.tag === subTag) : config;
         const iconId = subTag ? `gen-input-${tag}-${subTag}-valid` : `gen-input-${tag}-valid`;
         const icon = document.getElementById(iconId);
@@ -405,29 +757,42 @@
 
         document.querySelectorAll('.gen-input').forEach(i => {
             if(i.id === 'gen-input-63') return;
-            i.value = '';
-            i.classList.remove('is-valid', 'is-invalid');
-            const lenId = i.id.replace('gen-input', 'gen-len');
-            updateLen(lenId, '');
+            if(i.classList.contains('multi-select-value')) {
+                 i.value = '';
+                 const parent = i.closest('td');
+                 if (parent) {
+                    parent.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                    parent.querySelector('.multi-select-btn').textContent = 'Select...';
+                 }
+            } else {
+                i.value = '';
+                i.classList.remove('is-valid', 'is-invalid');
+            }
+            updateLen(i.id.replace('gen-input', 'gen-len'), '');
         });
         document.querySelectorAll('.fa-check-circle').forEach(i => i.classList.add('d-none'));
 
         if (!scenario) {
-            document.getElementById('scenarioGuideline').classList.add('d-none');
+            document.getElementById('scenarioGuideline').style.display = 'none';
             return;
         }
 
-        document.getElementById('scenarioGuideline').classList.remove('d-none');
+        document.getElementById('scenarioGuideline').style.display = 'block';
         document.getElementById('scenarioDesc').textContent = scenario.desc || scenario.name;
 
         const d = scenario.data;
-
         const setAndTrigger = (el, val, tag, subTag=null) => {
             if(el) {
-                el.value = val;
+                if(el.classList.contains('multi-select-value')) {
+                    el.value = val;
+                    const parent = el.closest('td');
+                    parent.querySelectorAll('.form-check-input').forEach(cb => { cb.checked = val.includes(cb.value); });
+                    parent.querySelector('.multi-select-btn').textContent = val || 'Select...';
+                } else {
+                    el.value = val;
+                }
                 validateInput(el, tag, subTag);
-                const lenId = el.id.replace('gen-input', 'gen-len');
-                updateLen(lenId, val);
+                updateLen(el.id.replace('gen-input', 'gen-len'), val);
             }
         };
 
@@ -438,8 +803,7 @@
                 if (typeof d[field] !== 'object') {
                     const el = document.getElementById(`gen-input-${tag}`);
                     setAndTrigger(el, d[field], tag);
-                }
-                else if (config.container) {
+                } else if (config.container) {
                     const val = d[field][tag];
                     if (val) {
                         if (typeof val === 'object') {
@@ -554,8 +918,7 @@
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 const el = document.getElementById(`gen-input-${tag}`);
                 if (el && el.value) {
                     if (config.container) { payload.merchantAccountInformation[tag] = el.value; }

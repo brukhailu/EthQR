@@ -17,7 +17,7 @@
     .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
     .badge-optional { background-color: #6c757d; font-size: 0.7em; }
     #uploadedImagePreview { max-width: 200px; max-height: 200px; border-radius: 0.25rem; border: 1px solid #dee2e6; }
-    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 1060; }
+    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; }
     .comparison-missing-row { background-color: #f8d7da; border-left: 4px solid #dc3545; }
     .comparison-mismatch-row { background-color: #fff3cd; }
     .expected-val { font-size: 0.85em; color: #666; font-style: italic; display: block; margin-top: 2px; }
@@ -57,6 +57,19 @@
         opacity: 0;
         cursor: pointer;
     }
+
+    .iso-path-info { color: #0dcaf0; cursor: pointer; font-size: 0.8rem; margin-left: 5px; }
+
+    /* Popover Styling */
+    .iso-popover { max-width: 400px !important; }
+    .iso-popover-title { background-color: #0d6efd; color: white; font-weight: bold; font-size: 0.85rem; padding: 10px 15px; border-top-left-radius: .3rem; border-top-right-radius: .3rem; }
+    .iso-popover-content { padding: 0; background: #212529; color: #f8f9fa; border-bottom-left-radius: .3rem; border-bottom-right-radius: .3rem; overflow: hidden; }
+    .iso-popover-header { padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
+    .iso-popover-header code { color: #0dcaf0; font-size: 0.75rem; word-break: break-all; }
+    .iso-popover-body { padding: 10px 15px; position: relative; }
+    .iso-popover-body pre { margin: 0; font-size: 0.75rem; color: #e9ecef; }
+    .iso-copy-btn { position: absolute; top: 10px; right: 10px; padding: 2px 6px; font-size: 0.7rem; opacity: 0.7; transition: opacity 0.2s; }
+    .iso-copy-btn:hover { opacity: 1; color: #fff; border-color: #fff; }
 </style>
 <body>
 
@@ -136,18 +149,18 @@
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-parsed" id="parsedTable">
                                 <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 5%;">Tag</th>
-                                        <th style="width: 20%;">Name</th>
-                                        <th style="width: 5%;">M/O</th>
-                                        <th style="width: 5%;">Len</th>
-                                        <th style="width: 35%;">Value</th>
-                                        <th style="width: 15%;">Validation</th>
-                                        <th style="width: 15%;">Comparison</th>
-                                    </tr>
+                                <tr>
+                                    <th style="width: 5%;">Tag</th>
+                                    <th style="width: 25%;">Name</th>
+                                    <th style="width: 5%;">M/O</th>
+                                    <th style="width: 5%;">Len</th>
+                                    <th style="width: 30%;">Value</th>
+                                    <th style="width: 15%;">Validation</th>
+                                    <th style="width: 15%;">Comparison</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td colspan="7" class="text-center text-muted py-4">No data parsed yet.</td></tr>
+                                <tr><td colspan="7" class="text-center text-muted py-4">No data parsed yet.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -166,7 +179,6 @@
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 <script>
-    // ... (Keep existing script logic) ...
     let tagConfig = {};
     let scenarios = [];
     let lastParsedData = null;
@@ -265,8 +277,6 @@
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
 
-    // ... (rest of validateTagValue, parseQR, compareWithScenario, etc.) ...
-
     function validateTagValue(tag, value, config) {
         if (tag === '63' && lastRawTlv) {
             const dataToHash = lastRawTlv.substring(0, lastRawTlv.length - 4);
@@ -309,10 +319,6 @@
             renderParsedTable(lastParsedData);
             showToast('Parsed successfully', 'success');
         } catch (e) { showToast(e.message, 'danger'); }
-    }
-
-    async function parseQRImage() {
-        // Triggered by manual button click if needed, but file input covers it
     }
 
     async function parseImageBlob(blob) {
@@ -449,6 +455,65 @@
         }
     }
 
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text.replace(/&/g, "&amp;")
+                   .replace(/</g, "&lt;")
+                   .replace(/>/g, "&gt;")
+                   .replace(/"/g, "&quot;")
+                   .replace(/'/g, "&#039;");
+    }
+
+    function getIsoTooltip(config, tag, value) {
+        if (!config.isoPath) return "";
+
+        let xml = config.isoExample || "";
+        if (value && xml) {
+            const placeholderMatch = xml.match(/>([^<]+)<\//);
+            if (placeholderMatch) {
+                xml = xml.replace(placeholderMatch[1], value);
+            }
+        }
+
+        return `
+            <div class="iso-popover-content">
+                <div class="iso-popover-header"><code>${config.isoPath}</code></div>
+                <div class="iso-popover-body">
+                    <button class="btn btn-outline-light btn-sm iso-copy-btn" onclick="navigator.clipboard.writeText('${xml.replace(/\n/g, '\\n').replace(/'/g, "\\'")}');">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <pre>${escapeHtml(xml)}</pre>
+                </div>
+            </div>
+        `;
+    }
+
+    function showIsoPopover(el, tag, subTag = null, value = "") {
+        const config = subTag ? tagConfig[tag].subTags.find(s => s.tag === subTag) : tagConfig[tag];
+
+        const existing = bootstrap.Popover.getInstance(el);
+        if (existing) { existing.dispose(); }
+
+        const popover = new bootstrap.Popover(el, {
+            container: 'body',
+            html: true,
+            title: `<div class="iso-popover-title">ISO 20022 Mapping</div>`,
+            content: getIsoTooltip(config, tag, value),
+            trigger: 'click',
+            placement: 'right',
+            customClass: 'iso-popover'
+        });
+        popover.show();
+
+        const closeHandler = (e) => {
+            if (!el.contains(e.target) && !document.querySelector('.iso-popover')?.contains(e.target)) {
+                popover.hide();
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closeHandler), 100);
+    }
+
     function renderParsedTable(data, comparisonData = null) {
         const tbody = document.querySelector('#parsedTable tbody');
         tbody.innerHTML = '';
@@ -468,6 +533,11 @@
             const name = config ? config.name : 'Unknown';
             const mo = (config && config.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
 
+            const createIsoPathIcon = (conf, t, st = null, v = "") => {
+                if (!conf || !conf.isoPath) return '';
+                return `<i class="fas fa-info-circle iso-path-info" onclick="showIsoPopover(this, '${t}', ${st ? `'${st}'` : 'null'}, '${v}')"></i>`;
+            };
+
             let comparisonHtml = '';
             let expectedVal = undefined;
 
@@ -481,7 +551,7 @@
                 }
 
                 const row = document.createElement('tr');
-                row.innerHTML = `<td class="tag-id">${tag}</td><td><strong>${name}</strong></td><td>${mo}</td><td>-</td><td class="text-muted">Sub-tags container</td><td><span class="badge bg-secondary">Container</span></td><td>${comparisonHtml}</td>`;
+                row.innerHTML = `<td class="tag-id">${tag}</td><td><strong>${name}</strong> ${createIsoPathIcon(config, tag)}</td><td>${mo}</td><td>-</td><td class="text-muted">Sub-tags container</td><td><span class="badge bg-secondary">Container</span></td><td>${comparisonHtml}</td>`;
                 tbody.appendChild(row);
 
                 const subRow = document.createElement('tr');
@@ -508,22 +578,39 @@
 
                         if (expectedSub === undefined) {
                             subComparisonHtml = '<span class="badge bg-info text-dark">Extra Sub-Tag</span>';
-                        } else if (String(expectedSub) === String(subVal)) {
-                            subComparisonHtml = '<span class="badge bg-success">Match</span>';
-                        } else if (!isStatic) {
-                            subComparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${expectedSub}</span>`;
                         } else {
-                            subComparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${expectedSub}</span>`;
+                            let displayVal = subVal;
+                            let displayExp = expectedSub;
+                            if (subConfig && subConfig.options) {
+                                const opt = subConfig.options.find(o => o.value === subVal);
+                                if (opt) displayVal = opt.label;
+                                const optExp = subConfig.options.find(o => o.value === expectedSub);
+                                if (optExp) displayExp = optExp.label;
+                            }
+
+                            if (String(expectedSub) === String(subVal)) {
+                                subComparisonHtml = '<span class="badge bg-success">Match</span>';
+                            } else if (!isStatic) {
+                                subComparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${displayExp}</span>`;
+                            } else {
+                                subComparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${displayExp}</span>`;
+                            }
                         }
+                    }
+
+                    let valueToDisplay = subVal;
+                    if (subConfig && subConfig.options) {
+                        const opt = subConfig.options.find(o => o.value === subVal);
+                        if (opt) valueToDisplay = `<span title="${subVal}">${opt.label}</span>`;
                     }
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="width: 40px;" class="tag-id ps-4">${subTag}</td>
-                        <td style="width: 180px;">${subName}</td>
+                        <td style="width: 220px;">${subName} ${createIsoPathIcon(subConfig, tag, subTag, subVal)}</td>
                         <td style="width: 40px;">${subMo}</td>
                         <td style="width: 50px;">${subVal.length}</td>
-                        <td class="text-break font-monospace small">${subVal}</td>
+                        <td class="text-break font-monospace small">${valueToDisplay}</td>
                         <td style="width: 140px;">${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
                         <td>${subComparisonHtml}</td>
                     `;
@@ -535,14 +622,19 @@
                         if (!val.hasOwnProperty(expSubTag)) {
                              const subConfig = config && config.subTags ? config.subTags.find(s => s.tag === expSubTag) : null;
                              const expSubName = subConfig ? subConfig.name : 'Unknown';
+                             let displayExp = expSubVal;
+                             if(subConfig && subConfig.options) {
+                                 const opt = subConfig.options.find(o => o.value === expSubVal);
+                                 if(opt) displayExp = opt.label;
+                             }
                              const tr = document.createElement('tr');
                              tr.className = 'comparison-missing-row';
                              tr.innerHTML = `
                                 <td style="width: 40px;" class="tag-id ps-4">${expSubTag}</td>
-                                <td style="width: 180px;">${expSubName}</td>
+                                <td style="width: 220px;">${expSubName}</td>
                                 <td style="width: 40px;">-</td>
                                 <td>-</td>
-                                <td class="text-muted small">Missing (Exp: ${expSubVal})</td>
+                                <td class="text-muted small">Missing (Exp: ${displayExp})</td>
                                 <td></td>
                                 <td><span class="badge bg-danger">Missing</span></td>
                              `;
@@ -568,14 +660,31 @@
                     } else {
                         if (expectedVal === undefined) {
                             comparisonHtml = '<span class="badge bg-info text-dark">Extra Tag</span>';
-                        } else if (String(expectedVal) === String(val)) {
-                            comparisonHtml = '<span class="badge bg-success">Match</span>';
-                        } else if (!staticTags.includes(tag)) {
-                            comparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${expectedVal}</span>`;
                         } else {
-                            comparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${expectedVal}</span>`;
+                            let displayVal = val;
+                            let displayExp = expectedVal;
+                            if(config && config.options) {
+                                const opt = config.options.find(o => o.value === val);
+                                if(opt) displayVal = opt.label;
+                                const optExp = config.options.find(o => o.value === expectedVal);
+                                if(optExp) displayExp = optExp.label;
+                            }
+
+                            if (String(expectedVal) === String(val)) {
+                                comparisonHtml = '<span class="badge bg-success">Match</span>';
+                            } else if (!staticTags.includes(tag)) {
+                                comparisonHtml = `<span class="badge badge-dynamic">Dynamic Value</span> <span class="expected-val text-muted">e.g. ${displayExp}</span>`;
+                            } else {
+                                comparisonHtml = `<span class="badge bg-warning text-dark">Mismatch</span><span class="expected-val">Exp: ${displayExp}</span>`;
+                            }
                         }
                     }
+                }
+
+                let valueToDisplay = val;
+                if(config && config.options) {
+                    const opt = config.options.find(o => o.value === val);
+                    if(opt) valueToDisplay = `<span title="${val}">${opt.label}</span>`;
                 }
 
                 const row = document.createElement('tr');
@@ -585,10 +694,10 @@
 
                 row.innerHTML = `
                     <td class="tag-id">${tag}</td>
-                    <td>${name}</td>
+                    <td>${name} ${createIsoPathIcon(config, tag, null, val)}</td>
                     <td>${mo}</td>
                     <td>${val.length}</td>
-                    <td class="text-break font-monospace small">${val}</td>
+                    <td class="text-break font-monospace small">${valueToDisplay}</td>
                     <td>${icon} <span class="small text-muted">${validation.valid ? 'Correct' : validation.msg}</span></td>
                     <td>${comparisonHtml}</td>
                 `;
@@ -599,23 +708,26 @@
         if (comparisonData) {
             const missingList = [];
             for (const [tag, config] of Object.entries(tagConfig)) {
-                // Don't flag CRC as missing if it's there (handled in loop) or if we just want to ignore strict checks
                 const expVal = getExpectedValue(tag, config, comparisonData);
                 if (expVal !== undefined && !data.hasOwnProperty(tag)) {
-                    missingList.push({ tag, name: config.name, exp: expVal });
+                    missingList.push({ tag, name: config.name, exp: expVal, config: config });
                 }
             }
 
             if (missingList.length > 0) {
                 const missingHtml = missingList.map(item => {
-                    const expStr = (typeof item.exp === 'object') ? 'Container' : item.exp;
+                    let displayExp = (typeof item.exp === 'object') ? 'Container' : item.exp;
+                    if(item.config && item.config.options && typeof item.exp !== 'object') {
+                        const opt = item.config.options.find(o => o.value === item.exp);
+                        if(opt) displayExp = opt.label;
+                    }
                     return `
                         <tr class="comparison-missing-row">
                             <td class="tag-id">${item.tag}</td>
                             <td>${item.name}</td>
                             <td>-</td>
                             <td>-</td>
-                            <td class="text-muted small">Missing from QR (Expected: ${expStr})</td>
+                            <td class="text-muted small">Missing from QR (Expected: ${displayExp})</td>
                             <td></td>
                             <td><span class="badge bg-danger">Missing</span></td>
                         </tr>

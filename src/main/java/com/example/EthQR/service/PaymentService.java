@@ -464,7 +464,7 @@ public class PaymentService {
                 )
                 .withDebtorAcctId(debtorAcctId)
                 .withDebtorClearingType(defaultDebtorClearingType)
-//                .withDebtorPrivateId(loyaltyNumber != null ? loyaltyNumber : null)
+                .withDebtorPrivateId("LPNB")
                 .withDebtorPrivateIdScheme(loyaltyNumber != null ? loyaltyNumber : null)
                 // Creditor info (Merchant)
                 .withCreditorName(creditorName)
@@ -476,7 +476,7 @@ public class PaymentService {
                 .withCreditorAddressLine(creditorAddressLine)
                 .withCreditorOrgId(merchantCategoryCode)
                 .withCreditorCountryOfRes(countryCode)
-                .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")
+                .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")  // Uses "QRCP" as fallback
                 .withCreditorMobile(merchantMobile)
                 .withCreditorAcctId(creditorAcctId)
                 .withCreditorClearingType(clearingType)
@@ -489,7 +489,8 @@ public class PaymentService {
                 .withMobileNumber(mobileNumber)  // QR Tag 02 for merchant mobile
                 .withStoreLabel(storeLabel)
                 .withLoyaltyNumber(loyaltyNumber)
-                .withTerminalId(terminalId);
+                .withTerminalId(terminalId)
+                .withMerchantChannel(merchantChannel);  // Add this line
     }
     private String determineCategoryPurpose(QRCodeData qrData, PaymentRequest userInput) {
         // Priority: User input > QR data > Default
@@ -659,9 +660,10 @@ public class PaymentService {
     }
 
     private String extractMerchantChannel(QRCodeData qrData) {
-        Map<String, String> additionalData = qrData.getAdditionalDataField();
-        if (additionalData != null && additionalData.containsKey("11")) {
-            return additionalData.get("11");
+        // Tag 62 - Merchant Information Language Template
+        Map<String, String> merchantInfoLanguage = qrData.getMerchantInformationLanguageTemplate();
+        if (merchantInfoLanguage != null && merchantInfoLanguage.containsKey("11")) {
+            return merchantInfoLanguage.get("11");
         }
         return null;
     }
@@ -820,6 +822,8 @@ public class PaymentService {
         private String storeLabel;
         private String loyaltyNumber;
         private String terminalId;
+        private String merchantChannel;
+
 
         // Builder methods
         public Pacs008Message withBizMsgId(String id) {
@@ -1056,6 +1060,10 @@ public class PaymentService {
             this.terminalId = id;
             return this;
         }
+        public Pacs008Message withMerchantChannel(String channel) {
+            this.merchantChannel = channel;
+            return this;
+        }
         private String buildRemittanceString() {
             StringBuilder sb = new StringBuilder();
 
@@ -1181,11 +1189,11 @@ public class PaymentService {
             xml.append("                    <document:PstlAdr>\n");
             xml.append("                        <document:AdrLine>").append(escapeXml(debtorAddressLine)).append("</document:AdrLine>\n");
             xml.append("                    </document:PstlAdr>\n");
-            if (debtorPrivateId != null) {
+            if (debtorPrivateIdScheme != null) {
                 xml.append("                    <document:Id>\n");
                 xml.append("                        <document:PrvtId>\n");
                 xml.append("                            <document:Othr>\n");
-//                xml.append("                                <document:Id>").append(escapeXml(debtorPrivateId)).append("</document:Id>\n");
+                xml.append("                                <document:Id>").append(escapeXml(debtorPrivateIdScheme)).append("</document:Id>\n");
                 xml.append("                                <document:SchmeNm>\n");
                 xml.append("                                    <document:Prtry>").append(escapeXml(debtorPrivateId)).append("</document:Prtry>\n");
                 xml.append("                                </document:SchmeNm>\n");
@@ -1273,8 +1281,7 @@ public class PaymentService {
                 xml.append("                        <document:Dept>").append(escapeXml(storeLabel)).append("</document:Dept>\n");
             }
             xml.append("                        <document:Othr>\n");
-            xml.append("                            <document:ChanlTp>").append(escapeXml(creditorContactChannel)).append("</document:ChanlTp>\n");
-
+            xml.append("                            <document:ChanlTp>").append(escapeXml(merchantChannel != null ? merchantChannel : "QRCP")).append("</document:ChanlTp>\n");
             // Terminal ID goes here
             if (terminalId != null && !terminalId.isEmpty()) {
                 xml.append("                            <document:Id>").append(escapeXml(terminalId)).append("</document:Id>\n");
@@ -1296,6 +1303,7 @@ public class PaymentService {
             xml.append("                </document:CdtrAcct>\n");
 
             // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up)
+            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
             if (mobileNumber != null && !mobileNumber.isEmpty()) {
                 xml.append("                <document:UltmtCdtr>\n");
                 xml.append("                    <document:Id>\n");
@@ -1308,11 +1316,6 @@ public class PaymentService {
                 xml.append("                            </document:Othr>\n");
                 xml.append("                        </document:PrvtId>\n");
                 xml.append("                    </document:Id>\n");
-                xml.append("                </document:UltmtCdtr>\n");
-            } else if (ultimateCreditorId != null && !ultimateCreditorId.isEmpty()) {
-                // For bill payments
-                xml.append("                <document:UltmtCdtr>\n");
-                xml.append("                    <document:Nm>").append(escapeXml(ultimateCreditorId)).append("</document:Nm>\n");
                 xml.append("                </document:UltmtCdtr>\n");
             }
 
@@ -1337,22 +1340,35 @@ public class PaymentService {
                 xml.append("                </document:Tax>\n");
             }
 
-            // RmtInf (Remittance Information) - MATCHES SAMPLE EXACTLY
+            // RmtInf (Remittance Information) - Updated with Bill Number in correct location
             xml.append("                <document:RmtInf>\n");
             String unstructuredRemittance = buildRemittanceString();
             if (unstructuredRemittance != null && !unstructuredRemittance.isEmpty()) {
                 xml.append("                    <document:Ustrd>").append(escapeXml(unstructuredRemittance)).append("</document:Ustrd>\n");
             }
 
-            // Structured remittance for tip - MATCHES SAMPLE EXACTLY
-            // In your toXml() method - REPLACE the current tip section with:
+// Structured remittance for Bill Number AND Tip
+            boolean hasBillNumber = billNumber != null && !billNumber.isEmpty();
             boolean hasTip = tipAmount != null && !tipAmount.isEmpty() && new BigDecimal(tipAmount).compareTo(BigDecimal.ZERO) > 0;
-            if (hasTip) {
+
+            if (hasBillNumber || hasTip) {
                 xml.append("                    <document:Strd>\n");
-                xml.append("                        <document:RfrdDocAmt>\n");
-                xml.append("                            <document:DuePyblAmt Ccy=\"").append(escapeXml(currency)).append("\">")
-                        .append(escapeXml(tipAmount)).append("</document:DuePyblAmt>\n");
-                xml.append("                        </document:RfrdDocAmt>\n");
+
+                // BILL NUMBER - Correct location: /RmtInf/Strd/RfrdDocInf/Nb
+                if (hasBillNumber) {
+                    xml.append("                        <document:RfrdDocInf>\n");
+                    xml.append("                            <document:Nb>").append(escapeXml(billNumber)).append("</document:Nb>\n");
+                    xml.append("                        </document:RfrdDocInf>\n");
+                }
+
+                // TIP AMOUNT - RfrdDocAmt/DuePyblAmt
+                if (hasTip) {
+                    xml.append("                        <document:RfrdDocAmt>\n");
+                    xml.append("                            <document:DuePyblAmt Ccy=\"").append(escapeXml(currency)).append("\">")
+                            .append(escapeXml(tipAmount)).append("</document:DuePyblAmt>\n");
+                    xml.append("                        </document:RfrdDocAmt>\n");
+                }
+
                 xml.append("                    </document:Strd>\n");
             }
 
