@@ -660,10 +660,11 @@ public class PaymentService {
     }
 
     private String extractMerchantChannel(QRCodeData qrData) {
-        // Tag 62 - Merchant Information Language Template
-        Map<String, String> merchantInfoLanguage = qrData.getMerchantInformationLanguageTemplate();
-        if (merchantInfoLanguage != null && merchantInfoLanguage.containsKey("11")) {
-            return merchantInfoLanguage.get("11");
+        // Tag 61/62 - Additional Data Field (where sub-tag 11 is located)
+        Map<String, String> additionalData = qrData.getAdditionalDataField();
+        if (additionalData != null && additionalData.containsKey("11")) {
+            String channel = additionalData.get("11");
+            return channel;
         }
         return null;
     }
