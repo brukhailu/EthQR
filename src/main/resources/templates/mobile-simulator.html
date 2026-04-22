@@ -810,17 +810,14 @@
         let purpose = "Payment";
         let ref = "N/A";
 
-        // Handle Payment Reason (Remittance Info) - ALWAYS EDITABLE
+        // Handle Payment Reason (Remittance Info) - ALWAYS EDITABLE & STARTS EMPTY
         document.getElementById('remittanceInfoInput').readOnly = false;
+        document.getElementById('remittanceInfoInput').value = '';
 
-        if (data['80']) {
-            document.getElementById('remittanceInfoInput').value = data['80'] === '***' ? '' : data['80'];
-            if (data['80'] !== '***') purpose = data['80'];
+        if (data['80'] && data['80'] !== '***') {
+            purpose = data['80'];
         } else if (tag62['08']) {
-            document.getElementById('remittanceInfoInput').value = tag62['08'];
             purpose = tag62['08'];
-        } else {
-            document.getElementById('remittanceInfoInput').value = '';
         }
 
         if(tag62['05']) ref = tag62['05'];

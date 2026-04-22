@@ -566,44 +566,32 @@ public class PaymentService {
     }
 
     private String buildRemittanceUnstructured(QRCodeData qrData, PaymentRequest userInput, BigDecimal effectiveTipAmount) {
-        StringBuilder sb = new StringBuilder();
-
-        // Prepend "Tip: " if there's an effective tip amount
-        if (effectiveTipAmount != null && effectiveTipAmount.compareTo(BigDecimal.ZERO) > 0) {
-            sb.append("Tip: ");
-        }
-
         String paymentReason = null;
         Map<String, String> additionalData = qrData.getAdditionalDataField();
 
         // Priority 1: User input from simulator
-        if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().isEmpty()) {
-            paymentReason = userInput.getRemittanceInfo();
+        if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().trim().isEmpty()) {
+            paymentReason = userInput.getRemittanceInfo().trim();
         }
         // Priority 2: Tag 80 from QR (ContextOfTransaction)
-        else if (qrData.getContextOfTransaction() != null && !qrData.getContextOfTransaction().isEmpty()) {
-            paymentReason = qrData.getContextOfTransaction();
+        else if (qrData.getContextOfTransaction() != null && !qrData.getContextOfTransaction().trim().isEmpty()) {
+            paymentReason = qrData.getContextOfTransaction().trim();
         }
         // Priority 3: Tag 08 from Additional Data Field
-        else if (additionalData != null && additionalData.containsKey("08") && !additionalData.get("08").isEmpty()) {
-            paymentReason = additionalData.get("08");
+        else if (additionalData != null && additionalData.containsKey("08") && !additionalData.get("08").trim().isEmpty()) {
+            paymentReason = additionalData.get("08").trim();
         }
         // Priority 4: Tag 05 from Additional Data Field
-        else if (additionalData != null && additionalData.containsKey("05") && !additionalData.get("05").isEmpty()) {
-            paymentReason = additionalData.get("05");
+        else if (additionalData != null && additionalData.containsKey("05") && !additionalData.get("05").trim().isEmpty()) {
+            paymentReason = additionalData.get("05").trim();
         }
 
-        if (paymentReason != null) {
-            sb.append(paymentReason);
+        // Final fallback if no specific reason is found
+        if (paymentReason == null || paymentReason.isEmpty()) {
+            paymentReason = "Payment";
         }
 
-        // Final fallback if no specific reason is found (and only "Tip: " is present or empty)
-        String current = sb.toString();
-        if (current.isEmpty() || current.equals("Tip: ")) { // Check if it's empty or just "Tip: "
-            sb.append("Payment");
-        }
-
-        return sb.toString();
+        return paymentReason;
     }
 
     private String extractBillNumber(QRCodeData qrData, PaymentRequest userInput) {
@@ -1108,6 +1096,7 @@ public class PaymentService {
             xml.append("                        <header:Id>").append(escapeXml(instructingAgentId)).append("</header:Id>\n");
             xml.append("                    </header:Othr>\n");
             xml.append("                </header:FinInstnId>\n");
+            xml.append("            </header:FIId>\n");
             xml.append("        </header:Fr>\n");
             xml.append("        <header:To>\n");
             xml.append("            <header:FIId>\n");
