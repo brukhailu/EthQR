@@ -488,6 +488,10 @@
 
     function validateTagValue(tag, value, config) {
         if (!config) return { valid: true };
+
+        // Allow '***' as a valid value for any field that normally has data type restrictions
+        if (value === '***') return { valid: true };
+
         if (config.dataType) {
             if (config.dataType === 'N' && !/^\d+$/.test(value)) return { valid: false };
             if (config.dataType === 'A' && !/^[a-zA-Z\s]+$/.test(value)) return { valid: false };
@@ -609,7 +613,16 @@
                     ${conf.options.map(o => `<option value="${o.value}" title="${o.label}">${o.value} - ${o.label}</option>`).join('')}
                 </select>`;
             } else {
-                const placeholder = conf.pattern ? `Format: ${conf.pattern}` : '';
+                let placeholder = conf.pattern ? `Format: ${conf.pattern}` : '';
+
+                // Add hint for promptable fields
+                if (t === '62' && (st === '01' || st === '04')) {
+                    placeholder = "Enter value or '***' to prompt";
+                }
+                if (t === '62' && (st === '02')) {
+                    placeholder = "Format +251-9********";
+                }
+
                 return `<input type="text" class="form-control form-control-sm gen-input gen-input-text" id="${id}" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''} placeholder="${placeholder}" oninput="validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);">`;
             }
         };
@@ -884,6 +897,7 @@
             const field = config.dataField;
             if (config.subTags && config.subTags.length > 0) {
                 let anyFilled = false;
+
                 if (config.delimiter) {
                     let delim = config.delimiter; if(delim === '\\|') delim = '|';
                     const values = config.subTags.map(st => {
@@ -901,7 +915,12 @@
                     const subMap = {};
                     config.subTags.forEach(st => {
                         const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
-                        if(el && el.value) { subMap[st.tag] = el.value; anyFilled = true; }
+                        let val = el ? el.value : '';
+
+                        if(val) {
+                            subMap[st.tag] = val;
+                            anyFilled = true;
+                        }
                     });
                     if (anyFilled) {
                         if (field === 'additionalDataField') payload.additionalDataField = subMap;

@@ -188,7 +188,7 @@ public class PaymentService {
 
         // Build message - passing base amount (without tip) and tip amount separately
         Pacs008Message message = buildPacs008Message(qrData, userInput, transactionId,
-                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency, activeBic);  
+                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency, activeBic);
         String pacs008 = message.toXml();
 
 
@@ -205,6 +205,7 @@ public class PaymentService {
         result.put("response", responseXml);
         return result;
     }
+
     private BigDecimal getBaseAmount(QRCodeData qrData, PaymentRequest userInput) {
         // Get base amount from QR or user input (this is the amount without tip)
         if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
@@ -470,7 +471,6 @@ public class PaymentService {
                 .withCreditorName(creditorName)
                 .withCreditorStreetName(creditorStreetName)
                 .withCreditorBuildingNumber(creditorBuildingNumber)
-                .withCreditorPostalCode(postalCode)
                 .withCreditorTownName(creditorTownName)
                 .withCreditorCountry(countryCode)
                 .withCreditorAddressLine(creditorAddressLine)
@@ -492,6 +492,7 @@ public class PaymentService {
                 .withTerminalId(terminalId)
                 .withMerchantChannel(merchantChannel);  // Add this line
     }
+
     private String determineCategoryPurpose(QRCodeData qrData, PaymentRequest userInput) {
         // Priority: User input > QR data > Default
 
@@ -539,10 +540,12 @@ public class PaymentService {
                 if (p.contains("airline") || p.contains("ticket")) return "AIRTK";
                 if (p.contains("bar") || p.contains("club")) return "BCLUB";
                 if (p.contains("bus")) return "BUSTP";
-                if (p.contains("school") || p.contains("college") || p.contains("university") || p.contains("education")) return "EDUPT";
+                if (p.contains("school") || p.contains("college") || p.contains("university") || p.contains("education"))
+                    return "EDUPT";
                 if (p.contains("entertainment") || p.contains("recreation")) return "ENTMT";
                 if (p.contains("forex")) return "FOREX";
-                if (p.contains("gambling") || p.contains("betting") || p.contains("lottery") || p.contains("casino")) return "GAMBL";
+                if (p.contains("gambling") || p.contains("betting") || p.contains("lottery") || p.contains("casino"))
+                    return "GAMBL";
                 if (p.contains("gift") || p.contains("souvenir") || p.contains("novelty")) return "GIFTS";
                 if (p.contains("grocery") || p.contains("supermarket")) return "GROCS";
                 if (p.contains("spa") || p.contains("beauty")) return "HLTHS";
@@ -554,7 +557,8 @@ public class PaymentService {
                 if (p.contains("ride") || p.contains("taxi") || p.contains("uber")) return "RIDES";
                 if (p.contains("stationery") || p.contains("office")) return "STOFS";
                 if (p.contains("train") || p.contains("subway")) return "TRNST";
-                if (p.contains("utility") || p.contains("bill") || p.contains("electric") || p.contains("water")) return "UTSBP";
+                if (p.contains("utility") || p.contains("bill") || p.contains("electric") || p.contains("water"))
+                    return "UTSBP";
             }
         }
 
@@ -564,30 +568,39 @@ public class PaymentService {
     private String buildRemittanceUnstructured(QRCodeData qrData, PaymentRequest userInput, BigDecimal effectiveTipAmount) {
         StringBuilder sb = new StringBuilder();
 
+        // Prepend "Tip: " if there's an effective tip amount
         if (effectiveTipAmount != null && effectiveTipAmount.compareTo(BigDecimal.ZERO) > 0) {
             sb.append("Tip: ");
         }
 
-        if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().isEmpty()) {
-            sb.append(userInput.getRemittanceInfo());
-        }
-
+        String paymentReason = null;
         Map<String, String> additionalData = qrData.getAdditionalDataField();
-        if (additionalData != null) {
-            if (additionalData.containsKey("05") && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
-                sb.append(additionalData.get("05"));
-            }
-            if (additionalData.containsKey("08") && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
-                sb.append(additionalData.get("08"));
-            }
+
+        // Priority 1: User input from simulator
+        if (userInput.getRemittanceInfo() != null && !userInput.getRemittanceInfo().isEmpty()) {
+            paymentReason = userInput.getRemittanceInfo();
+        }
+        // Priority 2: Tag 80 from QR (ContextOfTransaction)
+        else if (qrData.getContextOfTransaction() != null && !qrData.getContextOfTransaction().isEmpty()) {
+            paymentReason = qrData.getContextOfTransaction();
+        }
+        // Priority 3: Tag 08 from Additional Data Field
+        else if (additionalData != null && additionalData.containsKey("08") && !additionalData.get("08").isEmpty()) {
+            paymentReason = additionalData.get("08");
+        }
+        // Priority 4: Tag 05 from Additional Data Field
+        else if (additionalData != null && additionalData.containsKey("05") && !additionalData.get("05").isEmpty()) {
+            paymentReason = additionalData.get("05");
         }
 
-        if (qrData.getContextOfTransaction() != null && (sb.length() == 0 || sb.toString().equals("Tip Payment: "))) {
-            sb.append(qrData.getContextOfTransaction());
+        if (paymentReason != null) {
+            sb.append(paymentReason);
         }
 
-        if (sb.length() == 0 || sb.toString().equals("Tip Payment: ")) {
-            sb.append("QR Payment");
+        // Final fallback if no specific reason is found (and only "Tip: " is present or empty)
+        String current = sb.toString();
+        if (current.isEmpty() || current.equals("Tip: ")) { // Check if it's empty or just "Tip: "
+            sb.append("Payment");
         }
 
         return sb.toString();
@@ -668,6 +681,7 @@ public class PaymentService {
         }
         return null;
     }
+
     private String extractMerchantMobile(QRCodeData qrData) {
         Map<String, String> additionalData = qrData.getAdditionalDataField();
         if (additionalData != null && additionalData.containsKey("02")) {
@@ -1002,6 +1016,7 @@ public class PaymentService {
             this.creditorContactChannel = channel;
             return this;
         }
+
         public Pacs008Message withCreditorMobile(String mobile) {
             this.creditorMobile = mobile;
             return this;
@@ -1061,32 +1076,14 @@ public class PaymentService {
             this.terminalId = id;
             return this;
         }
+
         public Pacs008Message withMerchantChannel(String channel) {
             this.merchantChannel = channel;
             return this;
         }
+
         private String buildRemittanceString() {
             StringBuilder sb = new StringBuilder();
-
-            // Add bill number if present
-//            if (billNumber != null && !billNumber.isEmpty()) {
-//                sb.append("Bill: ").append(billNumber).append(" ");
-//            }
-//
-//            // Add mobile number if present (for top-up)
-//            if (mobileNumber != null && !mobileNumber.isEmpty()) {
-//                sb.append("Mobile: ").append(mobileNumber).append(" ");
-//            }
-//
-//            // Add store label if present
-//            if (storeLabel != null && !storeLabel.isEmpty()) {
-//                sb.append("Store: ").append(storeLabel).append(" ");
-//            }
-//
-//            // Add loyalty number if present
-//            if (loyaltyNumber != null && !loyaltyNumber.isEmpty()) {
-//                sb.append("Loyalty: ").append(loyaltyNumber).append(" ");
-//            }
 
             // Add remittance info from user input
             if (remittanceUnstructured != null && !remittanceUnstructured.isEmpty()) {
@@ -1094,8 +1091,9 @@ public class PaymentService {
             }
 
             String result = sb.toString().trim();
-            return result.isEmpty() ? "QR Payment" : result;
+            return result.isEmpty() ? "Payment" : result;
         }
+
         public String toXml() {
             StringBuilder xml = new StringBuilder();
             xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -1110,7 +1108,6 @@ public class PaymentService {
             xml.append("                        <header:Id>").append(escapeXml(instructingAgentId)).append("</header:Id>\n");
             xml.append("                    </header:Othr>\n");
             xml.append("                </header:FinInstnId>\n");
-            xml.append("            </header:FIId>\n");
             xml.append("        </header:Fr>\n");
             xml.append("        <header:To>\n");
             xml.append("            <header:FIId>\n");
@@ -1173,16 +1170,16 @@ public class PaymentService {
             xml.append("                <document:ChrgBr>").append(escapeXml(chargeBearer)).append("</document:ChrgBr>\n");
 
             // UltmtDbtr (Ultimate Debtor - matches sample)
-            if (debtorName != null) {
-                xml.append("                <document:UltmtDbtr>\n");
-                xml.append("                    <document:Nm>").append(escapeXml(debtorName)).append("</document:Nm>\n");
-                if (creditorCountry != null) {
-                    xml.append("                    <document:PstlAdr>\n");
-                    xml.append("                        <document:Ctry>").append(escapeXml(creditorCountry)).append("</document:Ctry>\n");
-                    xml.append("                    </document:PstlAdr>\n");
-                }
-                xml.append("                </document:UltmtDbtr>\n");
-            }
+//            if (debtorName != null) {
+//                xml.append("                <document:UltmtDbtr>\n");
+//                xml.append("                    <document:Nm>").append(escapeXml(debtorName)).append("</document:Nm>\n");
+//                if (creditorCountry != null) {
+//                    xml.append("                    <document:PstlAdr>\n");
+//                    xml.append("                        <document:Ctry>").append(escapeXml(creditorCountry)).append("</document:Ctry>\n");
+//                    xml.append("                    </document:PstlAdr>\n");
+//                }
+//                xml.append("                </document:UltmtDbtr>\n");
+//            }
 
             // Dbtr (Debtor) - MATCHES SAMPLE EXACTLY
             xml.append("                <document:Dbtr>\n");
@@ -1277,6 +1274,10 @@ public class PaymentService {
             // Contact Details - MATCHES SAMPLE WITH ALL FIELDS
             xml.append("                    <document:CtctDtls>\n");
             xml.append("                        <document:Nm>").append(escapeXml(creditorName)).append("</document:Nm>\n");
+            // Mobile number goes here (below merchant name)
+            if (mobileNumber != null && !mobileNumber.isEmpty()) {
+                xml.append("                        <document:MobNb>").append(escapeXml(mobileNumber)).append("</document:MobNb>\n");
+            }
             // Store label goes in Dept field
             if (storeLabel != null && !storeLabel.isEmpty()) {
                 xml.append("                        <document:Dept>").append(escapeXml(storeLabel)).append("</document:Dept>\n");
@@ -1303,7 +1304,6 @@ public class PaymentService {
             xml.append("                    </document:Id>\n");
             xml.append("                </document:CdtrAcct>\n");
 
-            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up)
             // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
             if (mobileNumber != null && !mobileNumber.isEmpty()) {
                 xml.append("                <document:UltmtCdtr>\n");
