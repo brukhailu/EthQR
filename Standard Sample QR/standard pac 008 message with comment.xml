@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Root envelope for Faster Payment ISO 20022 message -->
+<FPEnvelope xmlns="urn:iso:std:iso:20022:tech:xsd:payment_request" xmlns:document="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.10" xmlns:header="urn:iso:std:iso:20022:tech:xsd:head.001.001.03">
+	<!-- Application Header (routing, identification, metadata) -->
+	<header:AppHdr>
+		<!-- Sender (From Financial Institution) -->
+		<header:Fr>
+			<header:FIId>
+				<header:FinInstnId>
+					<header:Othr>
+						<!-- Sender institution identifier -->
+						<header:Id>BBANKETA</header:Id>
+					</header:Othr>
+				</header:FinInstnId>
+			</header:FIId>
+		</header:Fr>
+		<!-- Receiver (To Financial Institution / Switch) -->
+		<header:To>
+			<header:FIId>
+				<header:FinInstnId>
+					<header:Othr>
+						<!-- Receiver identifier (e.g., Fast Payment Switch) -->
+						<header:Id>FP</header:Id>
+					</header:Othr>
+				</header:FinInstnId>
+			</header:FIId>
+		</header:To>
+		<!-- Unique Business Message Identifier -->
+		<header:BizMsgIdr>BBANKETAdd82045085844a26bb19</header:BizMsgIdr>
+		<!-- Message Definition (ISO 20022 type) -->
+		<header:MsgDefIdr>pacs.008.001.10</header:MsgDefIdr>
+		<!-- Message creation timestamp -->
+		<header:CreDt>2026-04-24T11:00:45.942776100+03:00</header:CreDt>
+		<!-- Digital Signature block for integrity and authenticity -->
+		<document:Sgntr xmlns:document="urn:iso:std:iso:20022:tech:xsd:head.001.001.03">
+			<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<!-- Signature metadata -->
+				<ds:SignedInfo>
+					<!-- Canonicalization method -->
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<!-- Signature algorithm -->
+					<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+					<!-- Reference to signed data -->
+					<ds:Reference URI="#402547b8-e434-4323-a1b9-c917c5a47bdc">
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</ds:Transforms>
+						<!-- Hash algorithm -->
+						<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+						<!-- Hash value -->
+						<ds:DigestValue>...</ds:DigestValue>
+					</ds:Reference>
+					<!-- Reference to signed properties -->
+					<ds:Reference Type="http://uri.etsi.org/01903/v1.3.2#SignedProperties" URI="#7dcc3167-5fdd-47a2-864f-d2bfb2dbc215">
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+						<ds:DigestValue>...</ds:DigestValue>
+					</ds:Reference>
+				</ds:SignedInfo>
+				<!-- Actual signature value -->
+				<ds:SignatureValue>...</ds:SignatureValue>
+				<!-- Certificate information -->
+				<ds:KeyInfo Id="402547b8-e434-4323-a1b9-c917c5a47bdc">
+					<ds:X509Data>
+						<ds:X509IssuerSerial>
+							<!-- Certificate issuer -->
+							<ds:X509IssuerName>CN=TEST ETS IPS Issuing CA,O=EthSwitch,C=ET</ds:X509IssuerName>
+							<!-- Certificate serial -->
+							<ds:X509SerialNumber>...</ds:X509SerialNumber>
+						</ds:X509IssuerSerial>
+					</ds:X509Data>
+				</ds:KeyInfo>
+				<!-- Extended signature properties -->
+				<ds:Object>
+					<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">
+						<xades:SignedProperties Id="7dcc3167-5fdd-47a2-864f-d2bfb2dbc215">
+							<xades:SignedSignatureProperties>
+								<!-- Time of signing -->
+								<xades:SigningTime>2023-11-06T11:12:25Z</xades:SigningTime>
+							</xades:SignedSignatureProperties>
+						</xades:SignedProperties>
+					</xades:QualifyingProperties>
+				</ds:Object>
+			</ds:Signature>
+		</document:Sgntr>
+	</header:AppHdr>
+	<!-- Payment Message Body -->
+	<document:Document>
+		<!-- FI to FI Customer Credit Transfer -->
+		<document:FIToFICstmrCdtTrf>
+			<!-- Group Header (batch-level info) -->
+			<document:GrpHdr>
+				<!-- Message ID -->
+				<document:MsgId>BBANKETA179743983411401fafb2</document:MsgId>
+				<!-- Creation datetime -->
+				<document:CreDtTm>2026-04-24T11:00:45.942776100+03:00</document:CreDtTm>
+				<!-- Number of transactions -->
+				<document:NbOfTxs>1</document:NbOfTxs>
+				<!-- Settlement information -->
+				<document:SttlmInf>
+					<!-- Settlement method (Clearing) -->
+					<document:SttlmMtd>CLRG</document:SttlmMtd>
+					<document:ClrSys>
+						<!-- Clearing system (e.g., Fast Payment) -->
+						<document:Prtry>FP</document:Prtry>
+					</document:ClrSys>
+				</document:SttlmInf>
+				<!-- Payment type -->
+				<document:PmtTpInf>
+					<document:LclInstrm>
+						<!-- Local instrument (Credit Transfer Regular Mod = Payment initiated is in regular mode.) -->
+						<document:Prtry>CRTRM</document:Prtry>
+					</document:LclInstrm>
+					<document:CtgyPurp>
+						<!-- Category purpose (C2B Static QR Payment) -->
+						<document:Prtry>C2BSQR</document:Prtry>
+					</document:CtgyPurp>
+				</document:PmtTpInf>
+				<!-- Instructing agent (sender bank) -->
+				<document:InstgAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>BBANKETA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:InstgAgt>
+				<!-- Instructed agent (receiver bank/switch) -->
+				<document:InstdAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>ETSETAA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:InstdAgt>
+			</document:GrpHdr>
+			<!-- Transaction Information -->
+			<document:CdtTrfTxInf>
+				<!-- Payment Identification -->
+				<document:PmtId>
+					<!-- End-to-end reference -->
+					<document:EndToEndId>BBANKETA84a00232755f469ebc69</document:EndToEndId>
+					<!-- Transaction ID -->
+					<document:TxId>BBANKETA12e09128948645489075</document:TxId>
+				</document:PmtId>
+				<!-- Interbank settlement amount and the currence is from tag 53-->
+				<document:IntrBkSttlmAmt Ccy="ETB">120.00</document:IntrBkSttlmAmt>
+				<!-- Acceptance datetime -->
+				<document:AccptncDtTm>2026-04-24T11:00:45.942776100+03:00</document:AccptncDtTm>
+				<!-- Instructed amount -->
+				<document:InstdAmt Ccy="ETB">120.00</document:InstdAmt>
+				<!-- Charge bearer (shared) -->
+				<document:ChrgBr>SLEV</document:ChrgBr>
+				<!-- Debtor (payer) -->
+				<document:Dbtr>
+					<document:Nm>Bruk Hailu</document:Nm>
+					<document:PstlAdr>
+						<!-- Contact details - Customer's Contact Detail (Passed from tag 62 sub tag 09, (A) ) -->
+						<document:AdrLine>AA</document:AdrLine>
+					</document:PstlAdr>
+					<document:Id>
+						<document:PrvtId>
+							<document:Othr>
+								<!-- Customer Loyal Number -> Promted from the user *** value on the QR to prompt the user on tag 62 sub tag 04 -->
+								<document:Id>LOAYL-1234</document:Id>
+								<document:SchmeNm>
+									<!-- Proprietry for Loyal Number -->
+									<document:Prtry>LPNB</document:Prtry>
+								</document:SchmeNm>
+							</document:Othr>
+						</document:PrvtId>
+					</document:Id>
+					<!-- Contact details - Customer's Contact Detail (Passed from tag 62 sub tag 09 (EM) ) -->
+					<document:CtctDtls>
+						<document:MobNb>+251-922561328</document:MobNb>
+						<document:EmailAdr>customer@customer.com</document:EmailAdr>
+					</document:CtctDtls>
+				</document:Dbtr>
+				<!-- Debtor Account -->
+				<document:DbtrAcct>
+					<document:Id>
+						<document:Othr>
+								<!-- 
+								Possible Values of: 
+								● ACCT — account number (ID = “AccountID”) 
+								● EWLT — e-wallet identifier (ID = “EwalletID”)  
+								● MSIS — mobile phone number (ID = “PhoneNumber”)  
+								-->
+							<document:Id>2305130000483</document:Id>
+							<document:SchmeNm>
+								<!-- 
+								Possible Options
+								● ACCT — account number (ID = “AccountID”) 
+								● EWLT — e-wallet identifier (ID = “EwalletID”)  
+								● MSIS — mobile phone number (ID = “PhoneNumber”) 								
+								-->
+								<document:Prtry>ACCT</document:Prtry>
+							</document:SchmeNm>
+							<document:Issr>C</document:Issr>
+						</document:Othr>
+					</document:Id>
+				</document:DbtrAcct>
+				<!-- Debtor Agent (payer bank) -->
+				<document:DbtrAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>BBANKETA</document:Id>
+							<document:Issr>ATM</document:Issr>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:DbtrAgt>
+				<!-- Creditor Agent (receiver bank) -->
+				<document:CdtrAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>ETSETAA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:CdtrAgt>
+				<!-- Creditor (merchant) -->
+				<document:Cdtr>
+					<!-- Merchant Name - tag 59 -->
+					<document:Nm>Merchant Name</document:Nm>
+					<document:PstlAdr>
+						<!-- Merchant City - tag 60 -->
+						<document:TwnNm>A.A Merch City</document:TwnNm>
+						<!--  Country Code of the merchant, (Alpha-2 code - ISO 3166) - 'ET' for Ethiopiatag 60 -->
+						<document:Ctry>ET</document:Ctry>
+					</document:PstlAdr>
+					<!-- Merchant identification -->
+					<document:Id>
+						<document:OrgId>
+							<document:Othr>
+								<!-- MCC - Tag 52-->
+								<document:Id>5411</document:Id>
+							</document:Othr>
+						</document:OrgId>
+					</document:Id>
+					<!-- Country of residence(Alpha-2 code - ISO 3166) -->
+					<document:CtryOfRes>ET</document:CtryOfRes>
+					<!-- Merchant contact details + terminal info + others-->
+					<document:CtctDtls>
+						<!-- Merchant Name - tag 59 -->
+						<document:Nm>Merchant Name</document:Nm>
+						<!-- Merchant Mobile Number - tag 62 sub tag 02-->
+						<document:MobNb>+251-922222222</document:MobNb>
+						<!-- Merchant Store Label - tag 62 sub tag 03-->
+						<document:Dept>STORE-01</document:Dept>
+						<document:Othr>
+							<!-- Channel type | Merchant Channel - tag 62 sub tag 11 eg. 400 Retail Outlet
+								Possible Options (Refer emvco)
+								400,000,402,002,401,001,610,010,521,111,211 -->
+							<document:ChanlTp>400</document:ChanlTp>
+							<!-- Terminal ID tag 62 sub tag 07 -->
+							<document:Id>TERM-01</document:Id>
+						</document:Othr>
+					</document:CtctDtls>
+				</document:Cdtr>
+				<!-- Creditor account -->
+				<document:CdtrAcct>
+					<document:Id>
+						<document:Othr>
+							<document:Id>1234567890</document:Id>
+							<document:SchmeNm>
+								<document:Prtry>ACCT</document:Prtry>
+							</document:SchmeNm>
+						</document:Othr>
+					</document:Id>
+				</document:CdtrAcct>
+				<document:Purp>
+					<!-- Purpose of payment tag 62 sub tag 08
+					Possible options: [
+						{ "value": "ONLPUR", "label": "Online Purchase" },
+						{ "value": "SALA", "label": "Salary Payments" },
+						{ "value": "GOVTP", "label": "Government Payments" },
+						{ "value": "AIRTK", "label": "Airline Tickets" },
+						{ "value": "BCLUB", "label": "Bars and Clubs" },
+						{ "value": "BUSTP", "label": "Bus Ticket Purchase" },
+						{ "value": "EDUPT", "label": "Education" },
+						{ "value": "ENTMT", "label": "Entertainment and Recreation" },
+						{ "value": "FOREX", "label": "Forex Payments" },
+						{ "value": "GAMBL", "label": "Gambling" },
+						{ "value": "GIFTS", "label": "Gift Shops" },
+						{ "value": "GROCS", "label": "Grocery Stores" },
+						{ "value": "HLTHS", "label": "Health and Beauty Spas" },
+						{ "value": "HOSPT", "label": "Hospital" },
+						{ "value": "LOANP", "label": "Loan Payments" },
+						{ "value": "PETSP", "label": "Pet Shops" },
+						{ "value": "PHARM", "label": "Pharmacy" },
+						{ "value": "RETNTP", "label": "Restaurants and Cafes" },
+						{ "value": "RIDES", "label": "Ride Sharing" },
+						{ "value": "STOFS", "label": "Office Supplies" },
+						{ "value": "TRNST", "label": "Transport Tickets" },
+						{ "value": "UTSBP", "label": "Utilities Bill Payments" }
+					] -->
+					<document:Prtry>ONLPUR</document:Prtry>
+				</document:Purp>
+				<!-- Tax information tag 62 sub tag 10-->
+				<document:Tax>
+					<document:Cdtr>
+						<document:TaxId>TAX-ID-01</document:TaxId>
+					</document:Cdtr>
+				</document:Tax>
+				<!-- Remittance Information -->
+				<document:RmtInf>
+					<!-- Unstructured text (Customer Transaction Reason or Context of Transaction from the tag 80)-->
+					<document:Ustrd>Customer Reason Desc</document:Ustrd>
+					<!-- Structured remittance -->
+					<document:Strd>
+						<document:RfrdDocInf>
+							<!-- Bill or invoice number - tag 62 sub tag 01 on QR *** value to be prompted from the user-->
+							<document:Nb>BILL-1234</document:Nb>
+						</document:RfrdDocInf>
+						<document:RfrdDocAmt>
+							<!-- Due amount (TIP Value) refer tag (55-57) -->
+							<document:DuePyblAmt Ccy="ETB">10</document:DuePyblAmt>
+						</document:RfrdDocAmt>
+					</document:Strd>
+				</document:RmtInf>
+			</document:CdtTrfTxInf>
+		</document:FIToFICstmrCdtTrf>
+	</document:Document>
+</FPEnvelope>

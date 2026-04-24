@@ -1293,21 +1293,21 @@ public class PaymentService {
             xml.append("                    </document:Id>\n");
             xml.append("                </document:CdtrAcct>\n");
 
-            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
-            if (mobileNumber != null && !mobileNumber.isEmpty()) {
-                xml.append("                <document:UltmtCdtr>\n");
-                xml.append("                    <document:Id>\n");
-                xml.append("                        <document:PrvtId>\n");
-                xml.append("                            <document:Othr>\n");
-                xml.append("                                <document:Id>").append(escapeXml(mobileNumber)).append("</document:Id>\n");
-                xml.append("                                <document:SchmeNm>\n");
-                xml.append("                                    <document:Prtry>MOBN</document:Prtry>\n");
-                xml.append("                                </document:SchmeNm>\n");
-                xml.append("                            </document:Othr>\n");
-                xml.append("                        </document:PrvtId>\n");
-                xml.append("                    </document:Id>\n");
-                xml.append("                </document:UltmtCdtr>\n");
-            }
+//            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
+//            if (mobileNumber != null && !mobileNumber.isEmpty()) {
+//                xml.append("                <document:UltmtCdtr>\n");
+//                xml.append("                    <document:Id>\n");
+//                xml.append("                        <document:PrvtId>\n");
+//                xml.append("                            <document:Othr>\n");
+//                xml.append("                                <document:Id>").append(escapeXml(mobileNumber)).append("</document:Id>\n");
+//                xml.append("                                <document:SchmeNm>\n");
+//                xml.append("                                    <document:Prtry>MOBN</document:Prtry>\n");
+//                xml.append("                                </document:SchmeNm>\n");
+//                xml.append("                            </document:Othr>\n");
+//                xml.append("                        </document:PrvtId>\n");
+//                xml.append("                    </document:Id>\n");
+//                xml.append("                </document:UltmtCdtr>\n");
+//            }
 
             // InstrForNxtAgt - MATCHES SAMPLE EXACTLY for bill paymenet only as per the spec and comment stay here always
 //            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {

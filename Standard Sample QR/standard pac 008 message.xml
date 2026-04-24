@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FPEnvelope xmlns="urn:iso:std:iso:20022:tech:xsd:payment_request" xmlns:document="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.10" xmlns:header="urn:iso:std:iso:20022:tech:xsd:head.001.001.03">
+	<header:AppHdr>
+		<header:Fr>
+			<header:FIId>
+				<header:FinInstnId>
+					<header:Othr>
+						<header:Id>BBANKETA</header:Id>
+					</header:Othr>
+				</header:FinInstnId>
+			</header:FIId>
+		</header:Fr>
+		<header:To>
+			<header:FIId>
+				<header:FinInstnId>
+					<header:Othr>
+						<header:Id>FP</header:Id>
+					</header:Othr>
+				</header:FinInstnId>
+			</header:FIId>
+		</header:To>
+		<header:BizMsgIdr>BBANKETAdd82045085844a26bb19</header:BizMsgIdr>
+		<header:MsgDefIdr>pacs.008.001.10</header:MsgDefIdr>
+		<header:CreDt>2026-04-24T11:00:45.942776100+03:00</header:CreDt>
+		<document:Sgntr xmlns:document="urn:iso:std:iso:20022:tech:xsd:head.001.001.03">
+			<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<ds:SignedInfo>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+					<ds:Reference URI="#402547b8-e434-4323-a1b9-c917c5a47bdc">
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+						<ds:DigestValue>jWW91mPVaTnTuHwGUTnj5O6XYZWCch5BXrRo2s4M+ZY=</ds:DigestValue>
+					</ds:Reference>
+					<ds:Reference Type="http://uri.etsi.org/01903/v1.3.2#SignedProperties" URI="#7dcc3167-5fdd-47a2-864f-d2bfb2dbc215">
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+						<ds:DigestValue>WTgj9UBBKVCN8lszBaj9viEDuskXCfqPMcs3Dw7CZKY=</ds:DigestValue>
+					</ds:Reference>
+					<ds:Reference>
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+						<ds:DigestValue>25qsRobIFqkVQvYY2j2NIjGAtRQGYdyFfsxuz+B8hlk=</ds:DigestValue>
+					</ds:Reference>
+				</ds:SignedInfo>
+				<ds:SignatureValue>
+qDky+eG73phi6oRE+0FzHjhxPY5auh/Z9hq8XGbhnFkvMMhNmO+28J/gidnQKiHF5OsD7pvYRX7f
+w414tCy2g1NhSlEiyEkfLFVdTYKJgciVlsySNwzO+HjVQf8wqnkzF6CPIvEfBLHHCSdEm9zijXfp
+oUORdRu7pMwJ1q+KzoCPqvUnTyGsxUo0e2c7DRV4sttB41uwXFbigIyxIjhJ92SFeqPShasXWXV7
+34emxuQ/HZGoOv45mXTi7M1yzkv5tRsSzRey7JE8ZqJzye0ika1GhwltXqjQilHv42pV0cr179ci
+3CPYMwF0w+kw7ITf8fldPF8didfKjOe0f3LbEA==
+</ds:SignatureValue>
+				<ds:KeyInfo Id="402547b8-e434-4323-a1b9-c917c5a47bdc">
+					<ds:X509Data>
+						<ds:X509IssuerSerial>
+							<ds:X509IssuerName>CN=TEST ETS IPS Issuing CA,O=EthSwitch,C=ET</ds:X509IssuerName>
+							<ds:X509SerialNumber>423714159169558715855538168207124222779064396</ds:X509SerialNumber>
+						</ds:X509IssuerSerial>
+					</ds:X509Data>
+				</ds:KeyInfo>
+				<ds:Object>
+					<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#">
+						<xades:SignedProperties Id="7dcc3167-5fdd-47a2-864f-d2bfb2dbc215">
+							<xades:SignedSignatureProperties>
+								<xades:SigningTime>2023-11-06T11:12:25Z</xades:SigningTime>
+							</xades:SignedSignatureProperties>
+						</xades:SignedProperties>
+					</xades:QualifyingProperties>
+				</ds:Object>
+			</ds:Signature>
+		</document:Sgntr>
+	</header:AppHdr>
+	<document:Document>
+		<document:FIToFICstmrCdtTrf>
+			<document:GrpHdr>
+				<document:MsgId>BBANKETA179743983411401fafb2</document:MsgId>
+				<document:CreDtTm>2026-04-24T11:00:45.942776100+03:00</document:CreDtTm>
+				<document:NbOfTxs>1</document:NbOfTxs>
+				<document:SttlmInf>
+					<document:SttlmMtd>CLRG</document:SttlmMtd>
+					<document:ClrSys>
+						<document:Prtry>FP</document:Prtry>
+					</document:ClrSys>
+				</document:SttlmInf>
+				<document:PmtTpInf>
+					<document:LclInstrm>
+						<document:Prtry>CRTRM</document:Prtry>
+					</document:LclInstrm>
+					<document:CtgyPurp>
+						<document:Prtry>C2BSQR</document:Prtry>
+					</document:CtgyPurp>
+				</document:PmtTpInf>
+				<document:InstgAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>BBANKETA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:InstgAgt>
+				<document:InstdAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>ETSETAA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:InstdAgt>
+			</document:GrpHdr>
+			<document:CdtTrfTxInf>
+				<document:PmtId>
+					<document:EndToEndId>BBANKETA84a00232755f469ebc69</document:EndToEndId>
+					<document:TxId>BBANKETA12e09128948645489075</document:TxId>
+				</document:PmtId>
+				<document:IntrBkSttlmAmt Ccy="ETB">120.00</document:IntrBkSttlmAmt>
+				<document:AccptncDtTm>2026-04-24T11:00:45.942776100+03:00</document:AccptncDtTm>
+				<document:InstdAmt Ccy="ETB">120.00</document:InstdAmt>
+				<document:ChrgBr>SLEV</document:ChrgBr>
+				<document:Dbtr>
+					<document:Nm>Bruk Hailu</document:Nm>
+					<document:PstlAdr>
+						<document:AdrLine>AA</document:AdrLine>
+					</document:PstlAdr>
+					<document:Id>
+						<document:PrvtId>
+							<document:Othr>
+								<document:Id>LOAYL-1234</document:Id>
+								<document:SchmeNm>
+									<document:Prtry>LPNB</document:Prtry>
+								</document:SchmeNm>
+							</document:Othr>
+						</document:PrvtId>
+					</document:Id>
+					<document:CtctDtls>
+						<document:MobNb>+251-922561328</document:MobNb>
+						<document:EmailAdr>customer@customer.com</document:EmailAdr>
+					</document:CtctDtls>
+				</document:Dbtr>
+				<document:DbtrAcct>
+					<document:Id>
+						<document:Othr>
+							<document:Id>2305130000483</document:Id>
+							<document:SchmeNm>
+								<document:Prtry>ACCT</document:Prtry>
+							</document:SchmeNm>
+							<document:Issr>C</document:Issr>
+						</document:Othr>
+					</document:Id>
+				</document:DbtrAcct>
+				<document:DbtrAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>BBANKETA</document:Id>
+							<document:Issr>ATM</document:Issr>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:DbtrAgt>
+				<document:CdtrAgt>
+					<document:FinInstnId>
+						<document:Othr>
+							<document:Id>ETSETAA</document:Id>
+						</document:Othr>
+					</document:FinInstnId>
+				</document:CdtrAgt>
+				<document:Cdtr>
+					<document:Nm>Merchant Name</document:Nm>
+					<document:PstlAdr>
+						<document:TwnNm>A.A Merch City</document:TwnNm>
+						<document:Ctry>ET</document:Ctry>
+					</document:PstlAdr>
+					<document:Id>
+						<document:OrgId>
+							<document:Othr>
+								<document:Id>5411</document:Id>
+							</document:Othr>
+						</document:OrgId>
+					</document:Id>
+					<document:CtryOfRes>ET</document:CtryOfRes>
+					<document:CtctDtls>
+						<document:Nm>Merchant Name</document:Nm>
+						<document:MobNb>+251-922222222</document:MobNb>
+						<document:Dept>STORE-01</document:Dept>
+						<document:Othr>
+							<document:ChanlTp>400</document:ChanlTp>
+							<document:Id>TERM-01</document:Id>
+						</document:Othr>
+					</document:CtctDtls>
+				</document:Cdtr>
+				<document:CdtrAcct>
+					<document:Id>
+						<document:Othr>
+							<document:Id>1234567890</document:Id>
+							<document:SchmeNm>
+								<document:Prtry>ACCT</document:Prtry>
+							</document:SchmeNm>
+						</document:Othr>
+					</document:Id>
+				</document:CdtrAcct>
+				<document:Purp>
+					<document:Prtry>ONLPUR</document:Prtry>
+				</document:Purp>
+				<document:Tax>
+					<document:Cdtr>
+						<document:TaxId>TAX-ID-01</document:TaxId>
+					</document:Cdtr>
+				</document:Tax>
+				<document:RmtInf>
+					<document:Ustrd>Customer Reason Desc</document:Ustrd>
+					<document:Strd>
+						<document:RfrdDocInf>
+							<document:Nb>BILL-1234</document:Nb>
+						</document:RfrdDocInf>
+						<document:RfrdDocAmt>
+							<document:DuePyblAmt Ccy="ETB">10</document:DuePyblAmt>
+						</document:RfrdDocAmt>
+					</document:Strd>
+				</document:RmtInf>
+			</document:CdtTrfTxInf>
+		</document:FIToFICstmrCdtTrf>
+	</document:Document>
+</FPEnvelope>
