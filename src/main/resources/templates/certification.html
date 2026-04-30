@@ -64,7 +64,10 @@
                     <div class="card-footer bg-white">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted small" id="selectedCount">0 scenarios selected</span>
-                            <button class="btn btn-primary" onclick="startCertification()"><i class="fas fa-play me-2"></i>Start Certification</button>
+                            <div>
+                                <button class="btn btn-outline-info me-2" onclick="downloadQRSheet()"><i class="fas fa-qrcode me-2"></i>Download QR Sheet</button>
+                                <button class="btn btn-primary" onclick="startCertification()"><i class="fas fa-play me-2"></i>Start Certification</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,14 +141,12 @@
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 <script>
-    // ... (Keep existing script logic exactly as is) ...
     let scenarios = [];
     let tagConfig = {};
     let selectedScenarios = [];
     let currentTestIndex = 0;
     let testResults = [];
 
-    // Static tags that must match exactly (00: Payload Format, 53: Currency, 58: Country)
     const staticTags = ['00', '53', '58'];
 
     window.onload = async () => {
@@ -198,6 +199,75 @@
         updateCount();
     }
 
+    async function downloadQRSheet() {
+        const checked = document.querySelectorAll('.scenario-checkbox:checked');
+        if (checked.length === 0) return alert("Please select at least one scenario.");
+
+        const ids = Array.from(checked).map(cb => parseInt(cb.value));
+        const selected = scenarios.filter(s => ids.includes(s.id));
+
+        // Create a printable sheet in a new window
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Certification QR Codes</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <style>
+                        .qr-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; text-align: center; page-break-inside: avoid; }
+                        .qr-image { width: 180px; height: 180px; }
+                        .ref-box { border-bottom: 1px solid #000; display: inline-block; width: 150px; margin-left: 10px; height: 20px; vertical-align: bottom; }
+                        @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body class="bg-light">
+                    <div class="container py-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                            <h3>Certification QR Codes</h3>
+                            <button class="btn btn-primary" onclick="window.print()">Print Sheet</button>
+                        </div>
+                        <div class="row">
+        `);
+
+        for (const scenario of selected) {
+            try {
+                const payload = preparePayload(scenario.data);
+                const resp = await fetch('/api/qr/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (resp.ok) {
+                    const blob = await resp.blob();
+                    const imgUrl = URL.createObjectURL(blob);
+                    printWindow.document.write(`
+                        <div class="col-6">
+                            <div class="qr-item bg-white shadow-sm">
+                                <h6 class="mb-1">${scenario.name}</h6>
+                                <small class="text-muted d-block mb-2">ID: ${scenario.id}</small>
+                                <img src="${imgUrl}" class="qr-image mb-2">
+                                <div class="mt-2 text-start small">
+                                    <strong>Reference Number:</strong> <span class="ref-box"></span>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+            } catch (e) {
+                console.error("Failed to generate QR for", scenario.id, e);
+            }
+        }
+
+        printWindow.document.write(`
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
     async function startCertification() {
         const checked = document.querySelectorAll('.scenario-checkbox:checked');
         if (checked.length === 0) return alert("Please select at least one scenario.");
@@ -217,8 +287,6 @@
             loadInteractiveTest();
         }
     }
-
-    // --- Interactive Mode Logic ---
 
     function loadInteractiveTest() {
         const scenario = selectedScenarios[currentTestIndex];
@@ -254,10 +322,7 @@
         }
 
         try {
-            // Parse TLV
             const parsed = parseTLV(tlv);
-
-            // Validate CRC Integrity
             const crcValid = validateCRC(tlv);
             if (!crcValid) {
                 resDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle me-2"></i>Invalid CRC Checksum. Data integrity failed.</div>';
@@ -265,7 +330,6 @@
                 return;
             }
 
-            // Compare with Scenario
             const comparison = compareData(parsed, scenario.data);
 
             if (comparison.passed) {
@@ -277,8 +341,8 @@
                     <strong><i class="fas fa-times-circle me-2"></i>Failed</strong><br>
                     <ul class="mb-0 mt-2 small">${comparison.errors.map(e => `<li>${e}</li>`).join('')}</ul>
                 </div>`;
-                markTestResult('FAIL', comparison.errors[0]); // Log first error
-                document.getElementById('nextBtn').classList.remove('disabled'); // Allow skip even if fail
+                markTestResult('FAIL', comparison.errors[0]);
+                document.getElementById('nextBtn').classList.remove('disabled');
             }
 
         } catch (e) {
@@ -297,7 +361,6 @@
     }
 
     function markTestResult(status, msg) {
-        // Update or push result for current test
         testResults[currentTestIndex] = {
             id: selectedScenarios[currentTestIndex].id,
             name: selectedScenarios[currentTestIndex].name,
@@ -307,12 +370,9 @@
         };
     }
 
-    // --- Core Verification Logic (Ported/Adapted) ---
-
     function parseTLV(data) {
         const parsed = {};
         let i = 0;
-        // Parse until last 4 chars (CRC val)
         while (i < data.length - 4) {
             if(i+4 > data.length) break;
             const tag = data.substring(i, i+2);
@@ -356,7 +416,7 @@
     function calculateCRC(str) {
         let crc = 0xFFFF;
         const polynomial = 0x1021;
-        const bytes = []; // UTF-8 logic
+        const bytes = [];
         for (let i = 0; i < str.length; i++) {
             let code = str.charCodeAt(i);
             if (code < 0x80) bytes.push(code);
@@ -376,36 +436,26 @@
 
     function compareData(parsed, scenarioData) {
         const errors = [];
-
-        // 1. Check Mandatory & Static Tags
         for (const [tag, config] of Object.entries(tagConfig)) {
-            if(tag === '63') continue; // CRC checked separately
-
+            if(tag === '63') continue;
             const expectedVal = getExpectedValue(tag, config, scenarioData);
-
-            // If scenario expects it, it must be present
             if (expectedVal !== undefined) {
                 if (!parsed.hasOwnProperty(tag)) {
                     errors.push(`Missing Tag ${tag} (${config.name})`);
                     continue;
                 }
-
                 const actualVal = parsed[tag];
-
-                // Static check
                 if (staticTags.includes(tag)) {
                     if (String(actualVal) !== String(expectedVal)) {
                         errors.push(`Tag ${tag} Mismatch: Expected '${expectedVal}', Got '${actualVal}'`);
                     }
                 }
-
-                // Container Deep Check
                 if (config.container || (config.isSubTLV && typeof expectedVal === 'object')) {
                     if (typeof actualVal === 'object' && typeof expectedVal === 'object') {
                         for(const [sTag, sVal] of Object.entries(expectedVal)) {
                             if(!actualVal.hasOwnProperty(sTag)) {
                                 errors.push(`Tag ${tag} missing sub-tag ${sTag}`);
-                            } else if (staticTags.includes(sTag)) { // Usually sub-tags aren't static globally but logic applies
+                            } else if (staticTags.includes(sTag)) {
                                 if(String(actualVal[sTag]) !== String(sVal)) {
                                     errors.push(`Tag ${tag}-${sTag} Mismatch`);
                                 }
@@ -415,7 +465,6 @@
                 }
             }
         }
-
         return { passed: errors.length === 0, errors: errors };
     }
 
@@ -426,28 +475,20 @@
         return data[config.dataField];
     }
 
-    // --- Self-Test Mode ---
-
     async function runSelfTest() {
         document.getElementById('runningSection').classList.remove('d-none');
         let passed = 0, failed = 0;
-
         for (let i = 0; i < selectedScenarios.length; i++) {
             const scenario = selectedScenarios[i];
             const pct = Math.round(((i) / selectedScenarios.length) * 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressText').textContent = `Testing ID ${scenario.id}...`;
-
             try {
-                // Generate
                 const payload = preparePayload(scenario.data);
                 const resp = await fetch('/api/qr/generate-string', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 if (!resp.ok) throw new Error("Generation Failed");
                 const tlv = await resp.text();
-
-                // Validate Integrity
                 if(!validateCRC(tlv)) throw new Error("Generated CRC Invalid");
-
                 testResults.push({ id: scenario.id, name: scenario.name, status: 'PASS', tlv: tlv });
                 passed++;
             } catch (e) {
@@ -458,7 +499,6 @@
         showReport();
     }
 
-    // Prepare Payload Logic (Same as before)
     function preparePayload(scenarioData) {
         const payload = { merchantAccountInformation: {}, additionalDataField: {}, merchantInformationLanguageTemplate: {}, unreservedTemplates: {}, ...scenarioData };
         if (payload.merchantAccountInformation) {
@@ -488,22 +528,18 @@
         document.getElementById('runningSection').classList.add('d-none');
         document.getElementById('interactiveRunner').classList.add('d-none');
         document.getElementById('reportCard').classList.remove('d-none');
-
         const passed = testResults.filter(r => r.status === 'PASS').length;
         const failed = testResults.length - passed;
-
         document.getElementById('totalTests').textContent = testResults.length;
         document.getElementById('passedTests').textContent = passed;
         document.getElementById('failedTests').textContent = failed;
         document.getElementById('reportDate').textContent = new Date().toLocaleString();
-
         const tbody = document.getElementById('reportTableBody');
         tbody.innerHTML = '';
         testResults.forEach(r => {
             const statusBadge = r.status === 'PASS' ? '<span class="badge bg-success">PASS</span>' : '<span class="badge bg-danger">FAIL</span>';
             const remarks = r.status === 'PASS' ? 'OK' : r.error;
             const tlvData = r.tlv ? r.tlv : 'N/A';
-
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${r.id}</strong></td>
@@ -520,17 +556,15 @@
 
     function downloadCSV() {
         if (!testResults || testResults.length === 0) return alert("No results to export.");
-
         const headers = ["ID", "Scenario", "Status", "Remarks", "TLV Data", "Timestamp"];
         const rows = testResults.map(r => [
             r.id,
-            `"${r.name.replace(/"/g, '""')}"`, // Escape quotes
+            `"${r.name.replace(/"/g, '""')}"`,
             r.status,
             `"${(r.status === 'PASS' ? 'OK' : r.error || '').replace(/"/g, '""')}"`,
             `"${(r.tlv || '').replace(/"/g, '""')}"`,
             new Date().toISOString()
         ]);
-
         const csvContent = [headers.join(",")].concat(rows.map(e => e.join(","))).join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -542,10 +576,7 @@
         document.body.removeChild(link);
     }
 
-    function abortCertification() {
-        resetToSelection();
-    }
-
+    function abortCertification() { resetToSelection(); }
     function resetToSelection() {
         document.getElementById('interactiveRunner').classList.add('d-none');
         document.getElementById('reportCard').classList.add('d-none');

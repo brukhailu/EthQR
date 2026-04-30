@@ -181,7 +181,7 @@
 				<document:DbtrAcct>
 					<document:Id>
 						<document:Othr>
-								<!-- 
+							<!-- 
 								Possible Values of: 
 								● ACCT — account number (ID = “AccountID”) 
 								● EWLT — e-wallet identifier (ID = “EwalletID”)  

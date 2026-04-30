@@ -44,7 +44,6 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "08": "ONLPUR" },
       "crc": "5376"
     }
   },

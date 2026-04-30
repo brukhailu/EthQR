@@ -2,7 +2,10 @@ package com.example.EthQR.controller;
 
 import com.example.EthQR.model.QRCodeData;
 import com.example.EthQR.model.TLVTag;
+import com.example.EthQR.model.ValidationRequest;
 import com.example.EthQR.service.QRService;
+import com.example.EthQR.service.ValidationResult;
+import com.example.EthQR.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +27,9 @@ public class QRController {
 
     @Autowired
     private QRService qrService;
+
+    @Autowired
+    private ValidationService validationService;
 
     @GetMapping("/tags")
     public ResponseEntity<Map<String, TLVTag>> getTags() {
@@ -85,5 +92,16 @@ public class QRController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Could not decode QR code from image: " + e.getMessage()));
         }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<List<ValidationResult>> validate(@RequestBody ValidationRequest request) {
+        List<ValidationResult> results = validationService.validate(
+                request.getXml(),
+                request.getQrData(),
+                request.getUserInputs(),
+                request.getScenario()
+        );
+        return ResponseEntity.ok(results);
     }
 }

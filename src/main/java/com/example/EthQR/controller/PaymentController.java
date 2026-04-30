@@ -73,7 +73,7 @@ public class PaymentController {
             Map<String, String> responseBody = Map.of(
                 "status", "SUCCESS",
                 "response", paymentResult.get("response"),
-                "transactionId", paymentResult.get("endToEndId")
+                "transactionId", paymentResult.get("txId") // Changed from endToEndId to txId
             );
             return ResponseEntity.ok(responseBody);
         } catch (Exception e) {

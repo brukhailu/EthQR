@@ -448,7 +448,12 @@
     <div class="log-container">
         <div class="log-header d-flex justify-content-between align-items-center">
             <span><i class="fas fa-terminal me-2"></i>Transaction Log</span>
-            <button class="btn btn-sm btn-outline-secondary" onclick="clearLog()">Clear</button>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary" id="btnCopyLog" onclick="copyFinalMessage()" disabled title="Copy PAC.008 XML">
+                    <i class="fas fa-copy me-1"></i>Copy PAC.008
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="clearLog()">Clear</button>
+            </div>
         </div>
         <pre id="log-console">Logs will appear here when a transaction is initiated...</pre>
     </div>
@@ -463,6 +468,7 @@
     let currentTipAmount = 0;
     let currentBaseAmount = 0;
     let currentEnv = '45'; // Default environment
+    let lastFinalMessage = ""; // Stores the final PAC.008 XML
 
     const tagMap = {
         '00': 'payloadFormatIndicator', '01': 'pointOfInitiationMethod', '52': 'merchantCategoryCode',
@@ -968,6 +974,8 @@
         const logConsole = document.getElementById('log-console');
         clearLog();
         logConsole.textContent = `Transaction ID: ${transactionId}\nEnvironment: .${currentEnv}\nInitiating transaction...\n`;
+        document.getElementById('btnCopyLog').disabled = true;
+        lastFinalMessage = "";
 
         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Processing...`;
         btn.disabled = true;
@@ -1028,6 +1036,17 @@
             const resp = await fetch(`/api/payment/logs/${transactionId}`);
             const logs = await resp.json();
             const logConsole = document.getElementById('log-console');
+
+            // Look for the final PAC.008 message in the logs
+            logs.forEach(log => {
+                if (log.includes('<?xml') && log.includes('pacs.008')) {
+                    // Extract only the XML body if it's prefixed with labels
+                    const xmlStart = log.indexOf('<?xml');
+                    lastFinalMessage = log.substring(xmlStart).trim();
+                    document.getElementById('btnCopyLog').disabled = false;
+                }
+            });
+
             logConsole.textContent = logs.join('\n\n');
             logConsole.scrollTop = logConsole.scrollHeight;
         } catch (e) {
@@ -1035,8 +1054,24 @@
         }
     }
 
+    function copyFinalMessage() {
+        if (!lastFinalMessage) return;
+        navigator.clipboard.writeText(lastFinalMessage).then(() => {
+            const btn = document.getElementById('btnCopyLog');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            btn.classList.replace('btn-outline-primary', 'btn-success');
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.replace('btn-success', 'btn-outline-primary');
+            }, 2000);
+        });
+    }
+
     function clearLog() {
         document.getElementById('log-console').textContent = 'Logs cleared.';
+        document.getElementById('btnCopyLog').disabled = true;
+        lastFinalMessage = "";
     }
 </script>
 </body>

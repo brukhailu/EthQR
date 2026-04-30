@@ -98,6 +98,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'validator'} ? 'active'" href="/validator">
+                        <i class="fas fa-check-double me-1"></i> PAC.008 Validator
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" th:classappend="${activeTab == 'certification'} ? 'active'" href="/certification">
                         <i class="fas fa-certificate me-1"></i> Certification
                     </a>

@@ -175,20 +175,22 @@ public class PaymentService {
         BigDecimal effectiveTipAmount = determineEffectiveTipAmount(qrData, userInput);
         transactionLogger.log(transactionId, "Effective Tip Amount: " + effectiveTipAmount);
 
-        // Calculate BASE amount (without tip) and TOTAL amount (for display only)
+        // Calculate BASE amount (without tip)
         BigDecimal baseAmount = getBaseAmount(qrData, userInput);
-        BigDecimal totalAmount = baseAmount.add(effectiveTipAmount);  // Only for display/success screen
+        
+        // Total amount = base + tip
+        BigDecimal totalAmount = baseAmount.add(effectiveTipAmount);
 
         transactionLogger.log(transactionId, "Base Amount: " + baseAmount);
         transactionLogger.log(transactionId, "Tip Amount: " + effectiveTipAmount);
-        transactionLogger.log(transactionId, "Total Amount (for display): " + totalAmount);
+        transactionLogger.log(transactionId, "Total Amount for display and XML: " + totalAmount);
 
         String currency = qrData.getTransactionCurrency() != null ?
                 getCurrencyCode(qrData.getTransactionCurrency()) : defaultCurrency;
 
-        // Build message - passing base amount (without tip) and tip amount separately
+        // Build message - passing the pre-calculated totalAmount
         Pacs008Message message = buildPacs008Message(qrData, userInput, transactionId,
-                endToEndId, txId, uetr, baseAmount, effectiveTipAmount, currency, activeBic);
+                endToEndId, txId, uetr, totalAmount, effectiveTipAmount, currency, activeBic);
         String pacs008 = message.toXml();
 
 
@@ -207,11 +209,13 @@ public class PaymentService {
     }
 
     private BigDecimal getBaseAmount(QRCodeData qrData, PaymentRequest userInput) {
-        // Get base amount from QR or user input (this is the amount without tip)
+        // Get base amount from user input (this is the amount without tip)
+        if (userInput.getAmount() != null) {
+            return userInput.getAmount();
+        }
+        // Fallback to QR data
         if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
             return new BigDecimal(qrData.getTransactionAmount());
-        } else if (userInput.getAmount() != null) {
-            return userInput.getAmount();
         }
         return BigDecimal.ZERO;
     }
@@ -233,10 +237,10 @@ public class PaymentService {
                     break;
                 case "03": // Percentage tip
                     BigDecimal baseAmount = BigDecimal.ZERO;
-                    if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
-                        baseAmount = new BigDecimal(qrData.getTransactionAmount());
-                    } else if (userInput.getAmount() != null) {
+                    if (userInput.getAmount() != null) {
                         baseAmount = userInput.getAmount();
+                    } else if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
+                        baseAmount = new BigDecimal(qrData.getTransactionAmount());
                     }
                     if (qrData.getValueOfConvenienceFeePercentage() != null && !qrData.getValueOfConvenienceFeePercentage().isEmpty()) {
                         BigDecimal percentage = new BigDecimal(qrData.getValueOfConvenienceFeePercentage());
@@ -251,11 +255,11 @@ public class PaymentService {
     private BigDecimal calculateTotalAmount(QRCodeData qrData, PaymentRequest userInput, BigDecimal effectiveTipAmount) {
         BigDecimal baseAmount = BigDecimal.ZERO;
 
-        // Get base amount from QR or user input
-        if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
-            baseAmount = new BigDecimal(qrData.getTransactionAmount());
-        } else if (userInput.getAmount() != null) {
+        // Get base amount from user input or QR data
+        if (userInput.getAmount() != null) {
             baseAmount = userInput.getAmount();
+        } else if (qrData.getTransactionAmount() != null && !qrData.getTransactionAmount().isEmpty()) {
+            baseAmount = new BigDecimal(qrData.getTransactionAmount());
         }
 
         return baseAmount.add(effectiveTipAmount);
@@ -275,7 +279,7 @@ public class PaymentService {
     private Pacs008Message buildPacs008Message(QRCodeData qrData, PaymentRequest userInput,
                                                String transactionId, String endToEndId,
                                                String txId, String uetr,
-                                               BigDecimal baseAmountArg, BigDecimal effectiveTipAmount, String currency, String activeBic) {
+                                               BigDecimal totalAmountArg, BigDecimal effectiveTipAmount, String currency, String activeBic) {
         transactionLogger.log(transactionId, "--- 2. Building pacs.008 Message from QR Data ---");
 
         DateTimeFormatter offsetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXX");
@@ -431,8 +435,8 @@ public class PaymentService {
         String bizMsgId = activeBic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
         String msgId = activeBic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
 
-        // Total amount for message
-        BigDecimal totalAmount = baseAmountArg.add(effectiveTipAmount);
+        // Use the passed totalAmountArg
+        BigDecimal totalAmount = totalAmountArg;
 
         return new Pacs008Message()
                 .withBizMsgId(bizMsgId)
@@ -476,7 +480,7 @@ public class PaymentService {
                 .withCreditorAddressLine(creditorAddressLine)
                 .withCreditorOrgId(merchantCategoryCode)
                 .withCreditorCountryOfRes(countryCode)
-                .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "QRCP")  // Uses "QRCP" as fallback
+                .withCreditorContactChannel(merchantChannel != null ? merchantChannel : "400")  // Uses "QRCP" as fallback
                 .withCreditorMobile(merchantMobile)
                 .withCreditorAcctId(creditorAcctId)
                 .withCreditorClearingType(clearingType)
@@ -1272,7 +1276,7 @@ public class PaymentService {
                 xml.append("                        <document:Dept>").append(escapeXml(storeLabel)).append("</document:Dept>\n");
             }
             xml.append("                        <document:Othr>\n");
-            xml.append("                            <document:ChanlTp>").append(escapeXml(merchantChannel != null ? merchantChannel : "QRCP")).append("</document:ChanlTp>\n");
+            xml.append("                            <document:ChanlTp>").append(escapeXml(merchantChannel != null ? merchantChannel : "400")).append("</document:ChanlTp>\n");
             // Terminal ID goes here
             if (terminalId != null && !terminalId.isEmpty()) {
                 xml.append("                            <document:Id>").append(escapeXml(terminalId)).append("</document:Id>\n");
@@ -1293,7 +1297,7 @@ public class PaymentService {
             xml.append("                    </document:Id>\n");
             xml.append("                </document:CdtrAcct>\n");
 
-//            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
+            // UltmtCdtr - FOR QR TAG 02 (Mobile Number for Top Up only)
 //            if (mobileNumber != null && !mobileNumber.isEmpty()) {
 //                xml.append("                <document:UltmtCdtr>\n");
 //                xml.append("                    <document:Id>\n");

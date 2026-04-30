@@ -21,6 +21,11 @@ public class WebController {
         return "certification";
     }
 
+    @GetMapping("/validator")
+    public String validator() {
+        return "validator";
+    }
+
     @GetMapping("/mobile-simulator")
     public String mobileSimulator() {
         return "mobile-simulator";
