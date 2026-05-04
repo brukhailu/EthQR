@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -40,6 +41,9 @@ public class QRService {
 
     @Autowired
     private TransactionLogger transactionLogger;
+
+    @Autowired
+    private ValidationService validationService; // Injected ValidationService
 
     @Value("${payment.token.url}")
     private String tokenUrl;
@@ -71,114 +75,151 @@ public class QRService {
     }
 
     public String generateTLV(QRCodeData data) {
+        return generateTLV(data, false); // Default to not a negative scenario
+    }
+
+    public String generateTLV(QRCodeData data, boolean isCertificationNegativeScenario) {
         Map<String, String> tlvMap = new java.util.TreeMap<>();
-        
+        Map<String, Object> qrDataForValidation = new HashMap<>(); // To hold data for ValidationService
+
         // Tag 00: Payload Format Indicator
         TLVTag tag00Config = tlvTags.get("00");
         String payloadFormatIndicatorValue = data.getPayloadFormatIndicator() != null ? data.getPayloadFormatIndicator() : "01";
-        addTLV(tlvMap, "00", processAndValidate(payloadFormatIndicatorValue, tag00Config));
+        addTLV(tlvMap, "00", processAndValidate(payloadFormatIndicatorValue, tag00Config, isCertificationNegativeScenario));
+        qrDataForValidation.put("00", payloadFormatIndicatorValue);
 
         // Tag 01: Point of Initiation Method
         TLVTag tag01Config = tlvTags.get("01");
-        addIfPresent(tlvMap, "01", processAndValidate(data.getPointOfInitiationMethod(), tag01Config));
+        addIfPresent(tlvMap, "01", processAndValidate(data.getPointOfInitiationMethod(), tag01Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getPointOfInitiationMethod() != null) qrDataForValidation.put("01", data.getPointOfInitiationMethod());
 
         // Tags 02-51: Merchant Account Information
         if (data.getMerchantAccountInformation() != null) {
+            Map<String, String> merchantAccountInfoMap = new HashMap<>();
             data.getMerchantAccountInformation().forEach((tag, value) -> {
                 TLVTag tlvTag = tlvTags.get(tag);
                 if (tlvTag != null) {
-                    addTLV(tlvMap, tag, processAndValidate(value, tlvTag));
+                    String processedValue = processAndValidate(value, tlvTag, isCertificationNegativeScenario);
+                    addTLV(tlvMap, tag, processedValue);
+                    // For sub-TLVs like tag "28", store as nested map for validation service
+                    if (tlvTag.isSubTLV() && processedValue != null) {
+                        merchantAccountInfoMap.put(tag, processedValue); // Store processed string for sub-TLV
+                        qrDataForValidation.put(tag, parseSubTLV(processedValue)); // Parse for validation service
+                    } else if (processedValue != null) {
+                        qrDataForValidation.put(tag, processedValue);
+                    }
                 }
             });
         }
         
-        // Tag 28 Mandatory Check
+        // Tag 28 Mandatory Check (This check is now redundant with validateMandatoryQrFields but kept for consistency)
         TLVTag tag28Config = tlvTags.get("28");
-        if(tag28Config != null && tag28Config.isMandatory()) {
+        if(tag28Config != null && tag28Config.isMandatory() && !isCertificationNegativeScenario) {
              if(data.getMerchantAccountInformation() == null || !data.getMerchantAccountInformation().containsKey("28")) {
+                 // This will be caught by validateMandatoryQrFields, but keeping for immediate feedback
                  throw new IllegalArgumentException("Mandatory Tag 28 (EthSwitch) is missing.");
              }
         }
 
         // Tag 52: Merchant Category Code
         TLVTag tag52Config = tlvTags.get("52");
-        addIfPresent(tlvMap, "52", processAndValidate(data.getMerchantCategoryCode(), tag52Config));
+        addIfPresent(tlvMap, "52", processAndValidate(data.getMerchantCategoryCode(), tag52Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getMerchantCategoryCode() != null) qrDataForValidation.put("52", data.getMerchantCategoryCode());
 
         // Tag 53: Transaction Currency
         TLVTag tag53Config = tlvTags.get("53");
         String transactionCurrencyValue = data.getTransactionCurrency() != null ? data.getTransactionCurrency() : "230";
-        addTLV(tlvMap, "53", processAndValidate(transactionCurrencyValue, tag53Config));
+        addTLV(tlvMap, "53", processAndValidate(transactionCurrencyValue, tag53Config, isCertificationNegativeScenario));
+        qrDataForValidation.put("53", transactionCurrencyValue);
 
         // Tag 54: Transaction Amount
         TLVTag tag54Config = tlvTags.get("54");
-        addIfPresent(tlvMap, "54", processAndValidate(data.getTransactionAmount(), tag54Config));
+        addIfPresent(tlvMap, "54", processAndValidate(data.getTransactionAmount(), tag54Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getTransactionAmount() != null) qrDataForValidation.put("54", data.getTransactionAmount());
 
         // Tag 55: Tip or Convenience Indicator
         TLVTag tag55Config = tlvTags.get("55");
-        addIfPresent(tlvMap, "55", processAndValidate(data.getTipOrConvenienceIndicator(), tag55Config));
+        addIfPresent(tlvMap, "55", processAndValidate(data.getTipOrConvenienceIndicator(), tag55Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getTipOrConvenienceIndicator() != null) qrDataForValidation.put("55", data.getTipOrConvenienceIndicator());
 
         // Tag 56: Value of Convenience Fee Fixed
         TLVTag tag56Config = tlvTags.get("56");
-        addIfPresent(tlvMap, "56", processAndValidate(data.getValueOfConvenienceFeeFixed(), tag56Config));
+        addIfPresent(tlvMap, "56", processAndValidate(data.getValueOfConvenienceFeeFixed(), tag56Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getValueOfConvenienceFeeFixed() != null) qrDataForValidation.put("56", data.getValueOfConvenienceFeeFixed());
 
         // Tag 57: Value of Convenience Fee Percentage
         TLVTag tag57Config = tlvTags.get("57");
-        addIfPresent(tlvMap, "57", processAndValidate(data.getValueOfConvenienceFeePercentage(), tag57Config));
+        addIfPresent(tlvMap, "57", processAndValidate(data.getValueOfConvenienceFeePercentage(), tag57Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getValueOfConvenienceFeePercentage() != null) qrDataForValidation.put("57", data.getValueOfConvenienceFeePercentage());
 
         // Tag 58: Country Code
         TLVTag tag58Config = tlvTags.get("58");
         String countryCodeValue = data.getCountryCode() != null ? data.getCountryCode() : "ET";
-        addTLV(tlvMap, "58", processAndValidate(countryCodeValue, tag58Config));
+        addTLV(tlvMap, "58", processAndValidate(countryCodeValue, tag58Config, isCertificationNegativeScenario));
+        qrDataForValidation.put("58", countryCodeValue);
 
         // Tag 59: Merchant Name
         TLVTag tag59Config = tlvTags.get("59");
-        addIfPresent(tlvMap, "59", processAndValidate(data.getMerchantName(), tag59Config));
+        addIfPresent(tlvMap, "59", processAndValidate(data.getMerchantName(), tag59Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getMerchantName() != null) qrDataForValidation.put("59", data.getMerchantName());
 
         // Tag 60: Merchant City
         TLVTag tag60Config = tlvTags.get("60");
-        addIfPresent(tlvMap, "60", processAndValidate(data.getMerchantCity(), tag60Config));
+        addIfPresent(tlvMap, "60", processAndValidate(data.getMerchantCity(), tag60Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getMerchantCity() != null) qrDataForValidation.put("60", data.getMerchantCity());
 
         // Tag 61: Postal Code
         TLVTag tag61Config = tlvTags.get("61");
-        addIfPresent(tlvMap, "61", processAndValidate(data.getPostalCode(), tag61Config));
+        addIfPresent(tlvMap, "61", processAndValidate(data.getPostalCode(), tag61Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getPostalCode() != null) qrDataForValidation.put("61", data.getPostalCode());
 
         // Tag 62: Additional Data Field Template
         if (data.getAdditionalDataField() != null && !data.getAdditionalDataField().isEmpty()) {
             TLVTag tag62Config = tlvTags.get("62");
-            validateSubTags(data.getAdditionalDataField(), tag62Config);
-            addTLV(tlvMap, "62", buildSubTLV(data.getAdditionalDataField()));
+            validateSubTags(data.getAdditionalDataField(), tag62Config, isCertificationNegativeScenario);
+            String subTlv62 = buildSubTLV(data.getAdditionalDataField());
+            addTLV(tlvMap, "62", subTlv62);
+            qrDataForValidation.put("62", data.getAdditionalDataField()); // Store as map for validation service
         }
 
         // Tag 64: Merchant Information - Language Template
         if (data.getMerchantInformationLanguageTemplate() != null && !data.getMerchantInformationLanguageTemplate().isEmpty()) {
             TLVTag tag64Config = tlvTags.get("64");
-            validateSubTags(data.getMerchantInformationLanguageTemplate(), tag64Config);
-            addTLV(tlvMap, "64", buildSubTLV(data.getMerchantInformationLanguageTemplate()));
+            validateSubTags(data.getMerchantInformationLanguageTemplate(), tag64Config, isCertificationNegativeScenario);
+            String subTlv64 = buildSubTLV(data.getMerchantInformationLanguageTemplate());
+            addTLV(tlvMap, "64", subTlv64);
+            qrDataForValidation.put("64", data.getMerchantInformationLanguageTemplate()); // Store as map for validation service
         }
 
         // Tag 80: Context of Transaction
         TLVTag tag80Config = tlvTags.get("80");
-        addIfPresent(tlvMap, "80", processAndValidate(data.getContextOfTransaction(), tag80Config));
+        addIfPresent(tlvMap, "80", processAndValidate(data.getContextOfTransaction(), tag80Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getContextOfTransaction() != null) qrDataForValidation.put("80", data.getContextOfTransaction());
 
         // Tag 81: Discounts & Loyalty Programs
         TLVTag tag81Config = tlvTags.get("81");
-        addIfPresent(tlvMap, "81", processAndValidate(data.getDiscountsAndLoyalty(), tag81Config));
+        addIfPresent(tlvMap, "81", processAndValidate(data.getDiscountsAndLoyalty(), tag81Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getDiscountsAndLoyalty() != null) qrDataForValidation.put("81", data.getDiscountsAndLoyalty());
 
         // Tag 82: Offline to Online
         TLVTag tag82Config = tlvTags.get("82");
-        addIfPresent(tlvMap, "82", processAndValidate(data.getOfflineToOnline(), tag82Config));
+        addIfPresent(tlvMap, "82", processAndValidate(data.getOfflineToOnline(), tag82Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getOfflineToOnline() != null) qrDataForValidation.put("82", data.getOfflineToOnline());
 
         // Tag 83: E-Commerce
         TLVTag tag83Config = tlvTags.get("83");
-        addIfPresent(tlvMap, "83", processAndValidate(data.getEcommerce(), tag83Config));
+        addIfPresent(tlvMap, "83", processAndValidate(data.getEcommerce(), tag83Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getEcommerce() != null) qrDataForValidation.put("83", data.getEcommerce());
 
         // Tag 84: UETR
         TLVTag tag84Config = tlvTags.get("84");
-        addIfPresent(tlvMap, "84", processAndValidate(data.getUetr(), tag84Config));
+        addIfPresent(tlvMap, "84", processAndValidate(data.getUetr(), tag84Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getUetr() != null) qrDataForValidation.put("84", data.getUetr());
 
         // Tag 85: Transaction Type Code
         TLVTag tag85Config = tlvTags.get("85");
-        addIfPresent(tlvMap, "85", processAndValidate(data.getTransactionTypeCode(), tag85Config));
+        addIfPresent(tlvMap, "85", processAndValidate(data.getTransactionTypeCode(), tag85Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+        if (data.getTransactionTypeCode() != null) qrDataForValidation.put("85", data.getTransactionTypeCode());
 
         // Unreserved Templates (Any other tag in range 80-99 handled generically if not specific)
         if (data.getUnreservedTemplates() != null) {
@@ -186,10 +227,23 @@ public class QRService {
                 // Skip if we already handled it explicitly above (e.g. 80-85)
                 if(!tlvMap.containsKey(tag) && tlvTags.containsKey(tag)) {
                     TLVTag config = tlvTags.get(tag);
-                    validateSubTags(subTags, config);
-                    addTLV(tlvMap, tag, buildSubTLV(subTags));
+                    validateSubTags(subTags, config, isCertificationNegativeScenario);
+                    String subTlv = buildSubTLV(subTags);
+                    addTLV(tlvMap, tag, subTlv);
+                    qrDataForValidation.put(tag, subTags); // Store as map for validation service
                 }
             });
+        }
+
+        // Exclude CRC (Tag 63) from mandatory field validation as it's auto-calculated
+        qrDataForValidation.remove("63");
+
+        // Perform strict mandatory field validation using ValidationService
+        List<ValidationResult> validationResults = validationService.validateMandatoryQrFields(qrDataForValidation);
+        for (ValidationResult result : validationResults) {
+            if ("M".equals(result.getType()) && "MISSING".equals(result.getStatus())) {
+                throw new IllegalArgumentException("Mandatory field missing: " + result.getRemarks());
+            }
         }
 
         StringBuilder tlvString = new StringBuilder();
@@ -200,18 +254,23 @@ public class QRService {
         }
 
         String contentWithCRC = tlvString.toString() + "6304";
-        String crc = calculateCRC(contentWithCRC);
-        return contentWithCRC + crc;
+        String finalCrc;
+        if (data.getCrc() != null && !data.getCrc().isEmpty()) {
+            finalCrc = data.getCrc(); // Use manually provided CRC
+        } else {
+            finalCrc = calculateCRC(contentWithCRC); // Auto-calculate CRC
+        }
+        
+        return contentWithCRC + finalCrc;
     }
 
-    private String processAndValidate(String value, TLVTag config) {
+    private String processAndValidate(String value, TLVTag config, boolean isCertificationNegativeScenario) {
         if (config == null) return value;
 
-        if ((value == null || value.isEmpty())) {
-            if (config.isMandatory()) {
-                throw new IllegalArgumentException(String.format("Mandatory field '%s' (Tag %s) is missing.", config.getName(), config.getTag()));
-            }
-            return null;
+        // The strict mandatory check is now handled by ValidationService.validateMandatoryQrFields
+        // This part remains for other validation rules (length, pattern, etc.)
+        if (value == null || value.isEmpty()) {
+            return null; // Let ValidationService handle mandatory missing
         }
         
         if (!config.isSubTLV()) {
@@ -219,21 +278,15 @@ public class QRService {
         }
 
         if (config.isSubTLV() && config.getDelimiter() != null) {
-            // Correctly split using quoted delimiter to handle special characters like pipe
             String[] parts = value.split(Pattern.quote(config.getDelimiter()), -1);
             Map<String, String> subTags = new java.util.TreeMap<>();
             
             if (config.getSubTags() != null) {
                 for (int i = 0; i < config.getSubTags().size(); i++) {
                     TLVTag subConfig = config.getSubTags().get(i);
-                    // Use empty string if part is missing
                     String subValue = (i < parts.length) ? parts[i] : "";
                     
-                    if(subValue.isEmpty()) {
-                         if(subConfig.isMandatory()) {
-                             throw new IllegalArgumentException(String.format("Mandatory sub-tag '%s' (Tag %s) in '%s' is missing or empty.", subConfig.getName(), subConfig.getTag(), config.getName()));
-                         }
-                    } else {
+                    if(!subValue.isEmpty()) {
                         validateField(subValue, subConfig);
                         subTags.put(subConfig.getTag(), subValue);
                     }
@@ -245,16 +298,12 @@ public class QRService {
         return value;
     }
 
-    private void validateSubTags(Map<String, String> data, TLVTag parentConfig) {
+    private void validateSubTags(Map<String, String> data, TLVTag parentConfig, boolean isCertificationNegativeScenario) {
         if (parentConfig == null || parentConfig.getSubTags() == null) return;
 
         for (TLVTag subConfig : parentConfig.getSubTags()) {
             String val = data.get(subConfig.getTag());
-            if ((val == null || val.isEmpty())) {
-                if (subConfig.isMandatory()) {
-                    throw new IllegalArgumentException(String.format("Mandatory sub-tag '%s' (Tag %s) in '%s' is missing.", subConfig.getName(), subConfig.getTag(), parentConfig.getName()));
-                }
-            } else {
+            if (val != null && !val.isEmpty()) {
                 validateField(val, subConfig);
             }
         }
@@ -289,15 +338,11 @@ public class QRService {
         }
     }
 
-    private void addIfPresent(Map<String, String> map, String tag, String value) {
+    private void addIfPresent(Map<String, String> map, String tag, String value, boolean isCertificationNegativeScenario) {
         if (value != null && !value.isEmpty()) {
             addTLV(map, tag, value);
-        } else {
-            TLVTag config = tlvTags.get(tag);
-            if(config != null && config.isMandatory()) {
-                 throw new IllegalArgumentException(String.format("Mandatory field '%s' (Tag %s) is missing.", config.getName(), tag));
-            }
         }
+        // Mandatory check is now handled by ValidationService.validateMandatoryQrFields
     }
 
     private String buildSubTLV(Map<String, String> subTags) {

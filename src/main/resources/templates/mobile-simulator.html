@@ -850,8 +850,8 @@
             // User input fields
             amount: userInputs.amount,
             tipAmount: userInputs.tipAmount,
-            customerName: userInputs.customerName,
-            customerAccountId: userInputs.customerAccountId,
+            customerName: "Bruk Hailu",
+            customerAccountId: "2305130000483",
             customerMobile: userInputs.customerMobile,
             customerEmail: userInputs.customerEmail,
             consumerAddress: userInputs.consumerAddress,
@@ -968,6 +968,7 @@
         // Build backend payload
         const backendPayload = mapDataToBackendModel(currentQRData, userInputs);
         backendPayload.env = currentEnv; // Add the selected environment to the payload
+        backendPayload.rawTlvString = currentRawTlv; // Add the raw TLV string
 
         const transactionId = generateUUID();
 

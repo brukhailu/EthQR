@@ -232,7 +232,7 @@
         for (const scenario of selected) {
             try {
                 const payload = preparePayload(scenario.data);
-                const resp = await fetch('/api/qr/generate', {
+                const resp = await fetch(`/api/qr/generate?scenarioId=${scenario.id}`, { // Pass scenario.id as query parameter
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -253,9 +253,30 @@
                             </div>
                         </div>
                     `);
+                } else {
+                    const errorData = await resp.json();
+                    console.error(`Failed to generate QR for scenario ID ${scenario.id}:`, errorData.error);
+                    printWindow.document.write(`
+                        <div class="col-6">
+                            <div class="qr-item bg-white shadow-sm">
+                                <h6 class="mb-1">${scenario.name}</h6>
+                                <small class="text-muted d-block mb-2">ID: ${scenario.id}</small>
+                                <div class="alert alert-danger mt-2 mb-0">Error: ${errorData.error}</div>
+                            </div>
+                        </div>
+                    `);
                 }
             } catch (e) {
                 console.error("Failed to generate QR for", scenario.id, e);
+                printWindow.document.write(`
+                    <div class="col-6">
+                        <div class="qr-item bg-white shadow-sm">
+                            <h6 class="mb-1">${scenario.name}</h6>
+                            <small class="text-muted d-block mb-2">ID: ${scenario.id}</small>
+                            <div class="alert alert-danger mt-2 mb-0">Client-side Error: ${e.message}</div>
+                        </div>
+                    </div>
+                `);
             }
         }
 
@@ -485,7 +506,7 @@
             document.getElementById('progressText').textContent = `Testing ID ${scenario.id}...`;
             try {
                 const payload = preparePayload(scenario.data);
-                const resp = await fetch('/api/qr/generate-string', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                const resp = await fetch(`/api/qr/generate-string?scenarioId=${scenario.id}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 if (!resp.ok) throw new Error("Generation Failed");
                 const tlv = await resp.text();
                 if(!validateCRC(tlv)) throw new Error("Generated CRC Invalid");

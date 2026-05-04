@@ -48,9 +48,10 @@ public class QRController {
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<?> generateQRCode(@RequestBody QRCodeData data) {
+    public ResponseEntity<?> generateQRCode(@RequestBody QRCodeData data, @RequestParam(required = false) Integer scenarioId) {
         try {
-            String tlvString = qrService.generateTLV(data);
+            boolean isNegativeScenario = (scenarioId != null && scenarioId > 200);
+            String tlvString = qrService.generateTLV(data, isNegativeScenario);
             byte[] qrCodeImage = qrService.generateQRCodeImage(tlvString, 200, 200);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrCodeImage);
         } catch (Exception e) {
@@ -61,9 +62,10 @@ public class QRController {
     }
 
     @PostMapping("/generate-string")
-    public ResponseEntity<?> generateQRCodeString(@RequestBody QRCodeData data) {
+    public ResponseEntity<?> generateQRCodeString(@RequestBody QRCodeData data, @RequestParam(required = false) Integer scenarioId) {
         try {
-            String tlvString = qrService.generateTLV(data);
+            boolean isNegativeScenario = (scenarioId != null && scenarioId > 200);
+            String tlvString = qrService.generateTLV(data, isNegativeScenario);
             return ResponseEntity.ok(tlvString);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

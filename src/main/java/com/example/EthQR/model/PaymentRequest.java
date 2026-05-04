@@ -32,6 +32,9 @@ public class PaymentRequest {
     private String purposeCode;       // Override Purp/Prtry (ONLPUR, SALA, etc.)
     private String remittanceInfo;    // Additional remittance information (Ustrd)
 
+    // ===== RAW QR DATA =====
+    private String rawTlvString; // Raw TLV string from the scanned QR code
+
     // ===== CUSTOMER PROFILE FIELDS (can be overridden by user) =====
     private String debtorName;        // Payer's name (overrides default)
     private String debtorAccountId;   // Payer's account number (overrides default)
@@ -93,6 +96,10 @@ public class PaymentRequest {
 
     public String getRemittanceInfo() { return remittanceInfo; }
     public void setRemittanceInfo(String remittanceInfo) { this.remittanceInfo = remittanceInfo; }
+
+    // Raw TLV String
+    public String getRawTlvString() { return rawTlvString; }
+    public void setRawTlvString(String rawTlvString) { this.rawTlvString = rawTlvString; }
 
     // Debtor Profile Fields (for overriding defaults)
     public String getDebtorName() { return debtorName; }
@@ -234,6 +241,12 @@ public class PaymentRequest {
             return this;
         }
 
+        // Raw TLV String
+        public Builder rawTlvString(String rawTlvString) {
+            request.rawTlvString = rawTlvString;
+            return this;
+        }
+
         // Debtor Profile Fields
         public Builder debtorName(String name) {
             request.debtorName = name;
@@ -282,6 +295,7 @@ public class PaymentRequest {
                 ", categoryPurpose='" + categoryPurpose + '\'' +
                 ", purposeCode='" + purposeCode + '\'' +
                 ", remittanceInfo='" + remittanceInfo + '\'' +
+                ", rawTlvString='" + rawTlvString + '\'' +
                 '}';
     }
 }
