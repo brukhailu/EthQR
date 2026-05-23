@@ -41,7 +41,7 @@ public class ValidationService {
         }
     }
 
-    public List<ValidationResult> validate(String xml, Map<String, Object> qrData, Map<String, String> userInputs, String scenarioId) {
+    public List<ValidationResult> validate(String xml, Map<String, Object> qrData, Map<String, String> userInputs, String scenarioId, boolean skipMandatoryQrValidation) {
         List<ValidationResult> results = new ArrayList<>();
         try {
             Map<String, Object> selectedScenario = null;
@@ -62,40 +62,43 @@ public class ValidationService {
             XPath xPath = XPathFactory.newInstance().newXPath();
             xPath.setNamespaceContext(new NamespaceContextImpl());
 
-            // 1. Static Header Rules (Always Mandatory)
+            // Determine validation type based on skipMandatoryQrValidation
+            String mandatoryType = skipMandatoryQrValidation ? "O" : "M";
+
+            // 1. Static Header Rules (Always Mandatory) - These should remain 'M' as they are fundamental to PAC.008
             results.add(validateNode(doc, xPath, "hdr_msg_def", "Msg Definition ID", "//header:MsgDefIdr", "M", "pacs.008.001.10", "Should be pacs.008.001.10"));
             results.add(validateNode(doc, xPath, "hdr_to_id", "Receiver ID (To)", "//header:To//header:FIId//header:Id", "M", "FP", "Receiver identifier (Fast Payment Switch)"));
             results.add(validateNode(doc, xPath, "grp_sttlm_mtd", "Settlement Method", "//document:GrpHdr/document:SttlmInf/document:SttlmMtd", "M", "CLRG", "Must be CLRG"));
             results.add(validateNode(doc, xPath, "grp_lcl_instrm", "Local Instrument", "//document:GrpHdr/document:PmtTpInf/document:LclInstrm/document:Prtry", "M", "CRTRM", "Credit Transfer Regular Mod"));
 
-            // 2. Scenario-Specific Rules
+            // 2. Scenario-Specific Rules (QR-dependent, so respect skipMandatoryQrValidation)
             String expectedPurpose = "C2BSQR"; // Default
             if (selectedScenario != null) {
                 // If the scenario has specific business logic, we can override here
                 // For now, let's keep it simple and focus on the data match
             }
-            results.add(validateNode(doc, xPath, "grp_ctgy_purp", "Category Purpose", "//document:GrpHdr/document:PmtTpInf/document:CtgyPurp/document:Prtry", "M", expectedPurpose, "Category Purpose"));
+            results.add(validateNode(doc, xPath, "grp_ctgy_purp", "Category Purpose", "//document:GrpHdr/document:PmtTpInf/document:CtgyPurp/document:Prtry", mandatoryType, expectedPurpose, "Category Purpose"));
 
             // 3. Amount and Currency (QR Dependent)
             if (qrData != null) {
                 String cc = (String) qrData.get("53");
                 String expectedCcy = "230".equals(cc) ? "ETB" : cc;
-                results.add(validateNode(doc, xPath, "tx_ccy", "Currency", "//document:CdtTrfTxInf/document:IntrBkSttlmAmt/@Ccy", "M", expectedCcy, "Currency code"));
+                results.add(validateNode(doc, xPath, "tx_ccy", "Currency", "//document:CdtTrfTxInf/document:IntrBkSttlmAmt/@Ccy", mandatoryType, expectedCcy, "Currency code"));
 
                 // Amount Logic (Complex calculation)
-                results.add(validateAmount(doc, xPath, qrData, userInputs, xml));
+                results.add(validateAmount(doc, xPath, qrData, userInputs, xml, skipMandatoryQrValidation));
             }
 
             // 4. Merchant Info (QR Dependent)
             if (qrData != null) {
-                results.add(validateNode(doc, xPath, "cdtr_nm", "Merchant Name", "//document:CdtTrfTxInf/document:Cdtr/document:Nm", "M", (String) qrData.get("59"), "Merchant Name (Tag 59)"));
-                results.add(validateNode(doc, xPath, "cdtr_mcc", "MCC", "//document:CdtTrfTxInf/document:Cdtr/document:Id//document:Id", "M", (String) qrData.get("52"), "MCC (Tag 52)"));
+                results.add(validateNode(doc, xPath, "cdtr_nm", "Merchant Name", "//document:CdtTrfTxInf/document:Cdtr/document:Nm", mandatoryType, (String) qrData.get("59"), "Merchant Name (Tag 59)"));
+                results.add(validateNode(doc, xPath, "cdtr_mcc", "MCC", "//document:CdtTrfTxInf/document:Cdtr/document:Id//document:Id", mandatoryType, (String) qrData.get("52"), "MCC (Tag 52)"));
                 
                 String city = (String) qrData.get("60");
-                results.add(validateNode(doc, xPath, "cdtr_city", "Merchant City", "//document:CdtTrfTxInf/document:Cdtr/document:PstlAdr/document:TwnNm", city != null ? "M" : "O", city, "Merchant City (Tag 60)"));
+                results.add(validateNode(doc, xPath, "cdtr_city", "Merchant City", "//document:CdtTrfTxInf/document:Cdtr/document:PstlAdr/document:TwnNm", city != null ? mandatoryType : "O", city, "Merchant City (Tag 60)"));
                 
                 String country = (String) qrData.get("58");
-                results.add(validateNode(doc, xPath, "cdtr_ctry", "Merchant Country", "//document:CdtTrfTxInf/document:Cdtr/document:PstlAdr/document:Ctry", country != null ? "M" : "O", country, "Merchant Country (Tag 58)"));
+                results.add(validateNode(doc, xPath, "cdtr_ctry", "Merchant Country", "//document:CdtTrfTxInf/document:Cdtr/document:PstlAdr/document:Ctry", country != null ? mandatoryType : "O", country, "Merchant Country (Tag 58)"));
             }
 
             // 5. Additional Data / Scenario Requirements
@@ -106,31 +109,31 @@ public class ValidationService {
                 String bill = subTags.get("01");
                 if (bill != null) {
                     String expectedBill = "***".equals(bill) ? userInputs.get("62_01") : bill;
-                    results.add(validateNode(doc, xPath, "rmt_bill", "Bill Number", "//document:CdtTrfTxInf/document:RmtInf/document:Strd/document:RfrdDocInf/document:Nb", "M", expectedBill, "Bill Number (Tag 62.01)"));
+                    results.add(validateNode(doc, xPath, "rmt_bill", "Bill Number", "//document:CdtTrfTxInf/document:RmtInf/document:Strd/document:RfrdDocInf/document:Nb", mandatoryType, expectedBill, "Bill Number (Tag 62.01)"));
                 }
 
                 // Terminal ID (Tag 62.07)
                 String terminal = subTags.get("07");
                 if (terminal != null) {
-                    results.add(validateNode(doc, xPath, "cdtr_term", "Terminal ID", "//document:CdtTrfTxInf/document:Cdtr/document:CtctDtls//document:Id", "M", terminal, "Terminal ID (Tag 62.07)"));
+                    results.add(validateNode(doc, xPath, "cdtr_term", "Terminal ID", "//document:CdtTrfTxInf/document:Cdtr/document:CtctDtls//document:Id", mandatoryType, terminal, "Terminal ID (Tag 62.07)"));
                 }
                 
                 // Loyalty Number (Tag 62.04)
                 String loyalty = subTags.get("04");
                 if (loyalty != null) {
                     String expectedLoyalty = "***".equals(loyalty) ? userInputs.get("62_04") : loyalty;
-                    results.add(validateNode(doc, xPath, "dbtr_loyalty", "Loyalty Number", "//document:CdtTrfTxInf/document:Dbtr/document:Id//document:Id", "M", expectedLoyalty, "Loyalty Number (Tag 62.04)"));
+                    results.add(validateNode(doc, xPath, "dbtr_loyalty", "Loyalty Number", "//document:CdtTrfTxInf/document:Dbtr/document:Id//document:Id", mandatoryType, expectedLoyalty, "Loyalty Number (Tag 62.04)"));
                 }
             }
 
-            // 6. Mandatory Payer Info (Always required for PAC.008)
+            // 6. Mandatory Payer Info (Always required for PAC.008) - These should remain 'M'
             results.add(validateNode(doc, xPath, "dbtr_nm", "Payer Name", "//document:CdtTrfTxInf/document:Dbtr/document:Nm", "M", userInputs.get("dbtr_nm"), "Payer Name (Prompted)"));
             results.add(validateNode(doc, xPath, "dbtr_acct_schme", "Payer Account Type", "//document:CdtTrfTxInf/document:DbtrAcct/document:Id//document:Prtry", "M", null, "Account Scheme (ACCT, EWLT, etc.)"));
 
             // 7. Validate mandatory QR fields from qr-tags.json
             if (qrData != null) {
-                results.addAll(validateMandatoryQrFields(qrData));
-                // Add specific CRC integrity validation
+                results.addAll(validateMandatoryQrFields(qrData, skipMandatoryQrValidation));
+                // Add specific CRC integrity validation (remains mandatory for presence, but scenario 208 bypasses value check)
                 results.add(validateCrcIntegrity(qrData, scenarioId));
             }
 
@@ -140,8 +143,16 @@ public class ValidationService {
         return results;
     }
 
-    public List<ValidationResult> validateMandatoryQrFields(Map<String, Object> qrData) { // Changed to public
+    public List<ValidationResult> validateMandatoryQrFields(Map<String, Object> qrData, boolean skipMandatoryValidation) {
         List<ValidationResult> qrValidationResults = new ArrayList<>();
+        // Debugging log
+        System.out.println("ValidationService.validateMandatoryQrFields - skipMandatoryValidation: " + skipMandatoryValidation);
+
+        if (skipMandatoryValidation) {
+            qrValidationResults.add(new ValidationResult("qr_mandatory_validation", "Mandatory QR Fields Validation", "O", "SKIPPED", "Validation skipped", "N/A", "Mandatory QR field validation was intentionally skipped."));
+            return qrValidationResults;
+        }
+
         for (Map<String, Object> tagDefinition : qrTags) {
             Boolean mandatory = (Boolean) tagDefinition.get("mandatory");
             String tag = (String) tagDefinition.get("tag");
@@ -243,7 +254,8 @@ public class ValidationService {
         }
     }
 
-    private ValidationResult validateAmount(Document doc, XPath xPath, Map<String, Object> qrData, Map<String, String> userInputs, String xml) {
+    private ValidationResult validateAmount(Document doc, XPath xPath, Map<String, Object> qrData, Map<String, String> userInputs, String xml, boolean skipMandatoryQrValidation) {
+        String mandatoryType = skipMandatoryQrValidation ? "O" : "M";
         String xpathExpr = "//document:CdtTrfTxInf/document:IntrBkSttlmAmt";
         try {
             String actualStr = (String) xPath.evaluate(xpathExpr, doc, XPathConstants.STRING);
@@ -286,10 +298,10 @@ public class ValidationService {
             }
 
             String status = (Math.abs(actual - expected) < 0.01) ? "OK" : "MISMATCH";
-            return new ValidationResult("tx_amt", "Settlement Amount", "M", status, String.format("%.2f", actual), String.format("%.2f", expected), remark);
+            return new ValidationResult("tx_amt", "Settlement Amount", mandatoryType, status, String.format("%.2f", actual), String.format("%.2f", expected), remark);
 
         } catch (Exception e) {
-            return new ValidationResult("tx_amt", "Settlement Amount", "M", "ERROR", null, null, "Calc Error: " + e.getMessage());
+            return new ValidationResult("tx_amt", "Settlement Amount", mandatoryType, "ERROR", null, null, "Calc Error: " + e.getMessage());
         }
     }
 

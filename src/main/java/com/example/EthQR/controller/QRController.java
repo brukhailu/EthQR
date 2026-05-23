@@ -48,10 +48,13 @@ public class QRController {
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<?> generateQRCode(@RequestBody QRCodeData data, @RequestParam(required = false) Integer scenarioId) {
+    public ResponseEntity<?> generateQRCode(
+            @RequestBody QRCodeData data,
+            @RequestParam(required = false) Integer scenarioId,
+            @RequestParam(required = false, defaultValue = "false") boolean skipMandatoryQrValidation) {
         try {
             boolean isNegativeScenario = (scenarioId != null && scenarioId > 200);
-            String tlvString = qrService.generateTLV(data, isNegativeScenario);
+            String tlvString = qrService.generateTLV(data, isNegativeScenario, skipMandatoryQrValidation);
             byte[] qrCodeImage = qrService.generateQRCodeImage(tlvString, 200, 200);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrCodeImage);
         } catch (Exception e) {
@@ -62,10 +65,13 @@ public class QRController {
     }
 
     @PostMapping("/generate-string")
-    public ResponseEntity<?> generateQRCodeString(@RequestBody QRCodeData data, @RequestParam(required = false) Integer scenarioId) {
+    public ResponseEntity<?> generateQRCodeString(
+            @RequestBody QRCodeData data,
+            @RequestParam(required = false) Integer scenarioId,
+            @RequestParam(required = false, defaultValue = "false") boolean skipMandatoryQrValidation) {
         try {
             boolean isNegativeScenario = (scenarioId != null && scenarioId > 200);
-            String tlvString = qrService.generateTLV(data, isNegativeScenario);
+            String tlvString = qrService.generateTLV(data, isNegativeScenario, skipMandatoryQrValidation);
             return ResponseEntity.ok(tlvString);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -102,7 +108,8 @@ public class QRController {
                 request.getXml(),
                 request.getQrData(),
                 request.getUserInputs(),
-                request.getScenario()
+                request.getScenario(),
+                request.isSkipMandatoryQrValidation()
         );
         return ResponseEntity.ok(results);
     }

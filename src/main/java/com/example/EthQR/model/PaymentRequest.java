@@ -1,6 +1,9 @@
 package com.example.EthQR.model;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class PaymentRequest {
 
@@ -156,6 +159,56 @@ public class PaymentRequest {
         if (tipAmount == null) return amount;
         return amount.add(tipAmount);
     }
+
+    /**
+     * Converts relevant fields of this PaymentRequest object into a Map<String, String>.
+     * This is useful for passing user inputs to services that expect a map.
+     * The keys in the map are designed to align with potential QR tag references or common input names.
+     * Note: Only non-null and non-empty string values are included. BigDecimal amounts are converted to String.
+     *
+     * @return A Map<String, String> representing the user inputs.
+     */
+    public Map<String, String> toMap() {
+        Map<String, String> map = new HashMap<>();
+
+        // Customer Information
+        Optional.ofNullable(customerName).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("customerName", s));
+        Optional.ofNullable(customerAccountId).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("customerAccountId", s));
+        Optional.ofNullable(customerMobile).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("customerMobile", s));
+        Optional.ofNullable(customerEmail).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("customerEmail", s));
+        Optional.ofNullable(customerAddress).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("customerAddress", s));
+
+        // Payment Information
+        Optional.ofNullable(amount).ifPresent(bd -> map.put("amount", bd.toPlainString()));
+        Optional.ofNullable(tipAmount).ifPresent(bd -> map.put("tipAmount", bd.toPlainString()));
+
+        // QR Prompted Values (aligned with common user input keys)
+        Optional.ofNullable(billNumber).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("62_01", s)); // Tag 62.01
+        Optional.ofNullable(mobileNumber).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("62_02", s)); // Tag 62.02
+
+        // Consumer Data (Tag 62/09)
+        Optional.ofNullable(consumerAddress).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("consumerAddress", s));
+        Optional.ofNullable(consumerEmail).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("consumerEmail", s));
+        Optional.ofNullable(consumerMobile).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("consumerMobile", s));
+
+        // Optional Overrides
+        Optional.ofNullable(categoryPurpose).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("categoryPurpose", s));
+        Optional.ofNullable(purposeCode).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("purposeCode", s));
+        Optional.ofNullable(remittanceInfo).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("remittanceInfo", s));
+
+        // Raw TLV String
+        Optional.ofNullable(rawTlvString).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("rawTlvString", s));
+
+        // Debtor Profile Fields
+        Optional.ofNullable(debtorName).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("dbtr_nm", s));
+        Optional.ofNullable(debtorAccountId).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("dbtr_acct_id", s));
+        Optional.ofNullable(debtorMobile).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("dbtr_mob", s));
+        Optional.ofNullable(debtorEmail).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("dbtr_email", s));
+        Optional.ofNullable(debtorAddress).filter(s -> !s.isEmpty()).ifPresent(s -> map.put("dbtr_addr", s));
+
+        return map;
+    }
+
 
     // ===== BUILDER PATTERN =====
     public static class Builder {

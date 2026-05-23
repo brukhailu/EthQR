@@ -40,7 +40,8 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa"
+      "merchantCity": "Addis Ababa",
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -62,8 +63,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "08": "GOVTP" },
-      "crc": "5376"
+      "additionalDataField": { "08": "GOVTP" }
     }
   },
   {
@@ -86,8 +86,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "08": "GROCS" },
-      "crc": "5376"
+      "additionalDataField": { "08": "GROCS" }
     }
   },
   {
@@ -111,8 +110,7 @@
       "transactionAmount": "100.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "08": "HLTHS" },
-      "crc": "5376"
+      "additionalDataField": { "08": "HLTHS" }
     }
   },
   {
@@ -136,8 +134,7 @@
       "transactionAmount": "100.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "08": "RIDES" },
-      "crc": "5376"
+      "additionalDataField": { "08": "RIDES" }
     }
   },
   {
@@ -158,8 +155,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "08": "HOSPT" },
-      "crc": "5376"
+      "additionalDataField": { "08": "HOSPT" }
     }
   },
   {
@@ -181,8 +177,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -205,8 +200,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -229,8 +223,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -251,8 +244,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "01": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -273,8 +265,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" }
     }
   },
   {
@@ -295,8 +286,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" }
     }
   },
   {
@@ -317,8 +307,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "04": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "04": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -339,8 +328,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" }
     }
   },
   {
@@ -361,8 +349,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -384,8 +371,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "AEM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AEM", "08": "ONLPUR" }
     }
   },
   {
@@ -407,8 +393,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "A", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "A", "08": "ONLPUR" }
     }
   },
   {
@@ -430,8 +415,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "E", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "E", "08": "ONLPUR" }
     }
   },
   {
@@ -453,8 +437,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "M", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "M", "08": "ONLPUR" }
     }
   },
   {
@@ -476,8 +459,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "AM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AM", "08": "ONLPUR" }
     }
   },
   {
@@ -499,8 +481,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "EM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "EM", "08": "ONLPUR" }
     }
   },
   {
@@ -522,8 +503,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "09": "AE", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AE", "08": "ONLPUR" }
     }
   },
   {
@@ -544,8 +524,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "AEM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AEM", "08": "ONLPUR" }
     }
   },
   {
@@ -566,8 +545,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "A", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "A", "08": "ONLPUR" }
     }
   },
   {
@@ -588,8 +566,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "E", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "E", "08": "ONLPUR" }
     }
   },
   {
@@ -610,8 +587,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "M", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "M", "08": "ONLPUR" }
     }
   },
   {
@@ -632,8 +608,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "AM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AM", "08": "ONLPUR" }
     }
   },
   {
@@ -654,8 +629,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "EM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "EM", "08": "ONLPUR" }
     }
   },
   {
@@ -676,8 +650,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "09": "AE", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AE", "08": "ONLPUR" }
     }
   },
   {
@@ -698,8 +671,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "10": "123456789", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "10": "123456789", "08": "ONLPUR" }
     }
   },
   {
@@ -720,8 +692,7 @@
       "countryCode": "ET",
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
-      "additionalDataField": { "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -743,8 +714,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "500.00",
-      "additionalDataField": { "01": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -766,8 +736,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" }
     }
   },
   {
@@ -789,8 +758,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" }
     }
   },
   {
@@ -812,8 +780,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "04": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "04": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -835,8 +802,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" }
     }
   },
   {
@@ -858,8 +824,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -881,8 +846,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "10": "123456789", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "10": "123456789", "08": "ONLPUR" }
     }
   },
   {
@@ -904,8 +868,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "transactionAmount": "100.00",
-      "additionalDataField": { "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -927,8 +890,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -950,8 +912,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-911223344", "08": "ONLPUR" }
     }
   },
   {
@@ -973,8 +934,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "03": "STORE01", "08": "ONLPUR" }
     }
   },
   {
@@ -996,8 +956,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "04": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "04": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -1019,8 +978,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "07": "TERM001", "08": "ONLPUR" }
     }
   },
   {
@@ -1042,8 +1000,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -1065,8 +1022,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "09": "AEM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AEM", "08": "ONLPUR" }
     }
   },
   {
@@ -1088,8 +1044,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "10": "123456789", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "10": "123456789", "08": "ONLPUR" }
     }
   },
   {
@@ -1111,8 +1066,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -1135,8 +1089,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "01": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -1159,8 +1112,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "02": "+251-922334455", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-922334455", "08": "ONLPUR" }
     }
   },
   {
@@ -1183,8 +1135,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "03": "STORE02", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "03": "STORE02", "08": "ONLPUR" }
     }
   },
   {
@@ -1207,8 +1158,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "04": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "04": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -1231,8 +1181,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "07": "TERM002", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "07": "TERM002", "08": "ONLPUR" }
     }
   },
   {
@@ -1255,8 +1204,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -1279,8 +1227,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "09": "AEM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AEM", "08": "ONLPUR" }
     }
   },
   {
@@ -1303,8 +1250,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "10": "123456789", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "10": "123456789", "08": "ONLPUR" }
     }
   },
   {
@@ -1327,8 +1273,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "10.00",
-      "additionalDataField": { "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -1351,8 +1296,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "01": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -1375,8 +1319,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "02": "+251-933445566", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-933445566", "08": "ONLPUR" }
     }
   },
   {
@@ -1399,8 +1342,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "03": "S-009", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "03": "S-009", "08": "ONLPUR" }
     }
   },
   {
@@ -1423,8 +1365,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "04": "***", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "04": "***", "08": "ONLPUR" }
     }
   },
   {
@@ -1447,8 +1388,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "07": "TERM003", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "07": "TERM003", "08": "ONLPUR" }
     }
   },
   {
@@ -1471,8 +1411,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "08": "ONLPUR" }
     }
   },
   {
@@ -1495,8 +1434,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "09": "AEM", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "09": "AEM", "08": "ONLPUR" }
     }
   },
   {
@@ -1519,8 +1457,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "10": "123456789", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "10": "123456789", "08": "ONLPUR" }
     }
   },
   {
@@ -1543,8 +1480,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "5.00",
-      "additionalDataField": { "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -1568,8 +1504,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -1593,8 +1528,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -1618,8 +1552,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "08": "ONLPUR", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -1643,8 +1576,7 @@
       "transactionAmount": "150.50",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "09": "AEM", "10": "123456789", "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-912345678", "03": "MAIN-STORE", "09": "AEM", "10": "123456789", "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -1666,8 +1598,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-005", "04": "***", "07": "TERM-005", "08": "ONLPUR", "09": "AEM" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-005", "04": "***", "07": "TERM-005", "08": "ONLPUR", "09": "AEM" }
     }
   },
   {
@@ -1689,8 +1620,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-006", "04": "***", "07": "TERM-006", "08": "ONLPUR", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-006", "04": "***", "07": "TERM-006", "08": "ONLPUR", "10": "123456789" }
     }
   },
   {
@@ -1712,8 +1642,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-933333333", "03": "STORE-007", "04": "***", "07": "TERM-007", "08": "ONLPUR", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-933333333", "03": "STORE-007", "04": "***", "07": "TERM-007", "08": "ONLPUR", "11": "400" }
     }
   },
   {
@@ -1735,8 +1664,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-944444444", "03": "STORE-008", "04": "***", "07": "TERM-008", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-944444444", "03": "STORE-008", "04": "***", "07": "TERM-008", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -1758,8 +1686,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-955555555", "03": "STORE-009", "04": "***", "07": "TERM-009", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-955555555", "03": "STORE-009", "04": "***", "07": "TERM-009", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -1781,8 +1708,7 @@
       "merchantName": "Test Merchant",
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-966666666", "03": "STORE-010", "04": "***", "07": "TERM-010", "10": "123456789", "11": "400"},
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-966666666", "03": "STORE-010", "04": "***", "07": "TERM-010", "10": "123456789", "11": "400"}
     }
   },
   {
@@ -1806,8 +1732,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "***", "07": "TERM-011", "09": "AEM", "10": "123456789", "11": "400", "08": "ONLPUR" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "***", "07": "TERM-011", "09": "AEM", "10": "123456789", "11": "400", "08": "ONLPUR" }
     }
   },
   {
@@ -1831,8 +1756,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -1856,8 +1780,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-977777777", "03": "STORE-011", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -1881,8 +1804,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "02": "+251-977777777", "04": "***", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-977777777", "04": "***", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -1906,8 +1828,7 @@
       "transactionAmount": "200.00",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "03": "STORE-011", "04": "***", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "03": "STORE-011", "04": "***", "07": "TERM-011", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -1930,8 +1851,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "***", "02": "+251-988888888", "03": "STORE-012", "04": "***", "07": "TERM-012", "08": "ONLPUR", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-988888888", "03": "STORE-012", "04": "***", "07": "TERM-012", "08": "ONLPUR", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -1954,8 +1874,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "***", "02": "+251-999999999", "03": "STORE-013", "04": "***", "07": "TERM-013", "08": "ONLPUR", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-999999999", "03": "STORE-013", "04": "***", "07": "TERM-013", "08": "ONLPUR", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -1978,8 +1897,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "***", "02": "+251-900000000", "03": "STORE-014", "04": "***", "07": "TERM-014", "08": "ONLPUR", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-900000000", "03": "STORE-014", "04": "***", "07": "TERM-014", "08": "ONLPUR", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2002,8 +1920,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-015", "04": "***", "07": "TERM-015", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-015", "04": "***", "07": "TERM-015", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2026,8 +1943,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "02",
       "valueOfConvenienceFeeFixed": "20.00",
-      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-016", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-016", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2050,8 +1966,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "***", "02": "+251-933333333", "03": "STORE-017", "04": "***", "07": "TERM-017", "08": "ONLPUR", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-933333333", "03": "STORE-017", "04": "***", "07": "TERM-017", "08": "ONLPUR", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -2074,8 +1989,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "***", "02": "+251-944444444", "03": "STORE-018", "04": "***", "07": "TERM-018", "08": "ONLPUR", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-944444444", "03": "STORE-018", "04": "***", "07": "TERM-018", "08": "ONLPUR", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -2098,8 +2012,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "***", "02": "+251-955555555", "03": "STORE-019", "04": "***", "07": "TERM-019", "08": "ONLPUR", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-955555555", "03": "STORE-019", "04": "***", "07": "TERM-019", "08": "ONLPUR", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2122,8 +2035,7 @@
       "merchantCity": "Addis Ababa",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "***", "02": "+251-966666666", "03": "STORE-020", "04": "***", "07": "TERM-020", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-966666666", "03": "STORE-020", "04": "***", "07": "TERM-020", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2146,8 +2058,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-977777777", "03": "STORE-021", "04": "***", "07": "TERM-021", "08": "ONLPUR", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-977777777", "03": "STORE-021", "04": "***", "07": "TERM-021", "08": "ONLPUR", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -2170,8 +2081,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-988888888", "03": "STORE-022", "04": "***", "07": "TERM-022", "08": "ONLPUR", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-988888888", "03": "STORE-022", "04": "***", "07": "TERM-022", "08": "ONLPUR", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -2194,8 +2104,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-999999999", "03": "STORE-023", "04": "***", "07": "TERM-023", "08": "ONLPUR", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-999999999", "03": "STORE-023", "04": "***", "07": "TERM-023", "08": "ONLPUR", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2218,8 +2127,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-900000000", "03": "STORE-024", "04": "***", "07": "TERM-024", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-900000000", "03": "STORE-024", "04": "***", "07": "TERM-024", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2242,8 +2150,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-025", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "STORE-025", "04": "***", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2266,8 +2173,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-026", "07": "TERM-026", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-026", "07": "TERM-026", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2290,8 +2196,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "02": "+251-933333333", "04": "***", "07": "TERM-027", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-933333333", "04": "***", "07": "TERM-027", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2314,8 +2219,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "01": "***", "03": "STORE-028", "04": "***", "07": "TERM-028", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "000" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "03": "STORE-028", "04": "***", "07": "TERM-028", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "000" }
     }
   },
   {
@@ -2338,8 +2242,7 @@
       "merchantCity": "Addis Ababa",
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "01",
-      "additionalDataField": { "02": "+251-944444444", "03": "STORE-029", "04": "***", "07": "TERM-029", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "02": "+251-944444444", "03": "STORE-029", "04": "***", "07": "TERM-029", "08": "ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2363,8 +2266,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "COMPLEX-TERM", "08": "Complex-ONLPUR", "09": "AEM", "10": "123456789" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "COMPLEX-TERM", "08": "Complex-ONLPUR", "09": "AEM", "10": "123456789" }
     }
   },
   {
@@ -2388,8 +2290,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "08": "Complex-ONLPUR", "09": "AEM", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "08": "Complex-ONLPUR", "09": "AEM", "11": "400" }
     }
   },
   {
@@ -2413,8 +2314,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "08": "Complex-ONLPUR", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "08": "Complex-ONLPUR", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2438,8 +2338,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "07": "TERM-COMPLEX", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2463,8 +2362,7 @@
       "transactionAmount": "250.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "15.00",
-      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "08": "Complex-ONLPUR", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-911111111", "03": "COMPLEX-STORE", "04": "***", "08": "Complex-ONLPUR", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2488,8 +2386,7 @@
       "transactionAmount": "300.00",
       "tipOrConvenienceIndicator": "03",
       "valueOfConvenienceFeePercentage": "10.00",
-      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-108", "07": "TERM-108", "08": "ONLPUR-108", "09": "AEM", "10": "123456789", "11": "400" },
-      "crc": "5376"
+      "additionalDataField": { "01": "***", "02": "+251-922222222", "03": "STORE-108", "07": "TERM-108", "08": "ONLPUR-108", "09": "AEM", "10": "123456789", "11": "400" }
     }
   },
   {
@@ -2508,8 +2405,7 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2528,8 +2424,7 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2542,8 +2437,7 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2562,8 +2456,7 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2582,8 +2475,7 @@
       "merchantCategoryCode": "5411",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2602,8 +2494,7 @@
       "merchantCategoryCode": "5411",
       "transactionCurrency": "230",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2622,8 +2513,7 @@
       "merchantCategoryCode": "5411",
       "transactionCurrency": "230",
       "countryCode": "ET",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   },
   {
@@ -2642,8 +2532,7 @@
       "merchantCategoryCode": "5411",
       "transactionCurrency": "230",
       "countryCode": "ET",
-      "merchantName": "Test Merchant",
-      "crc": "5376"
+      "merchantName": "Test Merchant"
     }
   },
   {
@@ -2683,8 +2572,7 @@
       "transactionCurrency": "230",
       "countryCode": "ET",
       "merchantName": "Test Merchant",
-      "merchantCity": "Addis Ababa",
-      "crc": "5376"
+      "merchantCity": "Addis Ababa"
     }
   }
 ]

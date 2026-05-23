@@ -16,6 +16,7 @@
     .nested-table td { border-bottom: none; padding: 0.25rem 0.5rem; }
     .badge-mandatory { background-color: #dc3545; font-size: 0.7em; }
     .badge-optional { background-color: #6c757d; font-size: 0.7em; }
+    .badge-conditional { background-color: #ffc107; font-size: 0.7em; padding: 4px 8px; color: #212529; } /* Added conditional badge style */
     #uploadedImagePreview { max-width: 200px; max-height: 200px; border-radius: 0.25rem; border: 1px solid #dee2e6; }
     .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; }
     .comparison-missing-row { background-color: #f8d7da; border-left: 4px solid #dc3545; }
@@ -146,13 +147,18 @@
                     <!-- Results Section -->
                     <div class="mt-4">
                         <h5 class="mb-3"><i class="fas fa-list-ul me-2"></i>Parsed Results</h5>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="skipMandatoryQrValidationToggle">
+                            <label class="form-check-label" for="skipMandatoryQrValidationToggle">Skip Mandatory QR Validation</label>
+                            <small class="form-text text-muted">Allow parsing of QR with missing mandatory fields without validation errors.</small>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-parsed" id="parsedTable">
                                 <thead class="table-light">
                                 <tr>
                                     <th style="width: 5%;">Tag</th>
                                     <th style="width: 25%;">Name</th>
-                                    <th style="width: 5%;">M/O</th>
+                                    <th style="width: 5%;">M/O/C</th> <!-- Updated header -->
                                     <th style="width: 5%;">Len</th>
                                     <th style="width: 30%;">Value</th>
                                     <th style="width: 15%;">Validation</th>
@@ -278,6 +284,8 @@
     }
 
     function validateTagValue(tag, value, config) {
+        const skipMandatory = document.getElementById('skipMandatoryQrValidationToggle').checked;
+
         if (tag === '63' && lastRawTlv) {
             const dataToHash = lastRawTlv.substring(0, lastRawTlv.length - 4);
             const calc = calculateCRC(dataToHash);
@@ -289,6 +297,12 @@
         }
 
         if (!config) return { valid: true, msg: "Unknown tag" };
+
+        // If skipping mandatory validation, and the tag is mandatory but missing, report as valid
+        if (skipMandatory && config.mandatory && (value === null || value === undefined || value === '')) {
+            return { valid: true, msg: "Mandatory (Skipped)" };
+        }
+
         if (config.dataType) {
             if (config.dataType === 'N' && !/^\d+$/.test(value)) return { valid: false, msg: "Must be Numeric" };
             if (config.dataType === 'A' && !/^[a-zA-Z\s]+$/.test(value)) return { valid: false, msg: "Must be Alphabetic" };
@@ -308,8 +322,11 @@
     async function parseQR() {
         const tlv = document.getElementById('tlvInput').value.trim();
         if(!tlv) return showToast('Please enter a TLV string', 'warning');
+
+        const skipMandatory = document.getElementById('skipMandatoryQrValidationToggle').checked;
+
         try {
-            const resp = await fetch('/api/qr/parse', {
+            const resp = await fetch(`/api/qr/parse?skipMandatoryQrValidation=${skipMandatory}`, {
                 method: 'POST', headers: {'Content-Type': 'text/plain'}, body: tlv
             });
             if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
@@ -324,8 +341,10 @@
     async function parseImageBlob(blob) {
         const formData = new FormData();
         formData.append('file', blob);
+        const skipMandatory = document.getElementById('skipMandatoryQrValidationToggle').checked;
+
         try {
-            const resp = await fetch('/api/qr/parse-image', { method: 'POST', body: formData });
+            const resp = await fetch(`/api/qr/parse-image?skipMandatoryQrValidation=${skipMandatory}`, { method: 'POST', body: formData });
             if(!resp.ok) throw new Error((await resp.json()).error || 'Parsing failed');
             const data = await resp.json();
             document.getElementById('tlvInput').value = data.raw;
@@ -522,7 +541,7 @@
         document.getElementById('comparisonSection').style.display = 'block';
 
         if (Object.keys(data).length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No data found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No data found.</td></tr>';
             return;
         }
         const sortedKeys = Object.keys(data).sort((a, b) => parseInt(a) - parseInt(b));
@@ -531,7 +550,15 @@
             const val = data[tag];
             const config = tagConfig[tag];
             const name = config ? config.name : 'Unknown';
-            const mo = (config && config.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+
+            let mo;
+            if (config && config.mandatory) {
+                mo = '<span class="badge badge-mandatory">M</span>';
+            } else if (config && config.conditionallyRequired) {
+                mo = '<span class="badge badge-conditional">C</span>';
+            } else {
+                mo = '<span class="badge badge-optional">O</span>';
+            }
 
             const createIsoPathIcon = (conf, t, st = null, v = "") => {
                 if (!conf || !conf.isoPath) return '';
@@ -567,7 +594,16 @@
                     const subVal = val[subTag];
                     const subConfig = config && config.subTags ? config.subTags.find(s => s.tag === subTag) : null;
                     const subName = subConfig ? subConfig.name : 'Unknown';
-                    const subMo = (subConfig && subConfig.mandatory) ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+
+                    let subMo;
+                    if (subConfig && subConfig.mandatory) {
+                        subMo = '<span class="badge badge-mandatory">M</span>';
+                    } else if (subConfig && subConfig.conditionallyRequired) {
+                        subMo = '<span class="badge badge-conditional">C</span>';
+                    } else {
+                        subMo = '<span class="badge badge-optional">O</span>';
+                    }
+
                     const validation = validateTagValue(subTag, subVal, subConfig);
                     const icon = validation.valid ? '<i class="fas fa-check-circle status-valid"></i>' : '<i class="fas fa-times-circle status-invalid"></i>';
 
@@ -622,8 +658,8 @@
                         if (!val.hasOwnProperty(expSubTag)) {
                              const subConfig = config && config.subTags ? config.subTags.find(s => s.tag === expSubTag) : null;
                              const expSubName = subConfig ? subConfig.name : 'Unknown';
-                             let displayExp = expSubVal;
-                             if(subConfig && subConfig.options) {
+                             let displayExp = (typeof expSubVal === 'object') ? 'Container' : expSubVal;
+                             if(subConfig && subConfig.options && typeof expSubVal !== 'object') {
                                  const opt = subConfig.options.find(o => o.value === expSubVal);
                                  if(opt) displayExp = opt.label;
                              }
@@ -634,7 +670,7 @@
                                 <td style="width: 220px;">${expSubName}</td>
                                 <td style="width: 40px;">-</td>
                                 <td>-</td>
-                                <td class="text-muted small">Missing (Exp: ${displayExp})</td>
+                                <td class="text-muted small">Missing from QR (Expected: ${displayExp})</td>
                                 <td></td>
                                 <td><span class="badge bg-danger">Missing</span></td>
                              `;
@@ -667,7 +703,7 @@
                                 const opt = config.options.find(o => o.value === val);
                                 if(opt) displayVal = opt.label;
                                 const optExp = config.options.find(o => o.value === expectedVal);
-                                if(optExp) displayExp = optExp.label;
+                                if(optExp) displayExp = opt.label;
                             }
 
                             if (String(expectedVal) === String(val)) {

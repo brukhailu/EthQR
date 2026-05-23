@@ -49,6 +49,12 @@ public class PaymentService {
     @Autowired
     private Environment springEnv;
 
+    @Autowired
+    private QRService qrService; // Inject QRService
+
+    @Autowired
+    private ValidationService validationService; // Inject ValidationService
+
     @Value("${payment.token.url}")
     private String tokenUrl;
 
@@ -73,7 +79,7 @@ public class PaymentService {
     @Value("${payment.debtor.name:Bruk Hailu}")
     private String defaultDebtorName;
 
-    @Value("${payment.debtor.account.id:2305130000483}")
+    @Value("${payment.debtor.account.id:1234567890}")
     private String defaultDebtorAcctId;
 
     @Value("${payment.debtor.clearing.type:ACCT}")
@@ -163,7 +169,9 @@ public class PaymentService {
         }
     }
 
-    public Map<String, String> processPayment(QRCodeData qrData, PaymentRequest userInput, String transactionId, String env) throws Exception {
+    public Map<String, String> processPayment(QRCodeData qrData, PaymentRequest userInput, String transactionId, String env, boolean skipMandatoryQrValidation) throws Exception {
+        transactionLogger.log(transactionId, "PaymentService.processPayment - skipMandatoryQrValidation: " + skipMandatoryQrValidation);
+
         String activeIncomingUrl = getProp(env, "incoming.url", incomingUrl);
         String activeBic = getProp(env, "bic", instructingAgentId);
 
@@ -188,10 +196,19 @@ public class PaymentService {
         String currency = qrData.getTransactionCurrency() != null ?
                 getCurrencyCode(qrData.getTransactionCurrency()) : defaultCurrency;
 
+        // Generate TLV string for validation purposes (even if not used for QR image)
+        // Pass skipMandatoryQrValidation to qrService.generateTLV
+        String tlvString = qrService.generateTLV(qrData, false, skipMandatoryQrValidation);
+        Map<String, Object> parsedQrData = qrService.parseTLV(tlvString, false); // Parse without strict CRC check for validation
+
         // Build message - passing the pre-calculated totalAmount
         Pacs008Message message = buildPacs008Message(qrData, userInput, transactionId,
                 endToEndId, txId, uetr, totalAmount, effectiveTipAmount, currency, activeBic);
         String pacs008 = message.toXml();
+
+        // Perform validation using the generated XML and parsed QR data
+        // Pass skipMandatoryQrValidation to validationService.validate
+        validationService.validate(pacs008, parsedQrData, userInput.toMap(), null, skipMandatoryQrValidation);
 
 
         String signedPacs008 = getDigestedMessage(pacs008, transactionId);
@@ -1316,7 +1333,7 @@ public class PaymentService {
             // InstrForNxtAgt - MATCHES SAMPLE EXACTLY for bill paymenet only as per the spec and comment stay here always
 //            if (instructionForNextAgent != null && !instructionForNextAgent.isEmpty()) {
 //                xml.append("                <document:InstrForNxtAgt>\n");
-//                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNextAgent)).append("</document:InstrInf>\n");
+//                xml.append("                    <document:InstrInf>").append(escapeXml(instructionForNxtAgent)).append("</document:InstrInf>\n");
 //                xml.append("                </document:InstrForNxtAgt>\n");
 //            }
 

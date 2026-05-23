@@ -51,6 +51,7 @@
     }
     .badge-mandatory { background-color: #dc3545; font-size: 0.7em; padding: 4px 8px; }
     .badge-optional { background-color: #6c757d; font-size: 0.7em; padding: 4px 8px; }
+    .badge-conditional { background-color: #ffc107; font-size: 0.7em; padding: 4px 8px; color: #212529; }
 
     .toast-container { position: fixed; top: 80px; right: 20px; z-index: 3000; }
 
@@ -225,7 +226,7 @@
                                 <tr>
                                     <th style="width: 60px;">Tag</th>
                                     <th style="width: 200px;">Name</th>
-                                    <th style="width: 50px;">M/O</th>
+                                    <th style="width: 50px;">M/O/C</th>
                                     <th style="width: 60px;">Type</th>
                                     <th style="width: 70px;">Max Len</th>
                                     <th style="width: 65px;">Len</th>
@@ -238,6 +239,11 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white p-4">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="skipMandatoryQrValidationToggle">
+                            <label class="form-check-label" for="skipMandatoryQrValidationToggle">Skip Mandatory QR Validation</label>
+                            <small class="form-text text-muted">Allow generation of QR with missing mandatory fields for negative testing.</small>
+                        </div>
                         <div class="d-grid">
                             <button class="btn btn-primary btn-lg py-3" onclick="generateQR()">
                                 <i class="fas fa-qrcode me-2"></i>Generate QR Code
@@ -450,6 +456,7 @@
             const lenEl = document.getElementById(lenId);
             if(lenEl) lenEl.textContent = '00';
         });
+        document.getElementById('skipMandatoryQrValidationToggle').checked = false; // Reset toggle on new scan
 
         for (const [tag, val] of Object.entries(parsedData)) {
             if (tag === '63') continue;
@@ -629,7 +636,14 @@
 
         sortedTags.forEach(tag => {
             const config = tagConfig[tag];
-            const mo = config.mandatory ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+            let mo;
+            if (config.mandatory) {
+                mo = '<span class="badge badge-mandatory">M</span>';
+            } else if (config.conditionallyRequired) {
+                mo = '<span class="badge badge-conditional">C</span>';
+            } else {
+                mo = '<span class="badge badge-optional">O</span>';
+            }
             const type = config.dataType || '-';
             const maxLen = config.maxLength || '-';
             const inputId = `gen-input-${tag}`;
@@ -647,7 +661,14 @@
                 lenHtml = '-';
                 let subTable = `<table class="nested-table"><tbody>`;
                 config.subTags.forEach(st => {
-                    const subMo = st.mandatory ? '<span class="badge badge-mandatory">M</span>' : '<span class="badge badge-optional">O</span>';
+                    let subMo;
+                    if (st.mandatory) {
+                        subMo = '<span class="badge badge-mandatory">M</span>';
+                    } else if (st.conditionallyRequired) {
+                        subMo = '<span class="badge badge-conditional">C</span>';
+                    } else {
+                        subMo = '<span class="badge badge-optional">O</span>';
+                    }
                     const subInputId = `gen-input-${tag}-${st.tag}`;
                     const subLenId = `gen-len-${tag}-${st.tag}`;
                     const subIsoIcon = createIsoPathIcon(st, tag, st.tag);
@@ -784,6 +805,8 @@
             updateLen(i.id.replace('gen-input', 'gen-len'), '');
         });
         document.querySelectorAll('.fa-check-circle').forEach(i => i.classList.add('d-none'));
+        document.getElementById('skipMandatoryQrValidationToggle').checked = false; // Reset toggle on new scenario load
+
 
         if (!scenario) {
             document.getElementById('scenarioGuideline').style.display = 'none';
@@ -859,7 +882,7 @@
                             const el = document.getElementById(`gen-input-${tag}-${st.tag}`);
                             setAndTrigger(el, d.merchantInformationLanguageTemplate[st.tag], tag, st.tag);
                         }
-                    });
+                        });
                  }
             }
             if(tag === '85' && d.transactionTypeCode) {
@@ -946,14 +969,17 @@
             }
         }
 
+        const skipMandatoryQrValidation = document.getElementById('skipMandatoryQrValidationToggle').checked;
+        console.log("Skip Mandatory QR Validation (index.html):", skipMandatoryQrValidation); // Debugging line
+
         try {
-            const strResp = await fetch('/api/qr/generate-string', {
+            const strResp = await fetch(`/api/qr/generate-string?skipMandatoryQrValidation=${skipMandatoryQrValidation}`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(!strResp.ok) throw new Error((await strResp.json()).error || 'Generation failed');
             const tlv = await strResp.text();
             document.getElementById('tlvOutput').value = tlv;
-            const imgResp = await fetch('/api/qr/generate', {
+            const imgResp = await fetch(`/api/qr/generate?skipMandatoryQrValidation=${skipMandatoryQrValidation}`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(!imgResp.ok) throw new Error('Image generation failed');

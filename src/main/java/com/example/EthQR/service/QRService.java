@@ -75,10 +75,14 @@ public class QRService {
     }
 
     public String generateTLV(QRCodeData data) {
-        return generateTLV(data, false); // Default to not a negative scenario
+        return generateTLV(data, false, false); // Default to not a negative scenario, and not skipping validation
     }
 
     public String generateTLV(QRCodeData data, boolean isCertificationNegativeScenario) {
+        return generateTLV(data, isCertificationNegativeScenario, false); // Default to not skipping validation
+    }
+
+    public String generateTLV(QRCodeData data, boolean isCertificationNegativeScenario, boolean skipMandatoryQrValidation) {
         Map<String, String> tlvMap = new java.util.TreeMap<>();
         Map<String, Object> qrDataForValidation = new HashMap<>(); // To hold data for ValidationService
 
@@ -114,7 +118,7 @@ public class QRService {
         
         // Tag 28 Mandatory Check (This check is now redundant with validateMandatoryQrFields but kept for consistency)
         TLVTag tag28Config = tlvTags.get("28");
-        if(tag28Config != null && tag28Config.isMandatory() && !isCertificationNegativeScenario) {
+        if(tag28Config != null && tag28Config.isMandatory() && !isCertificationNegativeScenario && !skipMandatoryQrValidation) {
              if(data.getMerchantAccountInformation() == null || !data.getMerchantAccountInformation().containsKey("28")) {
                  // This will be caught by validateMandatoryQrFields, but keeping for immediate feedback
                  throw new IllegalArgumentException("Mandatory Tag 28 (EthSwitch) is missing.");
@@ -218,8 +222,20 @@ public class QRService {
 
         // Tag 85: Transaction Type Code
         TLVTag tag85Config = tlvTags.get("85");
-        addIfPresent(tlvMap, "85", processAndValidate(data.getTransactionTypeCode(), tag85Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
-        if (data.getTransactionTypeCode() != null) qrDataForValidation.put("85", data.getTransactionTypeCode());
+        Object ttcValue = data.getTransactionTypeCode();
+        if (ttcValue != null) {
+            if (ttcValue instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, String> ttcMap = (Map<String, String>) ttcValue;
+                String subTlv85 = buildSubTLV(ttcMap);
+                addTLV(tlvMap, "85", subTlv85);
+                qrDataForValidation.put("85", ttcMap);
+            } else {
+                String ttcStr = String.valueOf(ttcValue);
+                addIfPresent(tlvMap, "85", processAndValidate(ttcStr, tag85Config, isCertificationNegativeScenario), isCertificationNegativeScenario);
+                qrDataForValidation.put("85", ttcStr);
+            }
+        }
 
         // Unreserved Templates (Any other tag in range 80-99 handled generically if not specific)
         if (data.getUnreservedTemplates() != null) {
@@ -239,7 +255,7 @@ public class QRService {
         qrDataForValidation.remove("63");
 
         // Perform strict mandatory field validation using ValidationService
-        List<ValidationResult> validationResults = validationService.validateMandatoryQrFields(qrDataForValidation);
+        List<ValidationResult> validationResults = validationService.validateMandatoryQrFields(qrDataForValidation, skipMandatoryQrValidation);
         for (ValidationResult result : validationResults) {
             if ("M".equals(result.getType()) && "MISSING".equals(result.getStatus())) {
                 throw new IllegalArgumentException("Mandatory field missing: " + result.getRemarks());

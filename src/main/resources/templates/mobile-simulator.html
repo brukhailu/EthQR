@@ -257,6 +257,16 @@
         background: white;
         color: #0d6efd;
     }
+    .simulator-controls {
+        flex: 0 0 250px; /* Fixed width for controls */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
 </style>
 <body>
 
@@ -442,6 +452,14 @@
             </div>
 
             <div class="toast-container" id="toastContainer"></div>
+        </div>
+    </div>
+
+    <div class="simulator-controls">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="skipMandatoryQrValidationToggle">
+            <label class="form-check-label" for="skipMandatoryQrValidationToggle">Skip Mandatory QR Validation</label>
+            <small class="form-text text-muted">Allow generation of QR with missing mandatory fields for negative testing.</small>
         </div>
     </div>
 
@@ -680,6 +698,7 @@
         document.getElementById('loyaltyNumberSection').classList.add('d-none');
         document.getElementById('mobileNumberSection').classList.add('d-none');
         document.getElementById('totalAmountRow').classList.add('d-none');
+        document.getElementById('skipMandatoryQrValidationToggle').checked = false; // Reset toggle on new scan
 
         // Set merchant info
         document.getElementById('merchantNameDisplay').textContent = data['59'] || 'Unknown Merchant';
@@ -754,7 +773,7 @@
                         <span class="input-group-text">ETB</span>
                         <input type="number" id="tipUserInput" class="form-control" placeholder="0.00" step="0.01" oninput="calculateTip()">
                     </div>
-                    <div id="tipAmountDisplay" class="text-end mt-2 small text-muted d-none"></div>
+                    <div id="tipAmountDisplay" class="text-end mt-2 small text-muted"></div>
                 `;
             } else if (tipInd === '02') {
                 // Fixed tip amount from QR
@@ -918,6 +937,7 @@
     async function processPayment() {
         const btn = document.querySelector('.btn-pay');
         const amountEl = document.getElementById('txAmountInput');
+        const skipValidationToggle = document.getElementById('skipMandatoryQrValidationToggle');
 
         // Validate amount
         let baseAmount = parseFloat(amountEl.value);
@@ -969,12 +989,13 @@
         const backendPayload = mapDataToBackendModel(currentQRData, userInputs);
         backendPayload.env = currentEnv; // Add the selected environment to the payload
         backendPayload.rawTlvString = currentRawTlv; // Add the raw TLV string
+        backendPayload.skipMandatoryQrValidation = skipValidationToggle.checked; // Add the toggle state
 
         const transactionId = generateUUID();
 
         const logConsole = document.getElementById('log-console');
         clearLog();
-        logConsole.textContent = `Transaction ID: ${transactionId}\nEnvironment: .${currentEnv}\nInitiating transaction...\n`;
+        logConsole.textContent = `Transaction ID: ${transactionId}\nEnvironment: .${currentEnv}\nSkip Mandatory QR Validation: ${skipValidationToggle.checked}\nInitiating transaction...\n`;
         document.getElementById('btnCopyLog').disabled = true;
         lastFinalMessage = "";
 

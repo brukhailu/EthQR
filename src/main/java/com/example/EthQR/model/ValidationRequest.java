@@ -7,6 +7,7 @@ public class ValidationRequest {
     private Map<String, Object> qrData;
     private Map<String, String> userInputs;
     private String scenario;
+    private boolean skipMandatoryQrValidation; // New field
 
     // Getters and Setters
     public String getXml() {
@@ -39,5 +40,14 @@ public class ValidationRequest {
 
     public void setScenario(String scenario) {
         this.scenario = scenario;
+    }
+
+    // Getter and Setter for skipMandatoryQrValidation
+    public boolean isSkipMandatoryQrValidation() {
+        return skipMandatoryQrValidation;
+    }
+
+    public void setSkipMandatoryQrValidation(boolean skipMandatoryQrValidation) {
+        this.skipMandatoryQrValidation = skipMandatoryQrValidation;
     }
 }

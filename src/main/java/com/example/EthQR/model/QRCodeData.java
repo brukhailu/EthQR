@@ -27,7 +27,7 @@ public class QRCodeData {
     private String offlineToOnline; // ID 82
     private String ecommerce; // ID 83
     private String uetr; // ID 84
-    private String transactionTypeCode; // ID 85
+    private Object transactionTypeCode; // ID 85 (Allows String, Number, or Map)
     private String billNumber;
 
     // Consumer-provided fields (captured during simulation)
