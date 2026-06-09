@@ -250,7 +250,9 @@
 						<document:Othr>
 							<!-- Channel type | Merchant Channel - tag 62 sub tag 11 eg. 400 Retail Outlet
 								Possible Options (Refer emvco)
-								400,000,402,002,401,001,610,010,521,111,211 -->
+								400,000,402,002,401,001,610,010,521,111,211 
+								If the QR is generated with wrong chanlTP, it's good to use 400 as default 
+								-->
 							<document:ChanlTp>400</document:ChanlTp>
 							<!-- Terminal ID tag 62 sub tag 07 -->
 							<document:Id>TERM-01</document:Id>
@@ -269,7 +271,7 @@
 					</document:Id>
 				</document:CdtrAcct>
 				<document:Purp>
-					<!-- Purpose of payment tag 62 sub tag 08
+					<!-- Purpose of payment tag 62 sub tag 08, If the QR doesn't contain this code or use incorrect value, fallback default value should be ONLPUR
 					Possible options: [
 						{ "value": "ONLPUR", "label": "Online Purchase" },
 						{ "value": "SALA", "label": "Salary Payments" },

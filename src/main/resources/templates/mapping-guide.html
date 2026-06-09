@@ -22,55 +22,6 @@
         min-height: 100vh;
     }
 
-    .mapping-header {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        border-radius: 1rem;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        color: white;
-        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
-    }
-
-    .mapping-header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 1rem;
-        padding: 1rem;
-        text-align: center;
-        transition: all 0.3s ease;
-        border: 1px solid var(--border);
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary);
-    }
-
-    .priority-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-    }
-
-    .priority-1 { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
-    .priority-2 { background: var(--warning); color: #333; }
-    .priority-3 { background: var(--light-gray); color: var(--gray); border: 1px solid var(--border); }
-
     .mapping-card {
         background: white;
         border-radius: 1rem;
@@ -118,6 +69,10 @@
         border-bottom: 1px solid var(--border);
     }
 
+    .table-custom tbody tr:hover {
+        background-color: rgba(var(--primary-rgb), 0.05); /* Subtle hover effect */
+    }
+
     .tag-code {
         font-family: 'SF Mono', 'Courier New', monospace;
         font-weight: 700;
@@ -137,6 +92,7 @@
         padding: 0.5rem;
         border-radius: 0.5rem;
         word-break: break-all;
+        cursor: help; /* Indicate it's clickable/hoverable for tooltip */
     }
 
     .badge-tag {
@@ -167,61 +123,6 @@
         border: 1px solid var(--border);
     }
 
-    .info-box {
-        background: linear-gradient(135deg, #e8f0fe 0%, #f0e8fe 100%);
-        border-left: 4px solid var(--primary);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .warning-box {
-        background: linear-gradient(135deg, #fff3e0 0%, #ffe0e0 100%);
-        border-left: 4px solid var(--danger);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .success-box {
-        background: linear-gradient(135deg, #e0f8f0 0%, #e0f0f8 100%);
-        border-left: 4px solid var(--success);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .flow-diagram {
-        background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;
-        margin: 2rem 0;
-        border: 1px solid var(--border);
-    }
-
-    .step-circle {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        margin: 0 auto 1rem;
-    }
-
-    .hover-icon {
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .hover-icon:hover {
-        transform: scale(1.1);
-        color: var(--primary) !important;
-    }
-
     @media (max-width: 768px) {
         .table-custom {
             font-size: 0.75rem;
@@ -236,96 +137,6 @@
 <nav th:replace="~{fragments/layout :: header(activeTab='mapping-guide')}"></nav>
 
 <main class="container py-5">
-    <!-- Modern Header -->
-    <div class="mapping-header">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1><i class="bi bi-diagram-3 me-2"></i>QR to ISO 20022 Mapping Guide</h1>
-                <p class="mb-0 opacity-90">Complete reference for mapping Ethswitch QR tags to ISO 20022 pacs.008 payment messages</p>
-            </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <span class="badge bg-white text-primary px-3 py-2 me-2"><i class="bi bi-qr-code-scan me-1"></i> v2.0</span>
-                <span class="badge bg-white text-primary px-3 py-2"><i class="bi bi-calendar3 me-1"></i> 2026</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="stat-card">
-                <i class="bi bi-tag fs-2 text-primary"></i>
-                <div class="stat-number">15+</div>
-                <div class="text-muted small">QR Tags Mapped</div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="stat-card">
-                <i class="bi bi-diagram-2 fs-2 text-primary"></i>
-                <div class="stat-number">25+</div>
-                <div class="text-muted small">XML Paths</div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="stat-card">
-                <i class="bi bi-arrow-repeat fs-2 text-primary"></i>
-                <div class="stat-number">3</div>
-                <div class="text-muted small">Priority Levels</div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="stat-card">
-                <i class="bi bi-check-circle fs-2 text-primary"></i>
-                <div class="stat-number">100%</div>
-                <div class="text-muted small">ISO Compliant</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Priority Note -->
-    <div class="info-box">
-        <div class="d-flex align-items-center mb-2">
-            <i class="bi bi-info-circle-fill fs-4 me-2 text-primary"></i>
-            <strong class="fs-5">Mapping Priority Flow</strong>
-        </div>
-        <div class="d-flex flex-wrap gap-3 align-items-center">
-            <span class="priority-badge priority-1"><i class="bi bi-person-fill"></i> 1. User Input (Prompted)</span>
-            <i class="bi bi-arrow-right text-muted"></i>
-            <span class="priority-badge priority-2"><i class="bi bi-qr-code"></i> 2. QR Tag Data</span>
-            <i class="bi bi-arrow-right text-muted"></i>
-            <span class="priority-badge priority-3"><i class="bi bi-gear-fill"></i> 3. System Defaults</span>
-        </div>
-        <div class="mt-3 small text-muted">
-            <i class="bi bi-lightbulb me-1"></i> Tip: The system always prioritizes user-entered data when prompted by QR tags
-        </div>
-    </div>
-
-    <!-- Critical Warning -->
-    <div class="warning-box">
-        <div class="d-flex align-items-start">
-            <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-danger"></i>
-            <div>
-                <strong class="text-danger">Important: Mobile Number Distinction</strong>
-                <ul class="mb-0 mt-2 small">
-                    <li><strong>Payer's Mobile (Contact)</strong> → <code class="bg-white px-1">/Dbtr/CtctDtls/MobNb</code> - From Tag 62/09 'M' (Prompted Consumer Data)</li>
-                    <li><strong>Merchant Mobile (Top-up)</strong> → <code class="bg-white px-1">/UltmtCdtr/Id/PrvtId/Othr/Id</code> with scheme <code>MOBN</code> - From Tag 62/02</li>
-                    <li class="mt-1">⚠️ These serve DIFFERENT purposes and must not be confused!</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Box for Correct Implementation -->
-    <div class="success-box">
-        <div class="d-flex align-items-start">
-            <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
-            <div>
-                <strong class="text-success">✓ Correct Implementation Confirmed</strong>
-                <p class="mb-0 small mt-1">All mappings follow BPC ISO 20022 standards with proper priority handling for prompted consumer data (Address, Email, Mobile) from Tag 62/09 flags.</p>
-            </div>
-        </div>
-    </div>
-
     <!-- 1. Primary QR Tags Mapping -->
     <div class="mapping-card">
         <div class="card-header-custom">
@@ -335,10 +146,10 @@
             <table class="table table-custom">
                 <thead>
                 <tr>
-                    <th width="10%">QR Tag</th>
-                    <th width="20%">Name</th>
-                    <th width="45%">ISO 20022 XML Path</th>
-                    <th width="25%">Priority / Notes</th>
+                    <th>QR Tag</th>
+                    <th>Name</th>
+                    <th>ISO 20022 XML Path</th>
+                    <th>Priority / Notes</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -361,6 +172,12 @@
                     <td><span class="badge-tag">From QR</span></td>
                 </tr>
                 <tr>
+                    <td><span class="tag-code">53</span></td>
+                    <td><strong>Transaction Currency</strong></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/IntrBkSttlmAmt/@Ccy</code></td>
+                    <td><span class="badge-tag">From QR</span></td>
+                </tr>
+                <tr>
                     <td><span class="tag-code">54</span></td>
                     <td><strong>Transaction Amount</strong></td>
                     <td><code class="xml-path">/CdtTrfTxInf/IntrBkSttlmAmt</code></td>
@@ -375,13 +192,13 @@
                 <tr>
                     <td><span class="tag-code">58</span></td>
                     <td><strong>Country Code</strong></td>
-                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/PstlAdr/Ctry</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/PstlAdr/Ctry</code><br><code class="xml-path">/CdtTrfTxInf/Cdtr/CtryOfRes</code></td>
                     <td><span class="badge-tag">From QR</span></td>
                 </tr>
                 <tr>
                     <td><span class="tag-code">59</span></td>
                     <td><strong>Merchant Name</strong></td>
-                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/Nm</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/Nm</code><br><code class="xml-path">/CdtTrfTxInf/Cdtr/CtctDtls/Nm</code></td>
                     <td><span class="badge-tag">From QR</span></td>
                 </tr>
                 <tr>
@@ -390,12 +207,12 @@
                     <td><code class="xml-path">/CdtTrfTxInf/Cdtr/PstlAdr/TwnNm</code></td>
                     <td><span class="badge-tag">From QR</span></td>
                 </tr>
-                <tr>
-                    <td><span class="tag-code">84</span></td>
-                    <td><strong>UETR</strong></td>
-                    <td><code class="xml-path">/CdtTrfTxInf/UETR</code></td>
-                    <td><span class="badge-default">Generated if missing</span></td>
-                </tr>
+<!--                <tr>-->
+<!--                    <td><span class="tag-code">84</span></td>-->
+<!--                    <td><strong>UETR</strong></td>-->
+<!--                    <td><code class="xml-path">/CdtTrfTxInf/UETR</code></td>-->
+<!--                    <td><span class="badge-default">Generated if missing</span></td>-->
+<!--                </tr>-->
                 </tbody>
             </table>
         </div>
@@ -410,23 +227,23 @@
             <table class="table table-custom">
                 <thead>
                 <tr>
-                    <th width="10%">Sub-tag</th>
-                    <th width="20%">Name</th>
-                    <th width="45%">ISO 20022 XML Path</th>
-                    <th width="25%">Special Handling</th>
+                    <th>Sub-tag</th>
+                    <th>Name</th>
+                    <th>ISO 20022 XML Path</th>
+                    <th>Special Handling</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td><span class="tag-code">01</span></td>
                     <td><strong>Bill Number</strong></td>
-                    <td><code class="xml-path">/CdtTrfTxInf/UltmtCdtr/Nm</code></td>
+                    <td><code class="xml-path">/RmtInf/Strd/RfrdDocInf/Nb</code></td>
                     <td><span class="badge-prompt">*** = Prompt User</span></td>
                 </tr>
                 <tr>
                     <td><span class="tag-code">02</span></td>
                     <td><strong>Merchant Mobile (Top-up)</strong></td>
-                    <td><code class="xml-path">/UltmtCdtr/Id/PrvtId/Othr/Id</code><br><small>Scheme: <strong>MOBN</strong></small></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/CtctDtls/MobNb</code><br><small>Scheme: <strong>MOBN</strong></small></td>
                     <td><span class="badge-prompt">*** = Prompt User</span></td>
                 </tr>
                 <tr>
@@ -457,9 +274,9 @@
                     <td><span class="tag-code">09</span></td>
                     <td><strong>Consumer Data Request</strong></td>
                     <td>
-                        <code class="xml-path">A → /Dbtr/PstlAdr/AdrLine</code><br>
-                        <code class="xml-path">M → /Dbtr/CtctDtls/MobNb</code><br>
-                        <code class="xml-path">E → /Dbtr/CtctDtls/EmailAdr</code>
+                        <code class="xml-path">A → /CdtTrfTxInf/Dbtr/PstlAdr/AdrLine</code><br>
+                        <code class="xml-path">M → /CdtTrfTxInf/Dbtr/CtctDtls/MobNb</code><br>
+                        <code class="xml-path">E → /CdtTrfTxInf/Dbtr/CtctDtls/EmailAdr</code>
                     </td>
                     <td><span class="badge-prompt">Prompts user for missing data</span></td>
                 </tr>
@@ -472,7 +289,7 @@
                 <tr>
                     <td><span class="tag-code">11</span></td>
                     <td><strong>Merchant Channel</strong></td>
-                    <td><code class="xml-path">/Cdtr/CtctDtls/Othr/ChanlTp</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/CtctDtls/Othr/ChanlTp</code></td>
                     <td><span class="badge-tag">From QR</span></td>
                 </tr>
                 </tbody>
@@ -489,9 +306,9 @@
             <table class="table table-custom">
                 <thead>
                 <tr>
-                    <th width="25%">Input Field</th>
-                    <th width="45%">ISO 20022 XML Path</th>
-                    <th width="30%">Prompt Trigger</th>
+                    <th>Input Field</th>
+                    <th>ISO 20022 XML Path</th>
+                    <th>Prompt Trigger</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -507,7 +324,7 @@
                 </tr>
                 <tr>
                     <td><strong>📄 Bill Number</strong></td>
-                    <td><code class="xml-path">/CdtTrfTxInf/UltmtCdtr/Nm</code></td>
+                    <td><code class="xml-path">/RmtInf/Strd/RfrdDocInf/Nb</code></td>
                     <td><span class="badge-prompt">When Tag 62/01 = '***'</span></td>
                 </tr>
                 <tr>
@@ -527,7 +344,7 @@
                 </tr>
                 <tr>
                     <td><strong>📱 Merchant Mobile (Top-up)</strong></td>
-                    <td><code class="xml-path">/UltmtCdtr/Id/PrvtId/Othr/Id</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/CtctDtls/MobNb</code></td>
                     <td><span class="badge-prompt">When Tag 62/02 = '***'</span></td>
                 </tr>
                 </tbody>
@@ -544,20 +361,30 @@
             <table class="table table-custom">
                 <thead>
                 <tr>
-                    <th width="30%">Field Name</th>
-                    <th width="50%">ISO 20022 XML Path</th>
-                    <th width="20%">Generation Rule</th>
+                    <th>Field Name</th>
+                    <th>ISO 20022 XML Path</th>
+                    <th>Generation Rule</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td><strong>Instructing Agent</strong></td>
-                    <td><code class="xml-path">/AppHdr/Fr/FIId/FinInstnId/Othr/Id</code></td>
+                    <td><code class="xml-path">/AppHdr/Fr/FIId/FinInstnId/Othr/Id</code><br><code class="xml-path">/CdtTrfTxInf/DbtrAgt/FinInstnId/Othr/Id</code></td>
                     <td><span class="badge-default">Config: BBANKETA</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Instructed Agent</strong></td>
+                    <td><code class="xml-path">/GrpHdr/InstdAgt/FinInstnId/Othr/Id</code><br><code class="xml-path">/CdtTrfTxInf/CdtrAgt/FinInstnId/Othr/Id</code></td>
+                    <td><span class="badge-tag">From QR Tag 28 (Idx 1)</span></td>
                 </tr>
                 <tr>
                     <td><strong>Business Msg ID</strong></td>
                     <td><code class="xml-path">/AppHdr/BizMsgIdr</code></td>
+                    <td><span class="badge-default">AgentID + UUID (20 chars)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Message ID</strong></td>
+                    <td><code class="xml-path">/Document/FIToFICstmrCdtTrf/GrpHdr/MsgId</code></td>
                     <td><span class="badge-default">AgentID + UUID (20 chars)</span></td>
                 </tr>
                 <tr>
@@ -566,86 +393,54 @@
                     <td><span class="badge-default">AgentID + UUID (20 chars)</span></td>
                 </tr>
                 <tr>
+                    <td><strong>Transaction ID</strong></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/PmtId/TxId</code></td>
+                    <td><span class="badge-default">AgentID + UUID (20 chars)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Creation Date/Time</strong></td>
+                    <td><code class="xml-path">/AppHdr/CreDt</code><br><code class="xml-path">/GrpHdr/CreDtTm</code><br><code class="xml-path">/CdtTrfTxInf/AccptncDtTm</code></td>
+                    <td><span class="badge-default">Current Timestamp</span></td>
+                </tr>
+                <tr>
                     <td><strong>Category Purpose</strong></td>
                     <td><code class="xml-path">/GrpHdr/PmtTpInf/CtgyPurp/Prtry</code></td>
-                    <td><span class="badge-default">C2BSQR / C2BBPT</span></td>
+                    <td><span class="badge-default">C2BSQR</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Purpose Code</strong></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Purp/Prtry</code></td>
+                    <td><span class="badge-default">ONLPUR (Default)</span></td>
                 </tr>
                 <tr>
                     <td><strong>Charge Bearer</strong></td>
                     <td><code class="xml-path">/CdtTrfTxInf/ChrgBr</code></td>
-                    <td><span class="badge-default">SLEV</span></td>
+                    <td><span class="badge-default">SLEV (Fixed)</span></td>
                 </tr>
                 <tr>
                     <td><strong>Local Instrument</strong></td>
                     <td><code class="xml-path">/GrpHdr/PmtTpInf/LclInstrm/Prtry</code></td>
-                    <td><span class="badge-default">CRTRM</span></td>
+                    <td><span class="badge-default">CRTRM (Fixed)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Debtor Account Issuer</strong></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/DbtrAcct/Id/Othr/Issr</code></td>
+                    <td><span class="badge-default">C (Fixed)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Debtor Agent Issuer</strong></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/DbtrAgt/FinInstnId/Othr/Issr</code></td>
+                    <td><span class="badge-default">ATM (Fixed)</span></td>
                 </tr>
                 <tr>
                     <td><strong>Loyalty Scheme</strong></td>
-                    <td><code class="xml-path">/Dbtr/Id/PrvtId/Othr/SchmeNm/Prtry</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Dbtr/Id/PrvtId/Othr/SchmeNm/Prtry</code></td>
                     <td><span class="badge-default">LPNB (Fixed)</span></td>
                 </tr>
                 <tr>
                     <td><strong>Mobile Scheme (Top-up)</strong></td>
-                    <td><code class="xml-path">/UltmtCdtr/Id/PrvtId/Othr/SchmeNm/Prtry</code></td>
+                    <td><code class="xml-path">/CdtTrfTxInf/Cdtr/CtctDtls/MobNb</code></td>
                     <td><span class="badge-default">MOBN (Fixed)</span></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 5. Special Field Mappings Summary -->
-    <div class="mapping-card">
-        <div class="card-header-custom">
-            <i class="bi bi-star-fill"></i> Special Field Mappings Summary
-        </div>
-        <div class="table-responsive">
-            <table class="table table-custom">
-                <thead>
-                <tr>
-                    <th width="25%">Purpose</th>
-                    <th width="25%">QR Source</th>
-                    <th width="35%">XML Path</th>
-                    <th width="15%">Scheme</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><strong>🏆 Loyalty Number</strong></td>
-                    <td><span class="tag-code">Tag 62/04</span></td>
-                    <td><code class="xml-path">/Dbtr/Id/PrvtId/Othr/Id</code></td>
-                    <td><strong>LPNB</strong></td>
-                </tr>
-                <tr class="table-warning">
-                    <td><strong>📱 Merchant Mobile (Top-up)</strong></td>
-                    <td><span class="tag-code">Tag 62/02</span></td>
-                    <td><code class="xml-path">/UltmtCdtr/Id/PrvtId/Othr/Id</code></td>
-                    <td><strong>MOBN</strong></td>
-                </tr>
-                <tr>
-                    <td><strong>👤 Payer Mobile (Contact)</strong></td>
-                    <td><span class="tag-code">Tag 62/09 'M'</span></td>
-                    <td><code class="xml-path">/Dbtr/CtctDtls/MobNb</code></td>
-                    <td><span class="badge-default">No scheme</span></td>
-                </tr>
-                <tr>
-                    <td><strong>🏪 Store Label</strong></td>
-                    <td><span class="tag-code">Tag 62/03</span></td>
-                    <td><code class="xml-path">/Cdtr/CtctDtls/Dept</code></td>
-                    <td><span class="badge-default">Department</span></td>
-                </tr>
-                <tr>
-                    <td><strong>🖥️ Terminal ID</strong></td>
-                    <td><span class="tag-code">Tag 62/07</span></td>
-                    <td><code class="xml-path">/Cdtr/CtctDtls/Othr/Id</code></td>
-                    <td><span class="badge-default">POS ID</span></td>
-                </tr>
-                <tr>
-                    <td><strong>📄 Bill Number</strong></td>
-                    <td><span class="tag-code">Tag 62/01</span></td>
-                    <td><code class="xml-path">/UltmtCdtr/Nm</code></td>
-                    <td><span class="badge-default">Simple name</span></td>
                 </tr>
                 </tbody>
             </table>

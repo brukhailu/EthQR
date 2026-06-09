@@ -700,11 +700,11 @@ public class PaymentService {
     }
 
     private String generateEndToEndId(String bic) {
-        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 5);
     }
 
     private String generateTransactionId(String bic) {
-        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+        return bic + UUID.randomUUID().toString().replace("-", "").substring(0, 5);
     }
 
     private String getDigestedMessage(String xmlMessage, String transactionId) throws Exception {
