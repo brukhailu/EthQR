@@ -598,6 +598,11 @@
         const createInputHtml = (conf, id, t, st = null) => {
             if (!conf) return '';
             const stArg = st ? `'${st}'` : 'null';
+            let onchange = `onchange="validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);"`;
+
+            if (t === '01') {
+                onchange = `onchange="handlePointOfInitiationChange(this); validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);"`;
+            }
 
             if(conf.uiType === 'checkbox' && conf.options) {
                 return `
@@ -615,7 +620,7 @@
                     </div>
                 `;
             } else if(conf.options && conf.options.length > 0) {
-                return `<select class="form-select form-select-sm gen-input" id="${id}" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''} onchange="validateInput(this, '${t}', ${stArg}); updateLen('${id.replace('input', 'len')}', this.value);">
+                return `<select class="form-select form-select-sm gen-input" id="${id}" data-tag="${t}" ${st ? `data-subtag="${st}"` : ''} ${onchange}>
                     <option value="">Select...</option>
                     ${conf.options.map(o => `<option value="${o.value}" title="${o.label}">${o.value} - ${o.label}</option>`).join('')}
                 </select>`;
@@ -990,6 +995,33 @@
             showToast('QR Code Generated Successfully', 'success');
         } catch (e) {
             showToast(e.message, 'danger');
+        }
+    }
+
+    function generateUUID() {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function handlePointOfInitiationChange(selectElement) {
+        const uetrInput = document.getElementById('gen-input-84');
+        if (selectElement.value === '12') { // Dynamic QR
+            if (uetrInput && !uetrInput.value) {
+                uetrInput.value = generateUUID();
+                validateInput(uetrInput, '84');
+                updateLen('gen-len-84', uetrInput.value);
+            }
+        } else { // Static QR or other
+            if (uetrInput) {
+                uetrInput.value = ''; // Clear the value
+                validateInput(uetrInput, '84');
+                updateLen('gen-len-84', '');
+            }
         }
     }
 </script>

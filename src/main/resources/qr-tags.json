@@ -103,7 +103,7 @@
   { "tag": "81", "name": "Discounts & Loyalty Programs", "dataField": "discountsAndLoyalty", "dataType": "ANS", "minLength": 1, "maxLength": 30, "mandatory": false },
   { "tag": "82", "name": "Offline to Online", "dataField": "offlineToOnline", "dataType": "ANS", "minLength": 1, "maxLength": 50, "mandatory": false },
   { "tag": "83", "name": "E-Commerce", "dataField": "ecommerce", "dataType": "ANS", "minLength": 1, "maxLength": 40, "mandatory": false },
-  { "tag": "84", "name": "UETR", "dataField": "uetr", "dataType": "ANS", "minLength": 36, "maxLength": 36, "pattern": "^[a-fA-F0-9]{36}$", "mandatory": false, "isoPath": "document:CdtTrfTxInf/document:PmtId/document:UETR", "isoExample": "<document:PmtId><document:UETR>{{VALUE}}</document:UETR></document:PmtId>" },
+  { "tag": "84", "name": "UETR", "dataField": "uetr", "dataType": "ANS", "minLength": 36, "maxLength": 36, "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", "mandatory": false, "isoPath": "document:CdtTrfTxInf/document:PmtId/document:UETR", "isoExample": "<document:PmtId><document:UETR>{{VALUE}}</document:UETR></document:PmtId>" },
   { "tag": "85", "name": "Transaction Type Code", "dataField": "transactionTypeCode", "isSubTLV": true, "delimiter": "|", "mandatory": false, "subTags": [
     { "tag": "01", "name": "TTC", "dataType": "ANS", "minLength": 1, "maxLength": 40, "mandatory": true }
   ]}

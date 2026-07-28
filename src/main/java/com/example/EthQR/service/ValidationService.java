@@ -1,5 +1,6 @@
 package com.example.EthQR.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
@@ -33,8 +34,12 @@ public class ValidationService {
 
             // Load qr-tags.json
             ClassPathResource qrTagsResource = new ClassPathResource("qr-tags.json");
-            InputStream qrTagsInputStream = qrTagsResource.getInputStream();
-            qrTags = objectMapper.readValue(qrTagsInputStream, new TypeReference<List<Map<String, Object>>>() {});
+            try (InputStream qrTagsInputStream = qrTagsResource.getInputStream()) {
+                qrTags = objectMapper.readValue(qrTagsInputStream, new TypeReference<List<Map<String, Object>>>() {});
+            } catch (JsonProcessingException jpe) {
+                System.err.println("Failed to parse qr-tags.json: " + jpe.getMessage());
+                throw jpe; // Re-throw to ensure the application context fails to load
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
